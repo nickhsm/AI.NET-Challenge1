@@ -1,3 +1,7 @@
 <Solution>
   <Project Path="TicketService.API\TicketService.API.csproj" />
+  <Project Path="TicketService.Contracts/TicketService.Contracts.csproj" Id="c975dceb-b094-47ac-9e0f-58b2a5f30fe5" />
+  <Project Path="TicketService.Domain/TicketService.Domain.csproj" Id="ef5c7ed1-4d10-47d7-b107-be57af4a352d" />
+  <Project Path="TicketService.Infrastructure/TicketService.Infrastructure.csproj" Id="fa6cf378-ff80-4ff0-839c-6ca43505096e" />
+  <Project Path="TicketService.Shared/TicketService.Shared.csproj" Id="c514d6cc-ae45-474f-bf5f-15103ebf0d6f" />
 </Solution>
