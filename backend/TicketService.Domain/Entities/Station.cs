@@ -13,6 +13,8 @@ public class Station
     
     public ICollection<StationTicket> StationTickets { get; set; } = new List<StationTicket>();
     public ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
+    public ICollection<Ticket> DepartingTickets { get; set; } = new List<Ticket>();
+    public ICollection<Ticket> ArrivingTickets { get; set; } = new List<Ticket>();
     
     public Station(string name)
     {

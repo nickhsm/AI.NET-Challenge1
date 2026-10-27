@@ -14,5 +14,19 @@ public class TicketServiceDbContext(DbContextOptions<TicketServiceDbContext> opt
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<Ticket>()
+            .HasMany(t => t.Stations)
+            .WithMany(s => s.Tickets)
+            .UsingEntity<StationTicket>();
+        modelBuilder.Entity<Ticket>()
+            .HasOne(t => t.StartingStation)
+            .WithMany(s => s.DepartingTickets)
+            .HasForeignKey(t => t.StartingStationId)
+            .OnDelete(DeleteBehavior.Restrict);
+        modelBuilder.Entity<Ticket>()
+            .HasOne(t => t.DestinationStation)
+            .WithMany(s => s.ArrivingTickets)
+            .HasForeignKey(t => t.DestinationStationId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

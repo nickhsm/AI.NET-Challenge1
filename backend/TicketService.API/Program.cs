@@ -1,8 +1,16 @@
+using Microsoft.EntityFrameworkCore;
+using TicketService.Infrastructure.DbContexts;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+// Database
+builder.Services.AddDbContext<TicketServiceDbContext>(dbContectOption =>
+        dbContectOption.UseNpgsql(
+            builder.Configuration.GetConnectionString("Docker")));
 
 var app = builder.Build();
 
