@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using ConductorTicketService.Services;
+using ConductorTicketService.ViewModels;
+using ConductorTicketService.Views;
+using Microsoft.Extensions.Logging;
 
 namespace ConductorTicketService;
 
@@ -18,6 +21,14 @@ public static class MauiProgram
 #if DEBUG
         builder.Logging.AddDebug();
 #endif
+
+        builder.Services.AddSingleton<INavigationService, NavigationService>();
+
+        builder.Services.AddTransient<ScanListPage>();
+        builder.Services.AddTransient<IScanListViewModel, ScanListViewModel>();
+
+        builder.Services.AddTransient<QrCodePage>();
+        builder.Services.AddTransient<IQrCodeViewModel, QrCodeViewModel>();
 
         return builder.Build();
     }
