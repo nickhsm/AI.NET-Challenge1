@@ -3,12 +3,12 @@
     x:Class="PassengerTicketService.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:PassengerTicketService"
+    xmlns:views="clr-namespace:PassengerTicketService.Views"
     Title="PassengerTicketService">
 
     <ShellContent
         Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
+        ContentTemplate="{DataTemplate views:HomePage}"
         Route="MainPage" />
 
 </Shell>
