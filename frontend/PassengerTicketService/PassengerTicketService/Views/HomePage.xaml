@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PassengerTicketService.Views.HomePage"
+             BackgroundColor="#101010"
+             Shell.NavBarIsVisible="False"
+             Title="HomePage">
+
+    <Grid RowDefinitions="Auto, Auto, *, Auto">
+
+        <!-- 1. Top Section: Header and Tabs -->
+        <VerticalStackLayout Grid.Row="0" Padding="20,40,20,15" Spacing="15">
+            <Label Text="Wat zoek je?" 
+                TextColor="White" 
+                FontSize="26" 
+                FontAttributes="Bold" />
+        </VerticalStackLayout>
+
+        <!-- 2. Middle Section: Search Card -->
+        <Border Grid.Row="1" 
+            Margin="20,0,20,0" 
+            BackgroundColor="#2B2B2B" 
+            StrokeThickness="0">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="12" />
+            </Border.StrokeShape>
+
+            <Grid RowDefinitions="Auto, Auto, Auto">
+
+                <!-- Van / Naar Section -->
+                <Grid Grid.Row="0" ColumnDefinitions="*, Auto" Padding="15,20,15,15">
+
+                    <!-- Input Fields -->
+                    <VerticalStackLayout Grid.Column="0" Spacing="10">
+                        <Label Text="Van:" TextColor="#A0A0A0" FontSize="14" />
+
+                        <Grid VerticalOptions="Center">
+                            <Entry Placeholder="station, halte of adres" HorizontalOptions="Fill"/>
+                        </Grid>
+
+                        <Label Text="Naar:" TextColor="#A0A0A0" FontSize="14" Margin="0,5,0,0" />
+
+                        <Grid VerticalOptions="Center">
+                            <Entry Placeholder="station, halte of adres" HorizontalOptions="Fill"/>
+                        </Grid>
+                    </VerticalStackLayout>
+
+                    <!-- Swap Button -->
+                    <Border Grid.Column="1" 
+                        BackgroundColor="#5AA2F0" 
+                        WidthRequest="50" 
+                        HeightRequest="50" 
+                        VerticalOptions="Center">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="25" />
+                        </Border.StrokeShape>
+                        <Label Text="↑↓" 
+                            TextColor="Black" 
+                            FontSize="24" 
+                            HorizontalOptions="Center" 
+                            VerticalOptions="Center" />
+                    </Border>
+                </Grid>
+
+                <!-- Departure & Filters Section -->
+                <Grid Grid.Row="1" ColumnDefinitions="*, Auto" Padding="15,0,15,15">
+                    <VerticalStackLayout Grid.Column="0" Spacing="2">
+                        <Label Text="Vertrek:" TextColor="#A0A0A0" FontSize="14" />
+                        <HorizontalStackLayout Spacing="8">
+                            <!-- Calendar Icon placeholder -->
+                            <Label Text="📅" TextColor="#5AA2F0" FontSize="16" VerticalOptions="Center" />
+                            <Label Text="vandaag" TextColor="White" FontSize="16" FontAttributes="Bold" VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+
+                    <!-- Filters Button -->
+                    <Border Grid.Column="1" BackgroundColor="#5AA2F0" Padding="12,8">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="20" />
+                        </Border.StrokeShape>
+                        <HorizontalStackLayout Spacing="8">
+                            <Label Text="⚙" TextColor="Black" FontSize="16" VerticalOptions="Center" />
+                            <Label Text="Selecteer Datum" TextColor="Black" FontAttributes="Bold" VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                    </Border>
+                </Grid>
+
+                <!-- Zoeken Button -->
+                <Button Grid.Row="2" 
+                    Text="Kopen" 
+                    BackgroundColor="#E86A22" 
+                    TextColor="White" 
+                    FontAttributes="Bold" 
+                    FontSize="18" 
+                    CornerRadius="0" 
+                    HeightRequest="55" />
+            </Grid>
+        </Border>
+
+        <!-- 4. Bottom Navigation Bar -->
+        <!-- We use a Grid to allow the pink FAB to overlap the top edge of the nav bar -->
+        <Grid Grid.Row="3" VerticalOptions="End" Margin="0,20,0,0">
+
+            <!-- Background Bar -->
+            <Border BackgroundColor="#1C1C1E" 
+                StrokeThickness="0" 
+                HeightRequest="70" 
+                VerticalOptions="End">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="25,25,0,0" />
+                </Border.StrokeShape>
+
+                <!-- Nav Icons -->
+                <Grid ColumnDefinitions="*, *, *, *, *" Padding="10,0">
+                    <!-- Home (Selected) -->
+                    <Label Grid.Column="0" Text="🏠" TextColor="#5AA2F0" FontSize="24" HorizontalOptions="Center" VerticalOptions="Center" />
+                    <!-- Star -->
+                    <Label Grid.Column="1" Text="☆" TextColor="White" FontSize="24" HorizontalOptions="Center" VerticalOptions="Center" />
+                    <!-- Empty space for FAB -->
+                    <BoxView Grid.Column="2" Color="Transparent" />
+                    <!-- Ticket -->
+                    <Label Grid.Column="3" Text="🎫" TextColor="White" FontSize="24" HorizontalOptions="Center" VerticalOptions="Center" />
+                    <!-- Profile -->
+                    <Label Grid.Column="4" Text="👤" TextColor="White" FontSize="24" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <!-- Floating Action Button (Pink) -->
+            <Border BackgroundColor="#F23B79" 
+                WidthRequest="65" 
+                HeightRequest="65" 
+                HorizontalOptions="Center" 
+                VerticalOptions="Start"
+                Margin="0,-35,0,0"
+                ZIndex="1">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="32.5" />
+                </Border.StrokeShape>
+                <Label Text="🛍" TextColor="White" FontSize="26" HorizontalOptions="Center" VerticalOptions="Center" />
+            </Border>
+        </Grid>
+
+    </Grid>
+</ContentPage>
