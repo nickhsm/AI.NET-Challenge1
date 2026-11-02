@@ -16,16 +16,28 @@ public class ScanListViewModel : ObservableObject, IScanListViewModel
     }
 
     public ICommand ScanQrCodeCommand { get; set; }
-    // public ICommand ScanFaceCommand { get; set; }
-    // public ICommand ScanIdCommand { get; set; }
+    public ICommand ScanFaceCommand { get; set; }
+    public ICommand ScanIdCommand { get; set; }
 
     private void BindCommands()
     {
         ScanQrCodeCommand = new AsyncRelayCommand(GoToScanQrCode);
+        ScanFaceCommand = new AsyncRelayCommand(GoToScanFace);
+        ScanIdCommand = new AsyncRelayCommand(GoToScanId);
     }
 
     private async Task GoToScanQrCode()
     {
         await _navigationService.NavigateToScanQrCodePageAsync();
+    }
+
+    private async Task GoToScanFace()
+    {
+        await _navigationService.NavigateToScanFacePageAsync();
+    }
+
+    private async Task GoToScanId()
+    {
+        await _navigationService.NavigateToScanIdPageAsync();
     }
 }

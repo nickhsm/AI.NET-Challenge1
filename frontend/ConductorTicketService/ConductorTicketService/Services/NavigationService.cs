@@ -4,7 +4,7 @@ namespace ConductorTicketService.Services;
 
 public class NavigationService : INavigationService
 {
-    private INavigation _navigation;
+    private readonly INavigation _navigation;
     private readonly IServiceProvider _serviceProvider;
 
     public NavigationService(IServiceProvider serviceProvider)
@@ -16,6 +16,16 @@ public class NavigationService : INavigationService
     public async Task NavigateToScanQrCodePageAsync()
     {
         await _navigation.PushAsync(_serviceProvider.GetRequiredService<QrCodePage>());
+    }
+
+    public async Task NavigateToScanFacePageAsync()
+    {
+        await _navigation.PushAsync(_serviceProvider.GetRequiredService<FacePage>());
+    }
+
+    public async Task NavigateToScanIdPageAsync()
+    {
+        await _navigation.PushAsync(_serviceProvider.GetRequiredService<IdPage>());
     }
 
     public async Task NavigateBackAsync()
