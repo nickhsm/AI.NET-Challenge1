@@ -30,6 +30,9 @@ public static class MauiProgram
         builder.Services.AddTransient<QrCodePage>();
         builder.Services.AddTransient<IQrCodeViewModel, QrCodeViewModel>();
 
+        builder.Services.AddTransient<FacePage>();
+        builder.Services.AddTransient<IFaceViewModel, FaceViewModel>();
+
         return builder.Build();
     }
 }

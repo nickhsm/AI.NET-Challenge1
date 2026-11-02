@@ -7,7 +7,7 @@
              x:Class="ConductorTicketService.Views.ScanListPage">
     <VerticalStackLayout Spacing="10" Padding="20">
         <Button Text="Scan QR Code" Command="{Binding ScanQrCodeCommand}" />
-        <Button Text="Scan Face" />
+        <Button Text="Scan Face" Command="{Binding ScanFaceCommand}" />
         <Button Text="Scan Id" />
     </VerticalStackLayout>
 </ContentPage>
