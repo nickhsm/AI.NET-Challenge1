@@ -23,6 +23,11 @@ public class NavigationService : INavigationService
         await _navigation.PushAsync(_serviceProvider.GetRequiredService<FacePage>());
     }
 
+    public async Task NavigateToScanIdPageAsync()
+    {
+        await _navigation.PushAsync(_serviceProvider.GetRequiredService<IdPage>());
+    }
+
     public async Task NavigateBackAsync()
     {
         if (_navigation.NavigationStack.Count > 1)

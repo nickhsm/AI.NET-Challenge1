@@ -4,6 +4,6 @@ public interface INavigationService
 {
     Task NavigateToScanQrCodePageAsync();
     Task NavigateToScanFacePageAsync();
-    // Task NavigateToScanIdPageAsync();
+    Task NavigateToScanIdPageAsync();
     Task NavigateBackAsync();
 }

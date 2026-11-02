@@ -6,5 +6,5 @@ public interface IScanListViewModel
 {
     ICommand ScanQrCodeCommand { get; set; }
     ICommand ScanFaceCommand { get; set; }
-    // ICommand ScanIdCommand { get; set; }
+    ICommand ScanIdCommand { get; set; }
 }
