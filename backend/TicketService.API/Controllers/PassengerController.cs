@@ -7,7 +7,7 @@ using TicketService.Infrastructure.Services;
 
 namespace TicketService.API.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/passenger")]
 [ApiController]
 public class PassengerController : ControllerBase
 {
@@ -20,7 +20,7 @@ public class PassengerController : ControllerBase
         _passengerRepository = passengerRepository;
     }
 
-    [HttpPost("register/face/{id}")]
+    [HttpPost("{id}/face")]
     public async Task<ActionResult<PassengerFaceDto>> RegisterFace(int id,
         IFormFile photo)
     {
@@ -65,5 +65,32 @@ public class PassengerController : ControllerBase
         PassengerFaceDto mappedResult = PassengerMapper.ToPassengerFaceDto(personId.ToString());
 
         return Ok(mappedResult);
+    }
+
+    [HttpDelete("{id}/face")]
+    public async Task<ActionResult> UnregisterFace(int id)
+    {
+        var passenger = await _passengerRepository.GetPassengerById(id);
+        if (passenger is null)
+        {
+            return NotFound("Passenger does not exist.");
+        }
+
+        if (passenger.FacePersonId is null)
+        {
+            return BadRequest("Passenger does not have a face registered.");
+        }
+
+        try
+        {
+            await _faceRecognitionService.DeleteAsync(passenger.FacePersonId.Value);
+        }
+        catch (AzureServiceException ex)
+        {
+            return StatusCode(StatusCodes.Status502BadGateway, ex.Message);
+        }
+        await _passengerRepository.UnregisterFace(id);
+
+        return Ok();
     }
 }
