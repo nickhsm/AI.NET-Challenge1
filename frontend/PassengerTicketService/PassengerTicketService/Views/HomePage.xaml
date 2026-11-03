@@ -109,7 +109,7 @@
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="25,25,0,0" />
                 </Border.StrokeShape>
-                
+
                 <!-- Nav Icons -->
                 <Grid ColumnDefinitions="*, *, *" Padding="10,0">
                     <!-- Home (Selected) -->
@@ -134,10 +134,8 @@
                           HeightRequest="24"
                           HorizontalOptions="Center"
                           VerticalOptions="Center" />
-                    </Grid>
+                </Grid>
             </Border>
-
-            <!-- Floating Action Button (Orange) -->
 
             <!-- Floating Action Button (Orange) -->
             <Border BackgroundColor="#E86A22"

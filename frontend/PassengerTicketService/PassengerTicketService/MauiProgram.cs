@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using PassengerTicketService.Services;
 
 namespace PassengerTicketService;
 
@@ -18,6 +19,8 @@ public static class MauiProgram
 #if DEBUG
         builder.Logging.AddDebug();
 #endif
+
+        builder.Services.AddSingleton<INavigationService, NavigationService>();
 
         return builder.Build();
     }
