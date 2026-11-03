@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -77,6 +78,12 @@ public class FaceRecognitionService : IFaceRecognitionService
         string deletePersonUrl = $"/face/v1.2/largepersongroups/{_groupId}/persons/{personId}";
 
         var responseDeletePerson = await _httpClient.DeleteAsync(deletePersonUrl);
+
+        // We can continue because there is nothing to do.
+        if (responseDeletePerson.StatusCode == HttpStatusCode.NotFound)
+        {
+            return;
+        }
 
         if (!responseDeletePerson.IsSuccessStatusCode)
         {

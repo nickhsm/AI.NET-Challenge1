@@ -38,4 +38,17 @@ public class PassengerRepository : IPassengerRepository
         passenger.FacePersonId = azureFaceId;
         _context.SaveChanges();
     }
+
+    public async Task UnregisterFace(int passengerId)
+    {
+        var passenger = await _context.Passengers.FindAsync(passengerId);
+
+        if (passenger == null)
+        {
+            throw new InvalidOperationException($"Passenger with id {passengerId} not found.");
+        }
+
+        passenger.FacePersonId = null;
+        await _context.SaveChangesAsync();
+    }
 }
