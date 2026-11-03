@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TicketService.Infrastructure.DbContexts;
+using TicketService.Infrastructure.Repositories;
 using TicketService.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +22,9 @@ builder.Services.AddHttpClient<IFaceRecognitionService, FaceRecognitionService>(
             "Ocp-Apim-Subscription-Key", builder.Configuration["Face:ApiKey"]);
     }
 );
+
+// Repositories
+builder.Services.AddScoped<IPassengerRepository, PassengerRepository>();
 
 var app = builder.Build();
 
