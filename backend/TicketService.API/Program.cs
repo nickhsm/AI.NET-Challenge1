@@ -9,6 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+// Swagger
+builder.Services.AddSwaggerGen();
+
 // Database
 builder.Services.AddDbContext<TicketServiceDbContext>(dbContectOption =>
     dbContectOption.UseNpgsql(
@@ -34,7 +37,8 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
