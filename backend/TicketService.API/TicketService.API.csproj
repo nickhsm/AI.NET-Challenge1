@@ -16,6 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\TicketService.Contracts\TicketService.Contracts.csproj" />
       <ProjectReference Include="..\TicketService.Infrastructure\TicketService.Infrastructure.csproj" />
     </ItemGroup>
 
