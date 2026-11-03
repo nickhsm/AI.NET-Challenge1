@@ -67,6 +67,9 @@ namespace TicketService.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Guid?>("FacePersonId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("FirstName")
                         .HasColumnType("text");
 
