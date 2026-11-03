@@ -15,6 +15,10 @@ public class Passenger : IUser
     public string? FirstName { get; set; }
     public string? Surname { get; set; }
     public DateOnly? DateOfBirth { get; set; }
+    // This is for Azure Face API.
+    // The Id here is for out database.
+    // The FacePersonId is the Id that Azure gives for a face when the user uploads there picture.
+    public Guid? FacePersonId { get; set; }
     
     public ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
 
