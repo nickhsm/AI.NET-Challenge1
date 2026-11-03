@@ -80,7 +80,7 @@
       <MauiXaml Update="Views\HomePage.xaml">
         <Generator>MSBuild:Compile</Generator>
       </MauiXaml>
-      <MauiXaml Update="Views\TicketsPage.xaml">
+      <MauiXaml Update="Views\ShoppingCartPage.xaml">
         <Generator>MSBuild:Compile</Generator>
       </MauiXaml>
     </ItemGroup>
