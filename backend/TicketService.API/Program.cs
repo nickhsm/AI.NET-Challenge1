@@ -26,6 +26,9 @@ builder.Services.AddHttpClient<IFaceRecognitionService, FaceRecognitionService>(
 // Repositories
 builder.Services.AddScoped<IPassengerRepository, PassengerRepository>();
 
+// Controllers
+builder.Services.AddControllers();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -35,5 +38,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.MapControllers();
 
 app.Run();
