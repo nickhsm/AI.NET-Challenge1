@@ -82,6 +82,12 @@ namespace TicketService.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("FacePersonId")
+                        .IsUnique();
+
                     b.ToTable("Passengers");
                 });
 
@@ -147,6 +153,9 @@ namespace TicketService.Infrastructure.Migrations
 
                     b.Property<int>("StartingStationId")
                         .HasColumnType("integer");
+
+                    b.Property<bool>("Used")
+                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 
