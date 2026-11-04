@@ -54,7 +54,8 @@ namespace PassengerTicketService.Services
             var parameters = new Dictionary<string, object> { { "TravelRequest", request } };
 
             // 3. Kijk of de pagina de data kan ontvangen (via IQueryAttributable)
-            if (page is IQueryAttributable queryAttributable)
+            // Kijk naar de BindingContext (het ViewModel) in plaats van de Page
+            if (page.BindingContext is IQueryAttributable queryAttributable)
                 queryAttributable.ApplyQueryAttributes(parameters);
 
             // 4. Navigeer naar de pagina
