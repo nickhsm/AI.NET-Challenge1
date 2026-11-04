@@ -1,9 +1,12 @@
+using PassengerTicketService.ViewModels;
+
 namespace PassengerTicketService.Views;
 
 public partial class HomePage : ContentPage
 {
-	public HomePage()
+	public HomePage(IHomeViewModel viewModel)
 	{
 		InitializeComponent();
+		BindingContext = viewModel;
 	}
 }

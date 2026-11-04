@@ -2,6 +2,8 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PassengerTicketService.Views.HomePage"
+             xmlns:viewModels="clr-namespace:PassengerTicketService.ViewModels"
+             x:DataType="viewModels:IHomeViewModel"
              BackgroundColor="#101010"
              Shell.NavBarIsVisible="False"
              Title="HomePage">
@@ -35,13 +37,23 @@
                         <Label Text="Van:" TextColor="#A0A0A0" FontSize="14" />
 
                         <Grid VerticalOptions="Center">
-                            <Entry Placeholder="station, halte of adres" HorizontalOptions="Fill"/>
+                            <!-- Bind aan StartStation -->
+                            <Entry Placeholder="station, halte of adres" 
+                                   Text="{Binding StartStation}" 
+                                   TextColor="White" 
+                                   PlaceholderColor="#888888"
+                                   HorizontalOptions="Fill"/>
                         </Grid>
 
                         <Label Text="Naar:" TextColor="#A0A0A0" FontSize="14" Margin="0,5,0,0" />
 
                         <Grid VerticalOptions="Center">
-                            <Entry Placeholder="station, halte of adres" HorizontalOptions="Fill"/>
+                            <!-- Bind aan EndStation -->
+                            <Entry Placeholder="station, halte of adres" 
+                                   Text="{Binding EndStation}" 
+                                   TextColor="White"
+                                   PlaceholderColor="#888888"
+                                   HorizontalOptions="Fill"/>
                         </Grid>
                     </VerticalStackLayout>
 
@@ -88,6 +100,7 @@
                 <!-- Zoeken Button -->
                 <Button Grid.Row="2" 
                     Text="Kopen" 
+                    Command="{Binding BuyTicketCommand}" 
                     BackgroundColor="#E86A22" 
                     TextColor="White" 
                     FontAttributes="Bold" 
