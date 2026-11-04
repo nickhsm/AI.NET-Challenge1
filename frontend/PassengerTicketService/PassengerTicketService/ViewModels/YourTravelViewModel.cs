@@ -17,6 +17,7 @@ namespace PassengerTicketService.ViewModels
         private TravelRequest currentRequest = new TravelRequest();
 
         public ICommand ConfirmTravelCommand { get; set; }
+        public ICommand NavigateBackCommand { get; set; }
 
         public YourTravelViewModel(INavigationService navigationService)
         {
@@ -36,6 +37,7 @@ namespace PassengerTicketService.ViewModels
         private void BindCommands()
         {
             ConfirmTravelCommand = new AsyncRelayCommand(GoToShoppingCart);
+            NavigateBackCommand = new AsyncRelayCommand(_navigationService.NavigateBackAsync);
         }
 
         private async Task GoToShoppingCart()

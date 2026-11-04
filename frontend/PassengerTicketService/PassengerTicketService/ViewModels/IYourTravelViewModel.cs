@@ -7,5 +7,6 @@ namespace PassengerTicketService.ViewModels
     {
         TravelRequest CurrentRequest { get; set; }
         ICommand ConfirmTravelCommand { get; set; }
+        ICommand NavigateBackCommand { get; set; }
     }
 }

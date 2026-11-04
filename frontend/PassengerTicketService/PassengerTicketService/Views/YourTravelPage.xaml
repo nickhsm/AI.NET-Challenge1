@@ -12,68 +12,87 @@
 
         <!-- 1. Header -->
         <Grid Grid.Row="0" ColumnDefinitions="Auto, *" Margin="0,0,0,20">
-            <Label Text="←" TextColor="White" FontSize="24" VerticalOptions="Center" Margin="0,0,15,0" />
-            <Label Grid.Column="1" Text="Jouw reis" TextColor="White" FontSize="20" FontAttributes="Bold" VerticalOptions="Center" />
+
+            <!-- Klikbare pijl (Groter klikvlak door de Grid) -->
+            <Grid Grid.Column="0" WidthRequest="40" HeightRequest="40" HorizontalOptions="Start" VerticalOptions="Center">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding NavigateBackCommand}" />
+                </Grid.GestureRecognizers>
+                <Label Text="←" TextColor="White" FontSize="24" HorizontalOptions="Center" VerticalOptions="Center" />
+            </Grid>
+
+            <!-- Titel (Zelfde stijl als HomePage) -->
+            <Label Grid.Column="1" Text="Jouw reis" TextColor="White" FontSize="22" FontAttributes="Bold" VerticalOptions="Center" />
         </Grid>
 
         <!-- 2. Scrollbare inhoud -->
         <ScrollView Grid.Row="1" VerticalScrollBarVisibility="Never">
             <VerticalStackLayout Spacing="20" Padding="0,0,0,20">
 
-                <!-- Reis Kaart (Van/Naar) -->
+                <!-- Reis Kaart (Van/Naar) - HomePage Stijl -->
                 <Border BackgroundColor="#2B2B2B" StrokeThickness="0">
                     <Border.StrokeShape>
                         <RoundRectangle CornerRadius="12" />
                     </Border.StrokeShape>
 
                     <Grid RowDefinitions="Auto, Auto">
-                        <!-- Bovenste deel: Van & Naar -->
+
+                        <!-- Van / Naar Section -->
                         <Grid Grid.Row="0" ColumnDefinitions="*, Auto" Padding="15,20,15,15">
 
-                            <!-- Route: iconen en tekst -->
-                            <Grid Grid.Column="0" ColumnDefinitions="Auto, *" RowDefinitions="Auto, Auto, Auto" ColumnSpacing="15">
+                            <!-- Input Fields -->
+                            <VerticalStackLayout Grid.Column="0" Spacing="10">
+                                <Label Text="Van:" TextColor="#A0A0A0" FontSize="14" />
 
-                                <!-- Van -->
-                                <Ellipse Grid.Row="0" Grid.Column="0" Fill="Transparent" Stroke="#5AA2F0" StrokeThickness="3" WidthRequest="18" HeightRequest="18" VerticalOptions="Start" Margin="0,5,0,0"/>
-                                <VerticalStackLayout Grid.Row="0" Grid.Column="1" Spacing="2">
-                                    <Label Text="Van:" TextColor="#A0A0A0" FontSize="12" />
-                                    <Label Text="{Binding CurrentRequest.StartStation, TargetNullValue='...'}" TextColor="White" FontSize="16" FontAttributes="Bold" />
-                                </VerticalStackLayout>
+                                <Grid VerticalOptions="Center">
+                                    <!-- Bind aan CurrentRequest.StartStation -->
+                                    <Entry Placeholder="station, halte of adres" 
+                                           Text="{Binding CurrentRequest.StartStation}" 
+                                           TextColor="White" 
+                                           PlaceholderColor="#888888"
+                                           HorizontalOptions="Fill"/>
+                                </Grid>
 
-                                <!-- Lijn -->
-                                <BoxView Grid.Row="1" Grid.Column="0" Color="#5AA2F0" WidthRequest="2" HeightRequest="25" HorizontalOptions="Center" Margin="0,2,0,2" />
+                                <Label Text="Naar:" TextColor="#A0A0A0" FontSize="14" Margin="0,5,0,0" />
 
-                                <!-- Naar -->
-                                <Ellipse Grid.Row="2" Grid.Column="0" Fill="Transparent" Stroke="#5AA2F0" StrokeThickness="2" WidthRequest="18" HeightRequest="18" VerticalOptions="Start" Margin="0,5,0,0"/>
-                                <VerticalStackLayout Grid.Row="2" Grid.Column="1" Spacing="2">
-                                    <Label Text="Naar:" TextColor="#A0A0A0" FontSize="12" />
-                                    <Label Text="{Binding CurrentRequest.EndStation, TargetNullValue='...'}" TextColor="White" FontSize="16" FontAttributes="Bold" />
-                                </VerticalStackLayout>
-                            </Grid>
+                                <Grid VerticalOptions="Center">
+                                    <!-- Bind aan CurrentRequest.EndStation -->
+                                    <Entry Placeholder="station, halte of adres" 
+                                           Text="{Binding CurrentRequest.EndStation}" 
+                                           TextColor="White"
+                                           PlaceholderColor="#888888"
+                                           HorizontalOptions="Fill"/>
+                                </Grid>
+                            </VerticalStackLayout>
 
-                            <!-- Swap Knop -->
-                            <Border Grid.Column="1" BackgroundColor="#5AA2F0" WidthRequest="45" HeightRequest="45" VerticalOptions="Center" HorizontalOptions="End">
+                            <!-- Swap Button -->
+                            <Border Grid.Column="1" 
+                                    BackgroundColor="#5AA2F0" 
+                                    WidthRequest="50" 
+                                    HeightRequest="50" 
+                                    VerticalOptions="Center">
                                 <Border.StrokeShape>
-                                    <RoundRectangle CornerRadius="22.5" />
+                                    <RoundRectangle CornerRadius="25" />
                                 </Border.StrokeShape>
-                                <Label Text="↑↓" TextColor="Black" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center" />
+                                <Label Text="↑↓" 
+                                       TextColor="Black" 
+                                       FontSize="24" 
+                                       HorizontalOptions="Center" 
+                                       VerticalOptions="Center" />
                             </Border>
                         </Grid>
 
-                        <!-- Onderste deel: Vertrek datum -->
-                        <Border Grid.Row="1" Padding="15,15" BackgroundColor="#222222">
-                            <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="0,0,12,12" />
-                            </Border.StrokeShape>
-                            <HorizontalStackLayout Spacing="15">
-                                <!-- Kalender Icoon (Unicode placeholder) -->
-                                <Label Text="📅" TextColor="#5AA2F0" FontSize="22" VerticalOptions="Center" />
-                                <VerticalStackLayout Spacing="2">
-                                    <Label Text="Vertrek:" TextColor="#A0A0A0" FontSize="12" />
-                                    <Label Text="vandaag" TextColor="White" FontSize="16" FontAttributes="Bold" />
-                                </VerticalStackLayout>
-                            </HorizontalStackLayout>
-                        </Border>
+                        <!-- Departure Section (Zonder de filters knop) -->
+                        <Grid Grid.Row="1" ColumnDefinitions="*" Padding="15,0,15,15">
+                            <VerticalStackLayout Grid.Column="0" Spacing="2">
+                                <Label Text="Vertrek:" TextColor="#A0A0A0" FontSize="14" />
+                                <HorizontalStackLayout Spacing="8">
+                                    <Label Text="📅" TextColor="#5AA2F0" FontSize="16" VerticalOptions="Center" />
+                                    <Label Text="vandaag" TextColor="White" FontSize="16" FontAttributes="Bold" VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+                        </Grid>
+
                     </Grid>
                 </Border>
 
