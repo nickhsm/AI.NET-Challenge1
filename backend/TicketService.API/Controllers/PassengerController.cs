@@ -13,30 +13,44 @@ public class PassengerController : ControllerBase
 {
     private IFaceRecognitionService _faceRecognitionService;
     private IPassengerRepository _passengerRepository;
+    private ITicketRepository _ticketRepository;
 
-    public PassengerController(IFaceRecognitionService faceRecognitionService, IPassengerRepository passengerRepository)
+    public PassengerController(IFaceRecognitionService faceRecognitionService, IPassengerRepository passengerRepository,
+        ITicketRepository ticketRepository)
     {
         _faceRecognitionService = faceRecognitionService;
         _passengerRepository = passengerRepository;
+        _ticketRepository = ticketRepository;
+    }
+
+    private ActionResult? ValidatePhoto(IFormFile photo)
+    {
+        string[] allowedImageTypes = ["image/jpeg", "image/png"];
+
+        if (!allowedImageTypes.Contains(photo.ContentType))
+        {
+            return StatusCode(StatusCodes.Status415UnsupportedMediaType, "The file must be a jpg or png image.");
+        }
+
+        if (photo.Length > 6 * 1024 * 1024)
+        {
+            return StatusCode(StatusCodes.Status413PayloadTooLarge, "The file must be less than 6 MB.");
+        }
+
+        return null;
     }
 
     [HttpPost("{id}/face")]
     public async Task<ActionResult<PassengerFaceDto>> RegisterFace(int id,
         IFormFile photo)
     {
-        string[] allowedImageTypes = ["image/jpeg", "image/png"];
-
-        if (!allowedImageTypes.Contains(photo.ContentType))
+        ActionResult? photoError = ValidatePhoto(photo);
+        if (photoError is not null)
         {
-            return BadRequest("The file must be a jpg or png image.");
+            return photoError;
         }
 
-        if (photo.Length > 6 * 1024 * 1024)
-        {
-            return BadRequest("The file must be less than 6 MB.");
-        }
-
-        var passenger = await _passengerRepository.GetPassengerById(id);
+        var passenger = await _passengerRepository.GetPassengerByIdAsync(id);
 
         if (passenger is null)
         {
@@ -48,11 +62,30 @@ public class PassengerController : ControllerBase
             return Conflict("This passenger already has a registered face.");
         }
 
-        await using var imageStream = photo.OpenReadStream();
+        // 1 person cannot register his face in more than 1 account.
+        try
+        {
+            await using var imageStream = photo.OpenReadStream();
+            Guid? existingPersonId = await _faceRecognitionService.IdentifyAsync(imageStream);
+
+            if (existingPersonId is not null)
+            {
+                return Conflict("This face is already registered on another account.");
+            }
+        }
+        catch (InvalidFaceCountException ex)
+        {
+            return UnprocessableEntity(ex.Message);
+        }
+        catch (AzureServiceException ex)
+        {
+            return StatusCode(StatusCodes.Status502BadGateway, ex.Message);
+        }
 
         Guid personId;
         try
         {
+            await using var imageStream = photo.OpenReadStream();
             personId = await _faceRecognitionService.EnrollAsync(imageStream);
         }
         catch (AzureServiceException exception)
@@ -64,13 +97,13 @@ public class PassengerController : ControllerBase
 
         PassengerFaceDto mappedResult = PassengerMapper.ToPassengerFaceDto(personId.ToString());
 
-        return Ok(mappedResult);
+        return StatusCode(StatusCodes.Status201Created, mappedResult);
     }
 
     [HttpDelete("{id}/face")]
     public async Task<ActionResult> UnregisterFace(int id)
     {
-        var passenger = await _passengerRepository.GetPassengerById(id);
+        var passenger = await _passengerRepository.GetPassengerByIdAsync(id);
         if (passenger is null)
         {
             return NotFound("Passenger does not exist.");
@@ -78,7 +111,7 @@ public class PassengerController : ControllerBase
 
         if (passenger.FacePersonId is null)
         {
-            return BadRequest("Passenger does not have a face registered.");
+            return NotFound("Passenger does not have a face registered.");
         }
 
         try
@@ -89,8 +122,56 @@ public class PassengerController : ControllerBase
         {
             return StatusCode(StatusCodes.Status502BadGateway, ex.Message);
         }
-        await _passengerRepository.UnregisterFace(id);
 
-        return Ok();
+        await _passengerRepository.UnregisterFaceAsync(id);
+
+        return NoContent();
+    }
+
+    [HttpPost("check-face")]
+    public async Task<ActionResult<CheckFaceDto>> CheckFace(IFormFile photo)
+    {
+        ActionResult? photoError = ValidatePhoto(photo);
+        if (photoError is not null)
+        {
+            return photoError;
+        }
+
+        // Needs refactor because the conductor cannot know which face a PassengerFaceId is.
+        // We need to be able to send an image with the user.
+        // So he can see the image and compare with the person standing in from of him.
+        await using var imageStream = photo.OpenReadStream();
+
+        Guid? facePersonId;
+        try
+        {
+            facePersonId = await _faceRecognitionService.IdentifyAsync(imageStream);
+        }
+        catch (AzureServiceException ex)
+        {
+            return StatusCode(StatusCodes.Status502BadGateway, ex.Message);
+        }
+        catch (InvalidFaceCountException ex)
+        {
+            return UnprocessableEntity(ex.Message);
+        }
+
+        if (facePersonId is null)
+        {
+            return NotFound("Face does not exist.");
+        }
+
+        var passenger = await _passengerRepository.GetPassengerByFacePersonIdAsync(facePersonId.Value);
+
+        if (passenger is null)
+        {
+            return NotFound("Passenger does not exist.");
+        }
+
+        bool hasTickets = await _ticketRepository.PassengerHasValidTicketAsync(facePersonId.Value);
+
+        CheckFaceDto mappedResponse = PassengerMapper.ToCheckFaceDto(passenger, hasTickets);
+
+        return Ok(mappedResponse);
     }
 }

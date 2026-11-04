@@ -10,12 +10,12 @@ public class StationTicket
     public int StationTicketId { get; set; }
     
     [Required]
-    [ForeignKey("StationId")]
+    [ForeignKey("Station")]
     public int StationId { get; set; }
     public Station? Station { get; set; }
     
     [Required]
-    [ForeignKey("TicketId")]
+    [ForeignKey("Ticket")]
     public int TicketId { get; set; }
     public Ticket? Ticket { get; set; }
 

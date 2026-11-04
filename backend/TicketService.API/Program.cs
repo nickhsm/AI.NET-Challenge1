@@ -28,6 +28,7 @@ builder.Services.AddHttpClient<IFaceRecognitionService, FaceRecognitionService>(
 
 // Repositories
 builder.Services.AddScoped<IPassengerRepository, PassengerRepository>();
+builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 
 // Controllers
 builder.Services.AddControllers();

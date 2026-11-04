@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using TicketService.Domain.Entities;
 using TicketService.Infrastructure.DbContexts;
 
@@ -12,9 +13,16 @@ public class PassengerRepository : IPassengerRepository
         _context = context;
     }
 
-    public async Task<Passenger?> GetPassengerById(int passengerId)
+    public async Task<Passenger?> GetPassengerByIdAsync(int passengerId)
     {
         var passenger = await _context.Passengers.FindAsync(passengerId);
+
+        return passenger;
+    }
+
+    public async Task<Passenger?> GetPassengerByFacePersonIdAsync(Guid facePersonId)
+    {
+        Passenger? passenger = await _context.Passengers.SingleOrDefaultAsync(p => p.FacePersonId == facePersonId);
 
         return passenger;
     }
@@ -39,7 +47,7 @@ public class PassengerRepository : IPassengerRepository
         _context.SaveChanges();
     }
 
-    public async Task UnregisterFace(int passengerId)
+    public async Task UnregisterFaceAsync(int passengerId)
     {
         var passenger = await _context.Passengers.FindAsync(passengerId);
 
