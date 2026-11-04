@@ -34,7 +34,7 @@ public static class MauiProgram
         // --- REGISTREER PAGES ---
         builder.Services.AddTransient<HomePage>();
         builder.Services.AddTransient<YourTravelPage>();
-        builder.Services.AddTransient<TicketsPage>();
+        builder.Services.AddTransient<ShoppingCartPage>();
 
         return builder.Build();
     }

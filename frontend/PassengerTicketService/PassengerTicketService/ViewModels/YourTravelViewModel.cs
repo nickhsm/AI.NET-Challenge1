@@ -14,7 +14,7 @@ namespace PassengerTicketService.ViewModels
         private readonly INavigationService _navigationService;
 
         [ObservableProperty]
-        private TravelRequest currentRequest;
+        private TravelRequest currentRequest = new TravelRequest();
 
         public ICommand ConfirmTravelCommand { get; set; }
 
