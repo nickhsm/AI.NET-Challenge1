@@ -1,4 +1,4 @@
-﻿using PassengerTicketService.Models;
+using PassengerTicketService.Models;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -11,6 +11,10 @@ namespace PassengerTicketService.ViewModels
         bool IsActiveTabSelected { get; set; }
         ICommand ShowActiveCommand { get; }
         ICommand ShowArchiveCommand { get; }
+
+        // Navbar-commands: Home-button to Home-page, FAB (train) to Ticket-page
+        ICommand NavigateHomeCommand { get; set; }
+        ICommand NavigateTicketsCommand { get; set; }
 
         Color ActiveTabColor { get; }
         Color ArchiveTabColor { get; }

@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PassengerTicketService.Models;
 using PassengerTicketService.Services;
@@ -17,6 +17,8 @@ namespace PassengerTicketService.ViewModels
         private string endStation;
 
         public ICommand BuyTicketCommand { get; set; }
+        public ICommand NavigateHomeCommand { get; set; }
+        public ICommand NavigateTicketsCommand { get; set; }
 
         public HomeViewModel(INavigationService navigationService)
         {
@@ -27,6 +29,11 @@ namespace PassengerTicketService.ViewModels
         private void BindCommands()
         {
             BuyTicketCommand = new AsyncRelayCommand(GoToYourTravelPage);
+
+            // Navbar: FAB (train) to de ticketpagina
+            NavigateTicketsCommand = new AsyncRelayCommand(_navigationService.NavigateToTicketsPageAsync);
+
+            NavigateHomeCommand = new RelayCommand(() => { });
         }
 
         private async Task GoToYourTravelPage()

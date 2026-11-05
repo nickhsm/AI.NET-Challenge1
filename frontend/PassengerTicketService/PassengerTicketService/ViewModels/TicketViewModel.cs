@@ -1,6 +1,7 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PassengerTicketService.Models;
+using PassengerTicketService.Services;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -8,6 +9,9 @@ namespace PassengerTicketService.ViewModels
 {
     public partial class TicketViewModel : ObservableObject, ITicketViewModel
     {
+        // Singleton van DI gebrunchnuukd voor de navbar te to the Home-page
+        private readonly INavigationService _navigationService;
+
         // Simulatie van alle opgehaalde tickets uit de API
         private List<PurchaseDisplayModel> _allPurchases = new();
 
@@ -17,18 +21,39 @@ namespace PassengerTicketService.ViewModels
         [ObservableProperty]
         private bool isActiveTabSelected = true;
 
+        // Observable → de bound XAML-colors refresh automatic when de tab switches
+        // (de computed getters van vor never notified: OnPropertyChanged on a
+        // non-observable getter is a nix-op, dus de tab-colors never refreshed)
+        [ObservableProperty]
+        private Color activeTabColor = Color.FromArgb("#5AA2F0");
+
+        [ObservableProperty]
+        private Color archiveTabColor = Color.FromArgb("#232325");
+
+        [ObservableProperty]
+        private Color activeTabTextColor = Color.FromArgb("#000000");
+
+        [ObservableProperty]
+        private Color archiveTabTextColor = Color.FromArgb("#FFFFFF");
+
         public ICommand ShowActiveCommand { get; }
         public ICommand ShowArchiveCommand { get; }
+        public ICommand NavigateHomeCommand { get; set; }
+        public ICommand NavigateTicketsCommand { get; set; }
 
-        public Color ActiveTabColor => IsActiveTabSelected ? Color.FromArgb("#5AA2F0") : Colors.Transparent;
-        public Color ArchiveTabColor => !IsActiveTabSelected ? Color.FromArgb("#5AA2F0") : Colors.Transparent;
-        public Color ActiveTabTextColor => IsActiveTabSelected ? Colors.Black : Colors.White;
-        public Color ArchiveTabTextColor => !IsActiveTabSelected ? Colors.Black : Colors.White;
-
-        public TicketViewModel()
+        public TicketViewModel(INavigationService navigationService)
         {
+            _navigationService = navigationService;
+
             ShowActiveCommand = new RelayCommand(() => SwitchTab(true));
             ShowArchiveCommand = new RelayCommand(() => SwitchTab(false));
+
+            // Navbar FAB to te Ticket-pagina: already here → nix-op, otherwise te die
+            // stack getsed a duplicate Ticket-page per tap
+            NavigateTicketsCommand = new RelayCommand(() => { });
+
+            // Navbar Home-ikoon → to the Home-page
+            NavigateHomeCommand = new AsyncRelayCommand(_navigationService.NavigateToHomePageAsync);
 
             LoadMockData();
             SwitchTab(true); // Start op 'Actief'
@@ -38,11 +63,11 @@ namespace PassengerTicketService.ViewModels
         {
             IsActiveTabSelected = showActive;
 
-            // Update UI kleuren
-            OnPropertyChanged(nameof(ActiveTabColor));
-            OnPropertyChanged(nameof(ArchiveTabColor));
-            OnPropertyChanged(nameof(ActiveTabTextColor));
-            OnPropertyChanged(nameof(ArchiveTabTextColor));
+            // Observable → de bound XAML-colors refresh automatic when de tab switches
+            ActiveTabColor = showActive ? Color.FromArgb("#5AA2F0") : Color.FromArgb("#232325");
+            ArchiveTabColor = showActive ? Color.FromArgb("#232325") : Color.FromArgb("#5AA2F0");
+            ActiveTabTextColor = showActive ? Color.FromArgb("#000000") : Color.FromArgb("#FFFFFF");
+            ArchiveTabTextColor = showActive ? Color.FromArgb("#FFFFFF") : Color.FromArgb("#000000");
 
             // Filter de tickets op basis van de API data
             var today = DateOnly.FromDateTime(DateTime.Today);
@@ -60,9 +85,12 @@ namespace PassengerTicketService.ViewModels
         // In je backend heb je 'Used'. Omdat de DTO dit mist, simuleren we het hier.
         private bool IsTicketUsed(TicketDisplayModel ticket)
         {
-            // In het echt haal je dit uit je backend Ticket entity (ticket.Used)
-            // Voor de demo gebruiken we de Guid als indicator (oneven = gebruikt)
-            return ticket.GuidQrCode.GetHashCode() % 2 == 0;
+            // Simulatie: een ticket is 'gebruwd' when its travel date already passed.
+            // De hash van het Guid is not deterministic per run: .NET randomiseiert per proces,
+            // wat maakt de Actief-list empty in ~75% van de runs.
+            // In de real app: take ticket.Used from de backend Ticket entity.
+            var today = DateOnly.FromDateTime(DateTime.Today);
+            return ticket.TravelDate < today;
         }
 
         // Tijdelijke data om de UI te testen

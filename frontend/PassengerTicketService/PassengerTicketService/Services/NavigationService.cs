@@ -1,4 +1,4 @@
-﻿using PassengerTicketService.Models;
+using PassengerTicketService.Models;
 using PassengerTicketService.Views;
 
 namespace PassengerTicketService.Services
@@ -38,9 +38,21 @@ namespace PassengerTicketService.Services
             await Shell.Current.Navigation.PushAsync(page);
         }
 
-        public Task NavigateToTicketsPageAsync()
+        // Navbar 'Tickets'-button: haal de TicketPage uit de DI-container.
+        // NB: because AddTransient gebuild a new page object (with a new ViewModel) per push,
+        // de ViewModel always gets de BindingContext of a new ViewModel.
+        public async Task NavigateToTicketsPageAsync()
         {
-            throw new NotImplementedException();
+            var page = _serviceProvider.GetRequiredService<TicketPage>();
+            await Shell.Current.Navigation.PushAsync(page);
+        }
+
+        // Navbar 'Home'-button: HomePage heeft geen data te pass along, dus no
+        // ApplyQueryAttributes-call is needed.
+        public async Task NavigateToHomePageAsync()
+        {
+            var page = _serviceProvider.GetRequiredService<HomePage>();
+            await Shell.Current.Navigation.PushAsync(page);
         }
 
         // FIX: Gecorrigeerd naar IQueryAttributable in plaats van concrete ViewModel
