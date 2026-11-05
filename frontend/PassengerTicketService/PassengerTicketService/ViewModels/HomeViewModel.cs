@@ -19,6 +19,7 @@ namespace PassengerTicketService.ViewModels
         public ICommand BuyTicketCommand { get; set; }
         public ICommand NavigateHomeCommand { get; set; }
         public ICommand NavigateTicketsCommand { get; set; }
+        public ICommand NavigateProfileCommand { get; set; }
 
         public HomeViewModel(INavigationService navigationService)
         {
@@ -34,6 +35,8 @@ namespace PassengerTicketService.ViewModels
             NavigateTicketsCommand = new AsyncRelayCommand(_navigationService.NavigateToTicketsPageAsync);
 
             NavigateHomeCommand = new RelayCommand(() => { });
+            
+            NavigateProfileCommand = new AsyncRelayCommand(_navigationService.NavigateToProfilePageAsync);
         }
 
         private async Task GoToYourTravelPage()
