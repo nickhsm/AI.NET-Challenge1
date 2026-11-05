@@ -18,6 +18,8 @@ namespace PassengerTicketService.ViewModels
 
         public ICommand ConfirmTravelCommand { get; set; }
         public ICommand NavigateBackCommand { get; set; }
+        public ICommand SelectSingleTripCommand { get; set; }
+        public ICommand SelectRoundTripCommand { get; set; }
 
         public YourTravelViewModel(INavigationService navigationService)
         {
@@ -38,6 +40,8 @@ namespace PassengerTicketService.ViewModels
         {
             ConfirmTravelCommand = new AsyncRelayCommand(GoToShoppingCart);
             NavigateBackCommand = new AsyncRelayCommand(_navigationService.NavigateBackAsync);
+            SelectSingleTripCommand = new RelayCommand(() => CurrentRequest.IsRoundTrip = false);
+            SelectRoundTripCommand = new RelayCommand(() => CurrentRequest.IsRoundTrip = true);
         }
 
         private async Task GoToShoppingCart()
