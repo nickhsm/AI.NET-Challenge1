@@ -40,7 +40,8 @@ namespace PassengerTicketService.ViewModels
                 StartStation = StartStation.ToUpper(),
                 EndStation = EndStation.ToUpper(),
                 PassengerCount = 1,     // Standaard 1 passagier
-                IsRoundTrip = false     // Standaard enkele reis
+                IsRoundTrip = false,    // Standaard enkele reis
+                ExpirationDate = DateOnly.FromDateTime(DateTime.Today)
             };
 
             // Navigeer en geef de request mee via de NavigationService

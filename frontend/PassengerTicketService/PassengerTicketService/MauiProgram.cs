@@ -29,7 +29,7 @@ public static class MauiProgram
         // Koppel de Interface aan de class
         builder.Services.AddTransient<IHomeViewModel, HomeViewModel>();
         builder.Services.AddTransient<IYourTravelViewModel, YourTravelViewModel>();
-        // Voeg hier later ook de ShoppingCartViewModel en TicketsViewModel toe
+        builder.Services.AddTransient<IShoppingCartViewModel, ShoppingCartViewModel>();
 
         // --- REGISTREER PAGES ---
         builder.Services.AddTransient<HomePage>();
