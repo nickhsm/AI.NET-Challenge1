@@ -12,6 +12,12 @@ namespace PassengerTicketService.Services
             _serviceProvider = serviceProvider;
         }
 
+        public async Task NavigateToProfilePageAsync()
+        {
+            var page = _serviceProvider.GetRequiredService<ProfilePage>();
+            await Shell.Current.Navigation.PushAsync(page);
+        }
+
         public async Task NavigateBackAsync()
         {
             // Gebruik Shell.Current direct, dit voorkomt de null-waarschuwing in de constructor

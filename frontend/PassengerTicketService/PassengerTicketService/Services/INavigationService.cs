@@ -11,6 +11,7 @@ namespace PassengerTicketService.Services
         Task NavigateToShoppingCartPageAsync(TravelRequest request);
         Task NavigateToTicketsPageAsync();
         Task NavigateToHomePageAsync();
+        Task NavigateToProfilePageAsync();
         Task NavigateBackAsync();
     }
 }

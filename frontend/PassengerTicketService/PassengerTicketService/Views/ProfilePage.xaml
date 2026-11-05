@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:PassengerTicketService.ViewModels"
+             x:Class="PassengerTicketService.Views.ProfilePage"
+             x:DataType="viewModels:IProfileViewModel"
+             BackgroundColor="#101010"
+             Shell.NavBarIsVisible="False">
+
+    <!-- Hoofd Grid: Header, Content, NavBar -->
+    <Grid RowDefinitions="Auto, *, Auto">
+
+        <!-- 1. HEADER -->
+        <Label Grid.Row="0" 
+               Text="Profiel" 
+               TextColor="White" 
+               FontSize="22" 
+               Margin="20,40,20,15" 
+               VerticalOptions="Center" />
+
+        <!-- 2. CONTENT -->
+        <VerticalStackLayout Grid.Row="1" Padding="20,20,20,0" Spacing="20" VerticalOptions="Start">
+            
+            <!-- Welkom Titel -->
+            <Label Text="Welkom!" 
+                   TextColor="White" 
+                   FontSize="24" 
+                   FontAttributes="Bold" 
+                   HorizontalOptions="Center" 
+                   Margin="0,20,0,10" />
+
+            <!-- Subtitel -->
+            <Label Text="Meld u aan of maak een account aan om toegang te krijgen tot onze diensten." 
+                   TextColor="#A0A0A0" 
+                   FontSize="15" 
+                   HorizontalTextAlignment="Center" 
+                   LineHeight="1.3" 
+                   Margin="10,0,10,20" />
+
+            <!-- Aanmelden Knop (Oranje) -->
+            <Button Text="Aanmelden" 
+                    Command="{Binding LoginCommand}"
+                    BackgroundColor="#E86A22" 
+                    TextColor="White" 
+                    FontAttributes="Bold" 
+                    FontSize="16"
+                    CornerRadius="8" 
+                    HeightRequest="55" />
+
+            <!-- Account aanmaken Knop (Blauwe Rand) -->
+            <Border Stroke="#5AA2F0" 
+                    StrokeThickness="2" 
+                    BackgroundColor="Transparent" 
+                    HeightRequest="55"
+                    Margin="0,5,0,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="8" />
+                </Border.StrokeShape>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding RegisterCommand}" />
+                </Border.GestureRecognizers>
+                <Label Text="Account aanmaken" 
+                       TextColor="#5AA2F0" 
+                       FontAttributes="Bold" 
+                       FontSize="16" 
+                       HorizontalOptions="Center" 
+                       VerticalOptions="Center" />
+            </Border>
+
+        </VerticalStackLayout>
+
+        <!-- 3. NAVIGATIEBALK (Jouw aangeleverde code) -->
+        <Grid Grid.Row="2" VerticalOptions="End" Margin="0,20,0,0">
+            <!-- Background Bar -->
+            <Border BackgroundColor="#1C1C1E" StrokeThickness="0" HeightRequest="70" VerticalOptions="End">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="25,25,0,0" />
+                </Border.StrokeShape>
+
+                <!-- Nav Icons -->
+                <Grid ColumnDefinitions="*, *, *" Padding="10,0">
+                    <!-- Home-ikoon → navigates to the Home-page -->
+                    <Grid Grid.Column="0" WidthRequest="44" HeightRequest="44" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding NavigateHomeCommand}" />
+                        </Grid.GestureRecognizers>
+                        <Path Data="M10,20 L10,14 L14,14 L14,20 L19,20 L19,12 L22,12 L12,3 L2,12 L5,12 L5,20 Z"
+                              Fill="White" Aspect="Uniform" WidthRequest="24" HeightRequest="24"
+                              HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Grid>
+
+                    <!-- Empty space for FAB -->
+                    <BoxView Grid.Column="1" Color="Transparent" BackgroundColor="Transparent"/>
+
+                    <!-- Profile icon (Actief, blauw) -->
+                    <Path Grid.Column="2"
+                          Data="M12,12 C14.21,12 16,10.21 16,8 C16,5.79 14.21,4 12,4 C9.79,4 8,5.79 8,8 C8,10.21 9.79,12 12,12 Z M12,14 C9.33,14 4,15.34 4,18 L4,20 L20,20 L20,18 C20,15.34 14.67,14 12,14 Z"
+                          Fill="#5AA2F0" Aspect="Uniform" WidthRequest="24" HeightRequest="24"
+                          HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <!-- Floating Action Button (Orange) → navigates to the Ticket-page -->
+            <Border BackgroundColor="#E86A22" StrokeThickness="0" WidthRequest="65" HeightRequest="65" HorizontalOptions="Center" VerticalOptions="Start" Margin="0,-35,0,0" ZIndex="1">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding NavigateTicketsCommand}" />
+                </Border.GestureRecognizers>
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="32.5" />
+                </Border.StrokeShape>
+                <Path Data="M22,10 L22,6 C22,4.9 21.1,4 20,4 L4,4 C2.9,4 2.01,4.9 2.01,6 L2,10 C3.1,10 4,10.9 4,12 C4,13.1 3.1,14 2,14 L2,18 C2,19.1 2.9,20 4,20 L20,20 C21.1,20 22,19.1 22,18 L22,14 C20.9,14 20,13.1 20,12 C20,10.9 20.9,10 22,10 Z"
+                      Fill="White" Aspect="Uniform" WidthRequest="28" HeightRequest="28"
+                      HorizontalOptions="Center" VerticalOptions="Center" />
+            </Border>
+        </Grid>
+    </Grid>
+</ContentPage>
