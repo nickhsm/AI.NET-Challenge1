@@ -1,7 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
-using PassengerTicketService.Messages;
 using PassengerTicketService.Models;
 using PassengerTicketService.Services;
 using System.Windows.Input;
@@ -47,10 +45,6 @@ namespace PassengerTicketService.ViewModels
         private async Task GoToShoppingCart()
         {
             if (CurrentRequest == null) return;
-
-            // 1. Stuur een bericht naar de NavBar dat er items in de winkelwagen zitten
-            WeakReferenceMessenger.Default.Send(new CartUpdatedMessage(CurrentRequest.PassengerCount));
-
             // 2. Navigeer naar de winkelwagen en geef de UPDATED request mee
             await _navigationService.NavigateToShoppingCartPageAsync(CurrentRequest);
         }

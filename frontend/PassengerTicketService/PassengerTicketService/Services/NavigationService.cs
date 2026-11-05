@@ -51,8 +51,8 @@ namespace PassengerTicketService.Services
         // ApplyQueryAttributes-call is needed.
         public async Task NavigateToHomePageAsync()
         {
-            var page = _serviceProvider.GetRequiredService<HomePage>();
-            await Shell.Current.Navigation.PushAsync(page);
+            // De dubbele slash (//) zorgt ervoor dat de stack wordt gereset
+            await Shell.Current.GoToAsync("//HomePage");
         }
 
         // FIX: Gecorrigeerd naar IQueryAttributable in plaats van concrete ViewModel
