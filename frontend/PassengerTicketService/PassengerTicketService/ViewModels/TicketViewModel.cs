@@ -40,6 +40,7 @@ namespace PassengerTicketService.ViewModels
         public ICommand ShowArchiveCommand { get; }
         public ICommand NavigateHomeCommand { get; set; }
         public ICommand NavigateTicketsCommand { get; set; }
+        public ICommand NavigateProfileCommand { get; set; }
 
         public TicketViewModel(INavigationService navigationService)
         {
@@ -48,12 +49,14 @@ namespace PassengerTicketService.ViewModels
             ShowActiveCommand = new RelayCommand(() => SwitchTab(true));
             ShowArchiveCommand = new RelayCommand(() => SwitchTab(false));
 
-            // Navbar FAB to te Ticket-pagina: already here → nix-op, otherwise te die
-            // stack getsed a duplicate Ticket-page per tap
+            //Het doet niets.
+            //Dit is door de navbar.
             NavigateTicketsCommand = new RelayCommand(() => { });
 
             // Navbar Home-ikoon → to the Home-page
             NavigateHomeCommand = new AsyncRelayCommand(_navigationService.NavigateToHomePageAsync);
+            
+            NavigateProfileCommand = new AsyncRelayCommand(_navigationService.NavigateToProfilePageAsync);
 
             LoadMockData();
             SwitchTab(true); // Start op 'Actief'

@@ -15,6 +15,7 @@ namespace PassengerTicketService.ViewModels
         // Navbar-commands: Home-button to Home-page, FAB (train) to Ticket-page
         ICommand NavigateHomeCommand { get; set; }
         ICommand NavigateTicketsCommand { get; set; }
+        ICommand NavigateProfileCommand { get; set; }
 
         Color ActiveTabColor { get; }
         Color ArchiveTabColor { get; }
