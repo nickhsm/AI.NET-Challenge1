@@ -24,8 +24,7 @@ namespace PassengerTicketService.Services
                 throw new InvalidOperationException("No pages to navigate back to!");
             }
         }
-
-        // FIX: 'async' keyword toegevoegd
+        
         public async Task NavigateToShoppingCartPageAsync(TravelRequest request)
         {
             var page = _serviceProvider.GetRequiredService<ShoppingCartPage>();
@@ -33,7 +32,7 @@ namespace PassengerTicketService.Services
             // Geef de request mee aan de pagina via de MAUI query dictionary
             var parameters = new Dictionary<string, object> { { "TravelRequest", request } };
 
-            if (page is IQueryAttributable queryAttributable)
+            if (page.BindingContext is IQueryAttributable queryAttributable)
                 queryAttributable.ApplyQueryAttributes(parameters);
 
             await Shell.Current.Navigation.PushAsync(page);
