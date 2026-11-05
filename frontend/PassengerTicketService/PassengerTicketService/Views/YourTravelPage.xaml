@@ -123,7 +123,8 @@
                                     </Label.Triggers>
                                 </Label>
                                 <Border.GestureRecognizers>
-                                    <TapGestureRecognizer Tapped="OnEnkelTapped" />
+                                    <!-- FIX: Bind aan het commando -->
+                                    <TapGestureRecognizer Command="{Binding SelectSingleTripCommand}" />
                                 </Border.GestureRecognizers>
                             </Border>
 
@@ -145,7 +146,8 @@
                                     </Label.Triggers>
                                 </Label>
                                 <Border.GestureRecognizers>
-                                    <TapGestureRecognizer Tapped="OnHeenEnTerugTapped" />
+                                    <!-- FIX: Bind aan het commando -->
+                                    <TapGestureRecognizer Command="{Binding SelectRoundTripCommand}" />
                                 </Border.GestureRecognizers>
                             </Border>
                         </Grid>
