@@ -84,7 +84,7 @@
         <!-- 3. BOTTOM ACTION AREA (Zonder comfort en voorwaarden) -->
         <VerticalStackLayout Grid.Row="2" BackgroundColor="#0F0F0F" Padding="20,20,20,30" Spacing="15">
 
-            <Button Text="{Binding TotalPriceDisplay, StringFormat='Betalen'}" 
+            <Button Text="Betalen" 
                     Command="{Binding PayCommand}"
                     BackgroundColor="#E86A22" 
                     TextColor="White" 

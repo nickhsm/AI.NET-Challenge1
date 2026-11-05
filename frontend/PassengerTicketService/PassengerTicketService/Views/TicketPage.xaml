@@ -127,7 +127,7 @@
         </CollectionView>
 
         <!-- 3. BOTTOM NAVIGATIE BALK (Ongewijzigd gelaten) -->
-        <Grid Grid.Row="3" VerticalOptions="End" Margin="0,20,0,0">
+        <Grid Grid.Row="2" VerticalOptions="End" Margin="0,20,0,0">
 
             <!-- Background Bar -->
             <Border BackgroundColor="#1C1C1E" 

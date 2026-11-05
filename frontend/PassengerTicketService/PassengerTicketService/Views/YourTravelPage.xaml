@@ -44,25 +44,19 @@
                             <VerticalStackLayout Grid.Column="0" Spacing="10">
                                 <Label Text="Van:" TextColor="#A0A0A0" FontSize="14" />
 
-                                <Grid VerticalOptions="Center">
-                                    <!-- Bind aan CurrentRequest.StartStation -->
-                                    <Entry Placeholder="station, halte of adres" 
-                                           Text="{Binding CurrentRequest.StartStation}" 
-                                           TextColor="White" 
-                                           PlaceholderColor="#888888"
-                                           HorizontalOptions="Fill"/>
-                                </Grid>
+                                <Label Text="{Binding CurrentRequest.StartStation}" 
+                                       TextColor="White" 
+                                       FontSize="18" 
+                                       FontAttributes="Bold"
+                                       VerticalOptions="Center" />
 
                                 <Label Text="Naar:" TextColor="#A0A0A0" FontSize="14" Margin="0,5,0,0" />
 
-                                <Grid VerticalOptions="Center">
-                                    <!-- Bind aan CurrentRequest.EndStation -->
-                                    <Entry Placeholder="station, halte of adres" 
-                                           Text="{Binding CurrentRequest.EndStation}" 
-                                           TextColor="White"
-                                           PlaceholderColor="#888888"
-                                           HorizontalOptions="Fill"/>
-                                </Grid>
+                                <Label Text="{Binding CurrentRequest.EndStation}" 
+                                       TextColor="White" 
+                                       FontSize="18" 
+                                       FontAttributes="Bold"
+                                       VerticalOptions="Center" />
                             </VerticalStackLayout>
 
                             <!-- Swap Button -->
