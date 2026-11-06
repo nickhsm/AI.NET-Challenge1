@@ -11,7 +11,8 @@ namespace PassengerTicketService.ViewModels
         string EndStation { get; set; }
         ICommand BuyTicketCommand { get; }
 
-        ICommand NavigateHomeCommand { get; set; }
-        ICommand NavigateTicketsCommand { get; set; }
+        ICommand NavigateHomeCommand { get; }
+        ICommand NavigateTicketsCommand { get; }
+        ICommand NavigateProfileCommand { get; }
     }
 }

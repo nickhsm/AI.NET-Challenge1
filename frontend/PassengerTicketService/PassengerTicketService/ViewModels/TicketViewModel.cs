@@ -36,27 +36,30 @@ namespace PassengerTicketService.ViewModels
         [ObservableProperty]
         private Color archiveTabTextColor = Color.FromArgb("#FFFFFF");
 
-        public ICommand ShowActiveCommand { get; }
-        public ICommand ShowArchiveCommand { get; }
-        public ICommand NavigateHomeCommand { get; set; }
-        public ICommand NavigateTicketsCommand { get; set; }
+        public ICommand ShowActiveCommand { get; private set; } = null!;
+        public ICommand ShowArchiveCommand { get; private set; } = null!;
+        public ICommand NavigateHomeCommand { get; private set; } = null!;
+        public ICommand NavigateTicketsCommand { get; private set; } = null!;
+        public ICommand NavigateProfileCommand { get; private set; } = null!;
 
         public TicketViewModel(INavigationService navigationService)
         {
             _navigationService = navigationService;
-
-            ShowActiveCommand = new RelayCommand(() => SwitchTab(true));
-            ShowArchiveCommand = new RelayCommand(() => SwitchTab(false));
-
-            // Navbar FAB to te Ticket-pagina: already here → nix-op, otherwise te die
-            // stack getsed a duplicate Ticket-page per tap
-            NavigateTicketsCommand = new RelayCommand(() => { });
-
-            // Navbar Home-ikoon → to the Home-page
-            NavigateHomeCommand = new AsyncRelayCommand(_navigationService.NavigateToHomePageAsync);
-
+            BindCommands();
             LoadMockData();
             SwitchTab(true); // Start op 'Actief'
+        }
+
+        private void BindCommands()
+        {
+            ShowActiveCommand = new RelayCommand(() => SwitchTab(true));
+            ShowArchiveCommand = new RelayCommand(() => SwitchTab(false));
+            // Navbar Home-ikoon → to the Home-page
+            NavigateHomeCommand = new AsyncRelayCommand(_navigationService.NavigateToHomePageAsync);
+            //Het doet niets.
+            //Dit is door de navbar.
+            NavigateTicketsCommand = new RelayCommand(() => { });
+            NavigateProfileCommand = new AsyncRelayCommand(_navigationService.NavigateToProfilePageAsync);
         }
 
         private void SwitchTab(bool showActive)

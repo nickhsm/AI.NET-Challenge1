@@ -29,14 +29,18 @@ namespace PassengerTicketService.ViewModels
             ? $"€ {(CalculateOutboundPrice() * 2):F2}".Replace(".", ",")
             : OutboundPriceDisplay;
 
-        public ICommand PayCommand { get; }
-        public ICommand CancelCommand { get; }
-        public ICommand NavigateBackCommand { get; }
+        public ICommand PayCommand { get; private set; } = null!;
+        public ICommand CancelCommand { get; private set; } = null!;
+        public ICommand NavigateBackCommand { get; private set; } = null!;
 
         public ShoppingCartViewModel(INavigationService navigationService)
         {
             _navigationService = navigationService;
+            BindCommands();
+        }
 
+        private void BindCommands()
+        {
             PayCommand = new AsyncRelayCommand(PayAsync);
             CancelCommand = new AsyncRelayCommand(_navigationService.NavigateBackAsync);
             NavigateBackCommand = new AsyncRelayCommand(_navigationService.NavigateBackAsync);

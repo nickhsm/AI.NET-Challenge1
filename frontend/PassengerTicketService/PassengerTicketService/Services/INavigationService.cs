@@ -11,6 +11,12 @@ namespace PassengerTicketService.Services
         Task NavigateToShoppingCartPageAsync(TravelRequest request);
         Task NavigateToTicketsPageAsync();
         Task NavigateToHomePageAsync();
+        Task NavigateToHomeAfterLoginAsync();
+
+        Task NavigateToProfilePageAsync();
+        Task NavigateToStartPageAsync();
+        Task NavigateToRegisterPageAsync();
+        Task NavigateToLoginPageAsync();
         Task NavigateBackAsync();
     }
 }

@@ -5,7 +5,7 @@ namespace PassengerTicketService.ViewModels
 {
     public interface IShoppingCartViewModel
     {
-        TravelRequest CurrentRequest { get; set; }
+        TravelRequest CurrentRequest { get; }
 
         string ExpirationDateDisplay { get; }
         string PassengerCountDisplay { get; }
