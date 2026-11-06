@@ -10,6 +10,8 @@
         <Label Text="Face Scan" FontSize="24" />
 
         <Button Command="{Binding TakePhotoCommand}" Text="Neem foto" />
+
+        <Label Text="{Binding StatusMessage}" IsVisible="{Binding HasStatusMessage}" />
         <Image Source="{Binding PhotoPreview}" />
     </VerticalStackLayout>
 </ContentPage>
