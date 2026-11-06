@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PassengerTicketService.Services;
+using System.Text.RegularExpressions;
 using System.Windows.Input;
 
 namespace PassengerTicketService.ViewModels
@@ -34,6 +35,21 @@ namespace PassengerTicketService.ViewModels
         [ObservableProperty]
         private bool isConfirmPasswordVisible = false;
 
+        // NIEUW: Deze properties zijn het tegenovergestelde van de bovenstaande
+        public bool IsPasswordHidden => !IsPasswordVisible;
+        public bool IsConfirmPasswordHidden => !IsConfirmPasswordVisible;
+
+        // NIEUW: Zorg dat de UI update als de zichtbaarheid verandert
+        partial void OnIsPasswordVisibleChanged(bool value)
+        {
+            OnPropertyChanged(nameof(IsPasswordHidden));
+        }
+
+        partial void OnIsConfirmPasswordVisibleChanged(bool value)
+        {
+            OnPropertyChanged(nameof(IsConfirmPasswordHidden));
+        }
+
         public ICommand RegisterCommand { get; }
         public ICommand NavigateBackCommand { get; }
         public ICommand TogglePasswordVisibilityCommand { get; }
@@ -57,6 +73,14 @@ namespace PassengerTicketService.ViewModels
             if (string.IsNullOrWhiteSpace(FirstName) || string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password))
             {
                 await Application.Current.MainPage.DisplayAlert("Fout", "Vul alstublieft alle verplichte velden in.", "OK");
+                return;
+            }
+
+            // 2. Validatie van het e-mailadres (Regex)
+            string emailPattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+            if (!Regex.IsMatch(Email, emailPattern))
+            {
+                await Application.Current.MainPage.DisplayAlert("Fout", "Voer een geldig e-mailadres in (bijv. naam@domein.nl).", "OK");
                 return;
             }
 
