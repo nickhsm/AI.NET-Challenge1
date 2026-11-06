@@ -59,4 +59,13 @@ public class PassengerRepository : IPassengerRepository
         passenger.FacePersonId = null;
         await _context.SaveChangesAsync();
     }
+
+    public async Task UnregisterAllFacesAsync()
+    {
+        // ExecuteUpdateAsync runs one UPDATE query directly in the database.
+        // It doesn't load the passengers and doesn't need SaveChangesAsync.
+        await _context.Passengers
+            .Where(p => p.FacePersonId != null)
+            .ExecuteUpdateAsync(setters => setters.SetProperty(p => p.FacePersonId, (Guid?)null));
+    }
 }

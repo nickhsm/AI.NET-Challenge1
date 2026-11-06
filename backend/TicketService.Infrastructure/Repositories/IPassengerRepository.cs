@@ -9,4 +9,6 @@ public interface IPassengerRepository
     public Task<bool> PassengerExistsAsync(int passengerId);
     public void RegisterFace(int passengerId, Guid azureFaceId);
     public Task UnregisterFaceAsync(int passengerId);
+    // Only for development. Removes the FacePersonId from every passenger.
+    public Task UnregisterAllFacesAsync();
 }
