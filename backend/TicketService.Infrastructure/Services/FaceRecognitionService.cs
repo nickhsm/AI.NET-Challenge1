@@ -73,6 +73,27 @@ public class FaceRecognitionService : IFaceRecognitionService
         // Step 2 end
     }
 
+    // Azure errors look like {"error":{"code":"...","message":"..."}}.
+    // Returns null when the body is not in that shape.
+    private static string? GetAzureErrorCode(string errorJson)
+    {
+        try
+        {
+            using var parsedJson = JsonDocument.Parse(errorJson);
+            if (parsedJson.RootElement.TryGetProperty("error", out var error) &&
+                error.TryGetProperty("code", out var code))
+            {
+                return code.GetString();
+            }
+        }
+        catch (JsonException)
+        {
+            // Not JSON, so there is no error code to read.
+        }
+
+        return null;
+    }
+
     private async Task DeletePersonAsync(Guid personId)
     {
         string deletePersonUrl = $"/face/v1.2/largepersongroups/{_groupId}/persons/{personId}";
@@ -194,6 +215,14 @@ public class FaceRecognitionService : IFaceRecognitionService
         if (!responseIdentifyFace.IsSuccessStatusCode)
         {
             var error = await responseIdentifyFace.Content.ReadAsStringAsync();
+
+            // A group that was never trained (e.g. right after it was recreated) has no one to match against.
+            // That is "no match", not an Azure failure.
+            if (GetAzureErrorCode(error) == "LargePersonGroupNotTrained")
+            {
+                return null;
+            }
+
             throw new AzureServiceException(error);
         }
 
