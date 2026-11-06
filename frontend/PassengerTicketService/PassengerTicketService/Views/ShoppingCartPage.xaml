@@ -46,7 +46,7 @@
                     <Label Text="{Binding ExpirationDateDisplay, StringFormat='Vertrek: {0}'}" TextColor="White" FontSize="15" FontAttributes="Bold" />
 
                     <!-- Retour datum (alleen zichtbaar als IsRoundTrip true is) -->
-                    <Label Text="{Binding ExpirationDateDisplay, StringFormat='Retour: {0}'}" 
+                    <Label Text="{Binding ReturnExpirationDateDisplay, StringFormat='Retour: {0}'}" 
                            TextColor="White" FontSize="15" FontAttributes="Bold"
                            IsVisible="{Binding CurrentRequest.IsRoundTrip}" />
 

@@ -8,6 +8,7 @@ namespace PassengerTicketService.ViewModels
         TravelRequest CurrentRequest { get; }
 
         string ExpirationDateDisplay { get; }
+        string ReturnExpirationDateDisplay { get; }
         string PassengerCountDisplay { get; }
 
         string OutboundPriceDisplay { get; }

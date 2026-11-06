@@ -2,10 +2,18 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:PassengerTicketService.ViewModels"
+             xmlns:converters="clr-namespace:PassengerTicketService.Converters" 
              x:Class="PassengerTicketService.Views.YourTravelPage"
              x:DataType="viewModels:IYourTravelViewModel"
              BackgroundColor="#101010"
              Shell.NavBarIsVisible="False">
+
+    <!-- Converter registreren -->
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:DateToStringConverter x:Key="DateToStringConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <!-- Grid met 3 rijen: Header, Scrollbare inhoud, Vaste bodemknop -->
     <Grid RowDefinitions="Auto, *, Auto" Padding="20,40,20,20">
@@ -38,55 +46,72 @@
                     <Grid RowDefinitions="Auto, Auto">
 
                         <!-- Van / Naar Section -->
-                        <Grid Grid.Row="0" ColumnDefinitions="*, Auto" Padding="15,20,15,15">
+                        <VerticalStackLayout Grid.Row="0" Padding="15,20,15,15" Spacing="10">
 
-                            <!-- Input Fields -->
-                            <VerticalStackLayout Grid.Column="0" Spacing="10">
-                                <Label Text="Van:" TextColor="#A0A0A0" FontSize="14" />
+                            <Label Text="Van:" TextColor="#A0A0A0" FontSize="14" />
 
-                                <Label Text="{Binding CurrentRequest.StartStation}" 
-                                       TextColor="White" 
-                                       FontSize="18" 
-                                       FontAttributes="Bold"
-                                       VerticalOptions="Center" />
+                            <Label Text="{Binding CurrentRequest.StartStation}" 
+                               TextColor="White" 
+                               FontSize="18" 
+                               FontAttributes="Bold"
+                               VerticalOptions="Center" />
 
-                                <Label Text="Naar:" TextColor="#A0A0A0" FontSize="14" Margin="0,5,0,0" />
+                            <Label Text="Naar:" TextColor="#A0A0A0" FontSize="14" Margin="0,5,0,0" />
 
-                                <Label Text="{Binding CurrentRequest.EndStation}" 
-                                       TextColor="White" 
-                                       FontSize="18" 
-                                       FontAttributes="Bold"
-                                       VerticalOptions="Center" />
-                            </VerticalStackLayout>
+                            <Label Text="{Binding CurrentRequest.EndStation}" 
+                               TextColor="White" 
+                               FontSize="18" 
+                               FontAttributes="Bold"
+                               VerticalOptions="Center" />
 
-                            <!-- Swap Button -->
-                            <Border Grid.Column="1" 
-                                    BackgroundColor="#5AA2F0" 
-                                    WidthRequest="50" 
-                                    HeightRequest="50" 
-                                    VerticalOptions="Center">
-                                <Border.StrokeShape>
-                                    <RoundRectangle CornerRadius="25" />
-                                </Border.StrokeShape>
-                                <Label Text="↑↓" 
-                                       TextColor="Black" 
-                                       FontSize="24" 
-                                       HorizontalOptions="Center" 
-                                       VerticalOptions="Center" />
-                            </Border>
-                        </Grid>
+                        </VerticalStackLayout>
 
                         <!-- Departure Section (Zonder de filters knop) -->
-                        <Grid Grid.Row="1" ColumnDefinitions="*" Padding="15,0,15,15">
-                            <VerticalStackLayout Grid.Column="0" Spacing="2">
-                                <Label Text="Vertrek:" TextColor="#A0A0A0" FontSize="14" />
-                                <HorizontalStackLayout Spacing="8">
-                                    <Label Text="📅" TextColor="#5AA2F0" FontSize="16" VerticalOptions="Center" />
-                                    <Label Text="vandaag" TextColor="White" FontSize="16" FontAttributes="Bold" VerticalOptions="Center" />
-                                </HorizontalStackLayout>
-                            </VerticalStackLayout>
-                        </Grid>
+                        <Border Grid.Row="1" Padding="15,15" BackgroundColor="#222222" StrokeThickness="0">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="0,0,12,12" />
+                            </Border.StrokeShape>
 
+                            <Grid ColumnDefinitions="*, Auto, *">
+                                <!-- Vertrek Datum -->
+                                <Grid Grid.Column="0">
+                                    <VerticalStackLayout Spacing="2">
+                                        <Label Text="Vertrek:" TextColor="#A0A0A0" FontSize="12" />
+                                        <HorizontalStackLayout Spacing="8">
+                                            <Path Data="M19,19H5V8H19M16,1V3H8V1H6V3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3H18V1M17,12H12V17H17V12Z" Fill="#5AA2F0" Aspect="Uniform" WidthRequest="16" HeightRequest="16" VerticalOptions="Center" />
+                                            <!-- Converter toegepast -->
+                                            <Label Text="{Binding CurrentRequest.ExpirationDate, Converter={StaticResource DateToStringConverter}}" TextColor="White" FontSize="14" FontAttributes="Bold" VerticalOptions="Center" />
+                                        </HorizontalStackLayout>
+                                    </VerticalStackLayout>
+                                    <DatePicker Date="{Binding CurrentRequest.ExpirationDate}" MinimumDate="{Binding MinimumDate}" Opacity="0" HorizontalOptions="Fill" VerticalOptions="Fill" />
+                                </Grid>
+
+                                <!-- Scheidingslijn -->
+                                <BoxView Grid.Column="1" WidthRequest="1" Color="#444444" Margin="10,0" IsVisible="{Binding CurrentRequest.IsRoundTrip}" />
+
+                                <!-- Terugreis Datum -->
+                                <Grid Grid.Column="2" IsVisible="{Binding CurrentRequest.IsRoundTrip}">
+                                    <VerticalStackLayout Spacing="2">
+                                        <Label Text="Terugreis:" TextColor="#A0A0A0" FontSize="12" />
+                                        <HorizontalStackLayout Spacing="8">
+                                            <Path Data="M19,19H5V8H19M16,1V3H8V1H6V3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3H18V1M17,12H12V17H17V12Z" Fill="#5AA2F0" Aspect="Uniform" WidthRequest="16" HeightRequest="16" VerticalOptions="Center" />
+                                            <!-- Converter toegepast -->
+                                            <Label Text="{Binding CurrentRequest.ReturnExpirationDate, Converter={StaticResource DateToStringConverter}}" TextColor="White" FontSize="14" FontAttributes="Bold" VerticalOptions="Center" />
+                                        </HorizontalStackLayout>
+                                    </VerticalStackLayout>
+                                    <DatePicker Date="{Binding CurrentRequest.ReturnExpirationDate}" MinimumDate="{Binding CurrentRequest.ExpirationDate}" Opacity="0" HorizontalOptions="Fill" VerticalOptions="Fill" />
+
+                                    <!-- Vuilnisbak icoon (gebruikt SelectSingleTripCommand om retour te verwijderen) -->
+                                    <Path Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" 
+                                          Fill="#E74C3C" Aspect="Uniform" WidthRequest="20" HeightRequest="20" 
+                                          HorizontalOptions="End" VerticalOptions="Center" Margin="0,0,5,0">
+                                        <Path.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding SelectSingleTripCommand}" />
+                                        </Path.GestureRecognizers>
+                                    </Path>
+                                </Grid>
+                            </Grid>
+                        </Border>
                     </Grid>
                 </Border>
 

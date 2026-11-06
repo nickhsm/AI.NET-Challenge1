@@ -21,5 +21,9 @@ namespace PassengerTicketService.Models
 
         [ObservableProperty]
         private DateTime expirationDate;
+
+        [ObservableProperty]
+        private DateTime returnExpirationDate = DateTime.Today;
+
     }
 }
