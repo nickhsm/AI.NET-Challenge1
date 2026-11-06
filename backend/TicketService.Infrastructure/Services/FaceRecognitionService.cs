@@ -247,9 +247,37 @@ public class FaceRecognitionService : IFaceRecognitionService
     {
         await DeletePersonAsync(personId);
 
+        // Azure cannot train a group without faces.
+        // If that was the last person, reset the group instead: an empty, untrained group
+        // makes IdentifyAsync return "no match", which is exactly right.
+        if (!await GroupHasPersonsAsync())
+        {
+            await DeleteAllAsync();
+            return;
+        }
+
         await RetrainAsync();
 
         // If successful, person is deleted.
+    }
+
+    private async Task<bool> GroupHasPersonsAsync()
+    {
+        // top=1: we only need to know if there is at least one person.
+        string listPersonsUrl = $"/face/v1.2/largepersongroups/{_groupId}/persons?top=1";
+
+        var responseListPersons = await _httpClient.GetAsync(listPersonsUrl);
+
+        if (!responseListPersons.IsSuccessStatusCode)
+        {
+            var error = await responseListPersons.Content.ReadAsStringAsync();
+            throw new AzureServiceException(error);
+        }
+
+        string json = await responseListPersons.Content.ReadAsStringAsync();
+        using var parsedJson = JsonDocument.Parse(json);
+
+        return parsedJson.RootElement.GetArrayLength() > 0;
     }
 
     public async Task DeleteAllAsync()
