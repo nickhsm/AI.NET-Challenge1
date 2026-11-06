@@ -22,14 +22,18 @@ namespace PassengerTicketService.ViewModels
         // Het tegenovergestelde van IsPasswordVisible (zodat we geen converter nodig hebben)
         public bool IsPasswordHidden => !IsPasswordVisible;
 
-        public ICommand LoginCommand { get; }
-        public ICommand NavigateBackCommand { get; }
-        public ICommand TogglePasswordVisibilityCommand { get; }
+        public ICommand LoginCommand { get; private set; } = null!;
+        public ICommand NavigateBackCommand { get; private set; } = null!;
+        public ICommand TogglePasswordVisibilityCommand { get; private set; } = null!;  
 
         public LoginViewModel(INavigationService navigationService)
         {
             _navigationService = navigationService;
+            BindCommands();
+        }
 
+        private void BindCommands()
+        {
             LoginCommand = new AsyncRelayCommand(LoginAsync);
             NavigateBackCommand = new AsyncRelayCommand(_navigationService.NavigateBackAsync);
             TogglePasswordVisibilityCommand = new RelayCommand(() => IsPasswordVisible = !IsPasswordVisible);

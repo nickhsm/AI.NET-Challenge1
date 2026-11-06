@@ -131,7 +131,7 @@
                             <TapGestureRecognizer Command="{Binding NavigateHomeCommand}" />
                         </Grid.GestureRecognizers>
                         <Path Data="M10,20 L10,14 L14,14 L14,20 L19,20 L19,12 L22,12 L12,3 L2,12 L5,12 L5,20 Z"
-                              Fill="White"
+                              Fill="#5AA2F0"
                               Aspect="Uniform"
                               WidthRequest="24"
                               HeightRequest="24"
@@ -142,7 +142,6 @@
                     <!-- Empty space for FAB: de orange button underneath handles te tickets-navigation -->
                     <BoxView Grid.Column="1" Color="Transparent" BackgroundColor="Transparent"/>
 
-                    <!-- Profile / user-page: user-page is uitid te de takke → no command -->
                     <Grid Grid.Column="2" WidthRequest="44" HeightRequest="44" HorizontalOptions="Center" VerticalOptions="Center">
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding NavigateProfileCommand}" />

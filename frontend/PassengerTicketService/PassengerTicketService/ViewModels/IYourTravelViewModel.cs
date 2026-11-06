@@ -5,9 +5,9 @@ namespace PassengerTicketService.ViewModels
 {
     public interface IYourTravelViewModel
     {
-        TravelRequest CurrentRequest { get; set; }
-        ICommand ConfirmTravelCommand { get; set; }
-        ICommand NavigateBackCommand { get; set; }
+        TravelRequest CurrentRequest { get; }
+        ICommand ConfirmTravelCommand { get; }
+        ICommand NavigateBackCommand { get; }
         ICommand SelectSingleTripCommand { get; }
         ICommand SelectRoundTripCommand { get; }
     }

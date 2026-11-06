@@ -14,10 +14,10 @@ namespace PassengerTicketService.ViewModels
         [ObservableProperty]
         private TravelRequest currentRequest = new TravelRequest();
 
-        public ICommand ConfirmTravelCommand { get; set; }
-        public ICommand NavigateBackCommand { get; set; }
-        public ICommand SelectSingleTripCommand { get; set; }
-        public ICommand SelectRoundTripCommand { get; set; }
+        public ICommand ConfirmTravelCommand { get; private set; } = null!;
+        public ICommand NavigateBackCommand { get; private set; } = null!;
+        public ICommand SelectSingleTripCommand { get; private set; } = null!;
+        public ICommand SelectRoundTripCommand { get; private set; } = null!;
 
         public YourTravelViewModel(INavigationService navigationService)
         {

@@ -16,10 +16,10 @@ namespace PassengerTicketService.ViewModels
         [ObservableProperty]
         private string endStation;
 
-        public ICommand BuyTicketCommand { get; set; }
-        public ICommand NavigateHomeCommand { get; set; }
-        public ICommand NavigateTicketsCommand { get; set; }
-        public ICommand NavigateProfileCommand { get; set; }
+        public ICommand BuyTicketCommand { get; private set; } = null!;
+        public ICommand NavigateHomeCommand { get; private set; } = null!;
+        public ICommand NavigateTicketsCommand { get; private set; } = null!;
+        public ICommand NavigateProfileCommand { get; private set; } = null!;
 
         public HomeViewModel(INavigationService navigationService)
         {

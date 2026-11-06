@@ -36,30 +36,30 @@ namespace PassengerTicketService.ViewModels
         [ObservableProperty]
         private Color archiveTabTextColor = Color.FromArgb("#FFFFFF");
 
-        public ICommand ShowActiveCommand { get; }
-        public ICommand ShowArchiveCommand { get; }
-        public ICommand NavigateHomeCommand { get; set; }
-        public ICommand NavigateTicketsCommand { get; set; }
-        public ICommand NavigateProfileCommand { get; set; }
+        public ICommand ShowActiveCommand { get; private set; } = null!;
+        public ICommand ShowArchiveCommand { get; private set; } = null!;
+        public ICommand NavigateHomeCommand { get; private set; } = null!;
+        public ICommand NavigateTicketsCommand { get; private set; } = null!;
+        public ICommand NavigateProfileCommand { get; private set; } = null!;   
 
         public TicketViewModel(INavigationService navigationService)
         {
             _navigationService = navigationService;
+            BindCommands();
+            LoadMockData();
+            SwitchTab(true); // Start op 'Actief'
+        }
 
+        private void BindCommands()
+        {
             ShowActiveCommand = new RelayCommand(() => SwitchTab(true));
             ShowArchiveCommand = new RelayCommand(() => SwitchTab(false));
-
+            // Navbar Home-ikoon → to the Home-page
+            NavigateHomeCommand = new AsyncRelayCommand(_navigationService.NavigateToHomePageAsync);
             //Het doet niets.
             //Dit is door de navbar.
             NavigateTicketsCommand = new RelayCommand(() => { });
-
-            // Navbar Home-ikoon → to the Home-page
-            NavigateHomeCommand = new AsyncRelayCommand(_navigationService.NavigateToHomePageAsync);
-            
             NavigateProfileCommand = new AsyncRelayCommand(_navigationService.NavigateToProfilePageAsync);
-
-            LoadMockData();
-            SwitchTab(true); // Start op 'Actief'
         }
 
         private void SwitchTab(bool showActive)

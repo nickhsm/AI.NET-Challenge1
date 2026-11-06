@@ -50,19 +50,22 @@ namespace PassengerTicketService.ViewModels
             OnPropertyChanged(nameof(IsConfirmPasswordHidden));
         }
 
-        public ICommand RegisterCommand { get; }
-        public ICommand NavigateBackCommand { get; }
-        public ICommand TogglePasswordVisibilityCommand { get; }
-        public ICommand ToggleConfirmPasswordVisibilityCommand { get; }
+        public ICommand RegisterCommand { get; private set; } = null!;
+        public ICommand NavigateBackCommand { get; private set; } = null!;
+        public ICommand TogglePasswordVisibilityCommand { get; private set; } = null!;
+        public ICommand ToggleConfirmPasswordVisibilityCommand { get; private set; } = null!;
 
 
         public RegisterViewModel(INavigationService navigationService)
         {
             _navigationService = navigationService;
+            BindCommands();
+        }
 
+        private void BindCommands()
+        {
             RegisterCommand = new AsyncRelayCommand(RegisterAsync);
             NavigateBackCommand = new AsyncRelayCommand(_navigationService.NavigateBackAsync);
-
             TogglePasswordVisibilityCommand = new RelayCommand(() => IsPasswordVisible = !IsPasswordVisible);
             ToggleConfirmPasswordVisibilityCommand = new RelayCommand(() => IsConfirmPasswordVisible = !IsConfirmPasswordVisible);
         }
