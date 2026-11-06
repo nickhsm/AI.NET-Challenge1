@@ -26,7 +26,7 @@ namespace PassengerTicketService.ViewModels
         private string confirmPassword = string.Empty;
 
         [ObservableProperty]
-        private DateOnly birthDate = DateOnly.FromDateTime(DateTime.Today.AddYears(-18)); // Standaard 18 jaar geleden
+        private DateTime birthDate = DateTime.Today.AddYears(-18);
 
         // Logica voor het oogje (zichtbaarheid)
         [ObservableProperty]

@@ -10,7 +10,7 @@ namespace PassengerTicketService.ViewModels
         string Email { get; set; }
         string Password { get; set; }
         string ConfirmPassword { get; set; }
-        DateOnly BirthDate { get; set; }
+        DateTime BirthDate { get; set; }
 
         // Voor het oogje (wachtwoord zichtbaarheid)
         bool IsPasswordVisible { get; set; }
