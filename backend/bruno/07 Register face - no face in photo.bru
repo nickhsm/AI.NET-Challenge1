@@ -1,0 +1,21 @@
+meta {
+  name: Register face - no face in photo
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}/api/passenger/{{sarahPassengerId}}/face
+  body: multipartForm
+  auth: none
+}
+
+body:multipart-form {
+  photo: @file(images/no-face.png)
+}
+tests {
+  test("422 no face detected", function() {
+    expect(res.getStatus()).to.equal(422);
+    expect(res.getBody()).to.contain("No face detected");
+  });
+}
