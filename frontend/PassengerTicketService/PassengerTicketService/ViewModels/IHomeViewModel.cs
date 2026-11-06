@@ -9,6 +9,11 @@ namespace PassengerTicketService.ViewModels
     {
         string StartStation { get; set; }
         string EndStation { get; set; }
+
+        DateTime SelectedDate { get; set; }
+        DateTime MinimumDate { get; } 
+        string DateDisplayText { get; }
+
         ICommand BuyTicketCommand { get; }
         ICommand SwapStationsCommand { get; }
         ICommand NavigateHomeCommand { get; }
