@@ -70,7 +70,7 @@ namespace PassengerTicketService.ViewModels
             await Application.Current.MainPage.DisplayAlert("Succes", "Je bent succesvol ingelogd!", "OK");
 
             // Navigeer naar de Home-pagina (en reset de stack)
-            await _navigationService.NavigateToHomePageAsync();
+            await _navigationService.NavigateToHomeAfterLoginAsync();
         }
     }
 }

@@ -12,9 +12,11 @@ namespace PassengerTicketService.ViewModels
         string ConfirmPassword { get; set; }
         DateTime BirthDate { get; set; }
 
-        // Voor het oogje (wachtwoord zichtbaarheid)
+        // Zichtbaarheid
         bool IsPasswordVisible { get; set; }
         bool IsConfirmPasswordVisible { get; set; }
+        bool IsPasswordHidden { get; }
+        bool IsConfirmPasswordHidden { get; }
 
         // Acties
         ICommand RegisterCommand { get; }

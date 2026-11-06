@@ -12,11 +12,6 @@ namespace PassengerTicketService.Services
             _serviceProvider = serviceProvider;
         }
 
-        public async Task NavigateToProfilePageAsync()
-        {
-            await Shell.Current.GoToAsync("//ProfilePage");
-        }
-
         public async Task NavigateBackAsync()
         {
             // Gebruik Shell.Current direct, dit voorkomt de null-waarschuwing in de constructor
@@ -41,22 +36,6 @@ namespace PassengerTicketService.Services
                 queryAttributable.ApplyQueryAttributes(parameters);
 
             await Shell.Current.Navigation.PushAsync(page);
-        }
-
-        // Navbar 'Tickets'-button: haal de TicketPage uit de DI-container.
-        // NB: because AddTransient gebuild a new page object (with a new ViewModel) per push,
-        // de ViewModel always gets de BindingContext of a new ViewModel.
-        public async Task NavigateToTicketsPageAsync()
-        {
-            await Shell.Current.GoToAsync("//TicketPage");
-        }
-
-        // Navbar 'Home'-button: HomePage heeft geen data te pass along, dus no
-        // ApplyQueryAttributes-call is needed.
-        public async Task NavigateToHomePageAsync()
-        {
-            // De dubbele slash (//) zorgt ervoor dat de stack wordt gereset
-            await Shell.Current.GoToAsync("//HomePage");
         }
 
         // FIX: Gecorrigeerd naar IQueryAttributable in plaats van concrete ViewModel
@@ -87,6 +66,35 @@ namespace PassengerTicketService.Services
         {
             var page = _serviceProvider.GetRequiredService<LoginPage>();
             await Shell.Current.Navigation.PushAsync(page);
+        }
+
+        public async Task NavigateToStartPageAsync()
+        {
+            await Shell.Current.GoToAsync("//StartPage");
+        }
+
+        public async Task NavigateToHomeAfterLoginAsync()
+        {
+            await Shell.Current.Navigation.PopToRootAsync(false);
+            await Shell.Current.GoToAsync("//HomePage");
+        }
+
+        public async Task NavigateToHomePageAsync()
+        {
+            if (Shell.Current.CurrentState.Location.OriginalString.Contains("HomePage")) return;
+            await Shell.Current.GoToAsync("//HomePage");
+        }
+
+        public async Task NavigateToTicketsPageAsync()
+        {
+            if (Shell.Current.CurrentState.Location.OriginalString.Contains("TicketPage")) return;
+            await Shell.Current.GoToAsync("//TicketPage");
+        }
+
+        public async Task NavigateToProfilePageAsync()
+        {
+            if (Shell.Current.CurrentState.Location.OriginalString.Contains("ProfilePage")) return;
+            await Shell.Current.GoToAsync("//ProfilePage");
         }
     }
 }
