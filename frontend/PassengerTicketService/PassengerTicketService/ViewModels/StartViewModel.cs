@@ -9,25 +9,17 @@ namespace PassengerTicketService.ViewModels
     {
         private readonly INavigationService _navigationService;
 
-        public ICommand LoginCommand { get; }
-
         public ICommand NavigateRegisterCommand { get; }
 
-        public ICommand NavigateLoginCommand => throw new NotImplementedException();
+        public ICommand NavigateLoginCommand { get; }
 
         public StartViewModel(INavigationService navigationService)
         {
             _navigationService = navigationService;
             
             // Acties voor de Profiel-pagina knoppen (tijdelijk een alert)
-            LoginCommand = new AsyncRelayCommand(LoginAsync);
             NavigateRegisterCommand = new AsyncRelayCommand(_navigationService.NavigateToRegisterPageAsync);
-        }
-
-        private async Task LoginAsync()
-        {
-            // TODO: Vervang dit later door _navigationService.NavigateToLoginPageAsync();
-            await Application.Current.MainPage.DisplayAlert("Aanmelden", "Navigeer naar het inlogscherm", "OK");
+            NavigateLoginCommand = new AsyncRelayCommand(_navigationService.NavigateToLoginPageAsync);
         }
     }
 }

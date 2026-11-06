@@ -83,5 +83,11 @@ namespace PassengerTicketService.Services
             var page = _serviceProvider.GetRequiredService<RegisterPage>();
             await Shell.Current.Navigation.PushAsync(page);
         }
+
+        public async Task NavigateToLoginPageAsync()
+        {
+            var page = _serviceProvider.GetRequiredService<LoginPage>();
+            await Shell.Current.Navigation.PushAsync(page);
+        }
     }
 }

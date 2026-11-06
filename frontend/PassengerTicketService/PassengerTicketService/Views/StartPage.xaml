@@ -30,7 +30,7 @@
 
         <!-- Aanmelden Knop (Oranje) -->
         <Button Text="Aanmelden" 
-                    Command="{Binding LoginCommand}"
+                    Command="{Binding NavigateLoginCommand}"
                     BackgroundColor="#E86A22" 
                     TextColor="White" 
                     FontAttributes="Bold" 

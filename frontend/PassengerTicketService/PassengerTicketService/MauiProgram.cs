@@ -33,6 +33,7 @@ public static class MauiProgram
         builder.Services.AddTransient<ITicketViewModel, TicketViewModel>();
         builder.Services.AddTransient<IStartViewModel, StartViewModel>();
         builder.Services.AddTransient<IRegisterViewModel, RegisterViewModel>();
+        builder.Services.AddTransient<ILoginViewModel, LoginViewModel>();
 
         // --- REGISTREER PAGES ---
         builder.Services.AddTransient<HomePage>();
@@ -41,6 +42,7 @@ public static class MauiProgram
         builder.Services.AddTransient<TicketPage>();
         builder.Services.AddTransient<StartPage>();   
         builder.Services.AddTransient<RegisterPage>();
+        builder.Services.AddTransient<LoginPage>();
 
         return builder.Build();
     }

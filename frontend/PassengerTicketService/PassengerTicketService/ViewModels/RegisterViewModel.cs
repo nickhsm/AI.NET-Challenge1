@@ -91,6 +91,8 @@ namespace PassengerTicketService.ViewModels
             }
 
             // TODO: Hier komt later de API call (bijv. _apiService.RegisterAsync(...))
+            // TODO: Validatie van de geboortedatum (bijv. minimaal 18 jaar oud) kan hier ook worden toegevoegd.
+            // TODO: Als eamil al in gebruik is, kan de API een foutmelding teruggeven die hier kan worden afgehandeld.
 
             // Tijdelijke simulatie van een API call
             await Application.Current.MainPage.DisplayAlert("Succes", "Je account is aangemaakt! Je kunt nu inloggen.", "OK");
