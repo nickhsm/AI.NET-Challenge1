@@ -222,4 +222,37 @@ public class FaceRecognitionService : IFaceRecognitionService
 
         // If successful, person is deleted.
     }
+
+    public async Task DeleteAllAsync()
+    {
+        // Deleting every person one by one would leave an empty group behind,
+        // and Azure cannot train a group without persons.
+        // So we delete the whole group and create a fresh, empty one with the same id.
+        string groupUrl = $"/face/v1.2/largepersongroups/{_groupId}";
+
+        // Step 1: delete the group, including all persons and faces in it.
+        var responseDeleteGroup = await _httpClient.DeleteAsync(groupUrl);
+
+        // 404 means the group was already gone, so there is nothing to delete.
+        if (!responseDeleteGroup.IsSuccessStatusCode && responseDeleteGroup.StatusCode != HttpStatusCode.NotFound)
+        {
+            var error = await responseDeleteGroup.Content.ReadAsStringAsync();
+            throw new AzureServiceException(error);
+        }
+
+        // Step 2: create the group again.
+        // recognitionModel must match the one used in IdentifyAsync.
+        var responseCreateGroup = await _httpClient.PutAsJsonAsync(groupUrl,
+            new
+            {
+                name = _groupId,
+                recognitionModel = "recognition_04"
+            });
+
+        if (!responseCreateGroup.IsSuccessStatusCode)
+        {
+            var error = await responseCreateGroup.Content.ReadAsStringAsync();
+            throw new AzureServiceException(error);
+        }
+    }
 }
