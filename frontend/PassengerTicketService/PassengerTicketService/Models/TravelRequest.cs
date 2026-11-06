@@ -20,6 +20,6 @@ namespace PassengerTicketService.Models
         private bool isRoundTrip;
 
         [ObservableProperty]
-        private DateOnly expirationDate = DateOnly.FromDateTime(DateTime.Today);
+        private DateTime expirationDate;
     }
 }

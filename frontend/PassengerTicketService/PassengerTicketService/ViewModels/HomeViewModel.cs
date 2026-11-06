@@ -16,6 +16,21 @@ namespace PassengerTicketService.ViewModels
         [ObservableProperty]
         private string endStation;
 
+        [ObservableProperty]
+        private DateTime selectedDate = DateTime.Today;
+        public DateTime MinimumDate => DateTime.Today;
+
+        // Deze property berekent automatisch de tekst voor de UI
+        public string DateDisplayText
+        {
+            get
+            {
+                if (SelectedDate.Date == DateTime.Today)
+                    return "vandaag";
+                return SelectedDate.ToString("dd/MM/yyyy");
+            }
+        }
+
         public ICommand BuyTicketCommand { get; private set; } = null!;
         public ICommand NavigateHomeCommand { get; private set; } = null!;
         public ICommand NavigateTicketsCommand { get; private set; } = null!;
@@ -42,6 +57,13 @@ namespace PassengerTicketService.ViewModels
             SwapStationsCommand = new RelayCommand(SwapStations);
         }
 
+        // Deze methode wordt AUTOMATISCH aangeroepen door de Toolkit als SelectedDate verandert
+        partial void OnSelectedDateChanged(DateTime value)
+        {
+            // Vertel de UI dat DateDisplayText opnieuw berekend moet worden
+            OnPropertyChanged(nameof(DateDisplayText));
+        }
+
         // De logica voor het wisselen
         private void SwapStations()
         {
@@ -63,7 +85,7 @@ namespace PassengerTicketService.ViewModels
                 EndStation = EndStation.ToUpper(),
                 PassengerCount = 1,     // Standaard 1 passagier
                 IsRoundTrip = false,    // Standaard enkele reis
-                ExpirationDate = DateOnly.FromDateTime(DateTime.Today)
+                ExpirationDate = SelectedDate
             };
 
             // Navigeer en geef de request mee via de NavigationService
