@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TicketService.Infrastructure.DbContexts;
 using TicketService.Infrastructure.Repositories;
+using TicketService.Infrastructure.Seeders;
 using TicketService.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,6 +30,9 @@ builder.Services.AddHttpClient<IFaceRecognitionService, FaceRecognitionService>(
 // Repositories
 builder.Services.AddScoped<IPassengerRepository, PassengerRepository>();
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+
+// Seeder
+builder.Services.AddScoped<IDatabaseSeeder, DatabaseSeeder>();
 
 // Controllers
 builder.Services.AddControllers();
