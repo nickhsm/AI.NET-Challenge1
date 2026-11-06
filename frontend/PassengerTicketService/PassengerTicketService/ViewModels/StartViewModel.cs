@@ -9,14 +9,18 @@ namespace PassengerTicketService.ViewModels
     {
         private readonly INavigationService _navigationService;
 
-        public ICommand NavigateRegisterCommand { get; }
+        public ICommand NavigateRegisterCommand { get; private set; } = null!;
 
-        public ICommand NavigateLoginCommand { get; }
+        public ICommand NavigateLoginCommand { get; private set; } = null!;
 
         public StartViewModel(INavigationService navigationService)
         {
             _navigationService = navigationService;
-            
+            BindCommands();
+        }
+
+        private void BindCommands()
+        {
             // Acties voor de Profiel-pagina knoppen (tijdelijk een alert)
             NavigateRegisterCommand = new AsyncRelayCommand(_navigationService.NavigateToRegisterPageAsync);
             NavigateLoginCommand = new AsyncRelayCommand(_navigationService.NavigateToLoginPageAsync);
