@@ -31,14 +31,16 @@ public static class MauiProgram
         builder.Services.AddTransient<IYourTravelViewModel, YourTravelViewModel>();
         builder.Services.AddTransient<IShoppingCartViewModel, ShoppingCartViewModel>();
         builder.Services.AddTransient<ITicketViewModel, TicketViewModel>();
-        builder.Services.AddTransient<IProfileViewModel, ProfileViewModel>();
+        builder.Services.AddTransient<IStartViewModel, StartViewModel>();
+        builder.Services.AddTransient<IRegisterViewModel, RegisterViewModel>();
 
         // --- REGISTREER PAGES ---
         builder.Services.AddTransient<HomePage>();
         builder.Services.AddTransient<YourTravelPage>();
         builder.Services.AddTransient<ShoppingCartPage>();
         builder.Services.AddTransient<TicketPage>();
-        builder.Services.AddTransient<ProfilePage>();   
+        builder.Services.AddTransient<StartPage>();   
+        builder.Services.AddTransient<RegisterPage>();
 
         return builder.Build();
     }

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:PassengerTicketService.ViewModels"
+             x:Class="PassengerTicketService.Views.RegisterPage"
+             x:DataType="viewModels:IRegisterViewModel"
+             BackgroundColor="#101010"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto, *">
+
+        <!-- 1. HEADER -->
+        <Grid Grid.Row="0" Padding="20,40,20,15" ColumnDefinitions="Auto, *" ColumnSpacing="15">
+            <Grid Grid.Column="0" WidthRequest="40" HeightRequest="40" HorizontalOptions="Start" VerticalOptions="Center">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding NavigateBackCommand}" />
+                </Grid.GestureRecognizers>
+                <Label Text="←" TextColor="White" FontSize="26" HorizontalOptions="Center" VerticalOptions="Center" />
+            </Grid>
+
+            <Label Grid.Column="1" Text="Account aanmaken" TextColor="White" FontSize="22" FontAttributes="Bold" VerticalOptions="Center" />
+        </Grid>
+
+        <!-- 2. FORMULIER -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="20,10,20,30" Spacing="15">
+
+                <!-- Voornaam -->
+                <Border Stroke="#444444" StrokeThickness="1" BackgroundColor="#1E1E1E" HeightRequest="60">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="8" />
+                    </Border.StrokeShape>
+                    <Entry Text="{Binding FirstName}" Placeholder="Voornaam:" TextColor="White" PlaceholderColor="#5AA2F0" BackgroundColor="Transparent" Margin="10,0" />
+                </Border>
+
+                <!-- Familienaam -->
+                <Border Stroke="#444444" StrokeThickness="1" BackgroundColor="#1E1E1E" HeightRequest="60">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="8" />
+                    </Border.StrokeShape>
+                    <Entry Text="{Binding LastName}" Placeholder="Familienaam:" TextColor="White" PlaceholderColor="#5AA2F0" BackgroundColor="Transparent" Margin="10,0" />
+                </Border>
+
+                <!-- E-mail -->
+                <Border Stroke="#444444" StrokeThickness="1" BackgroundColor="#1E1E1E" HeightRequest="60">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="8" />
+                    </Border.StrokeShape>
+                    <Entry Text="{Binding Email}" Placeholder="E-mail:" TextColor="White" PlaceholderColor="#5AA2F0" BackgroundColor="Transparent" Keyboard="Email" Margin="10,0" />
+                </Border>
+
+                <!-- Wachtwoord -->
+                <Border Stroke="#444444" StrokeThickness="1" BackgroundColor="#1E1E1E" HeightRequest="60">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="8" />
+                    </Border.StrokeShape>
+                    <Grid ColumnDefinitions="*, Auto" Margin="10,0">
+                        <Entry Grid.Column="0" Text="{Binding Password}" Placeholder="Wachtwoord:" TextColor="White" PlaceholderColor="#5AA2F0" BackgroundColor="Transparent" IsPassword="{Binding IsPasswordVisible, Converter={StaticResource InverseBoolConverter}}" />
+                        <Grid Grid.Column="1" WidthRequest="40" HeightRequest="40" VerticalOptions="Center">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding TogglePasswordVisibilityCommand}" />
+                            </Grid.GestureRecognizers>
+                            <!-- Gebruik hier eventueel een echte afbeelding/icoon in plaats van deze emoji -->
+                            <Label Text="👁" TextColor="White" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center" />
+                        </Grid>
+                    </Grid>
+                </Border>
+
+                <!-- Wachtwoord bevestigen -->
+                <Border Stroke="#444444" StrokeThickness="1" BackgroundColor="#1E1E1E" HeightRequest="60">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="8" />
+                    </Border.StrokeShape>
+                    <Grid ColumnDefinitions="*, Auto" Margin="10,0">
+                        <Entry Grid.Column="0" Text="{Binding ConfirmPassword}" Placeholder="Wachtwoord bevestigen:" TextColor="White" PlaceholderColor="#5AA2F0" BackgroundColor="Transparent" IsPassword="{Binding IsConfirmPasswordVisible, Converter={StaticResource InverseBoolConverter}}" />
+                        <Grid Grid.Column="1" WidthRequest="40" HeightRequest="40" VerticalOptions="Center">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ToggleConfirmPasswordVisibilityCommand}" />
+                            </Grid.GestureRecognizers>
+                            <Label Text="👁" TextColor="White" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center" />
+                        </Grid>
+                    </Grid>
+                </Border>
+
+                <!-- Geboortedatum -->
+                <Grid ColumnDefinitions="Auto, *" VerticalOptions="Center" Margin="0,10,0,0">
+                    <Label Grid.Column="0" Text="Geboortedatum:" TextColor="#5AA2F0" FontSize="16" VerticalOptions="Center" Margin="10,0,15,0" />
+                    <Border Grid.Column="1" Stroke="Transparent" BackgroundColor="#232325" HeightRequest="50">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="8" />
+                        </Border.StrokeShape>
+                        <DatePicker Date="{Binding BirthDate}" Format="dd/MM/yyyy" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="Fill" />
+                    </Border>
+                </Grid>
+
+                <!-- Aanmaken Knop (Oranje) -->
+                <Button Text="Account aanmaken" 
+                        Command="{Binding RegisterCommand}"
+                        BackgroundColor="#E86A22" 
+                        TextColor="White" 
+                        FontAttributes="Bold" 
+                        FontSize="16"
+                        CornerRadius="8" 
+                        HeightRequest="55" 
+                        Margin="0,30,0,0" />
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

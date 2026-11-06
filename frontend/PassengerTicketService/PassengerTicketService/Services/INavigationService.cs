@@ -12,6 +12,7 @@ namespace PassengerTicketService.Services
         Task NavigateToTicketsPageAsync();
         Task NavigateToHomePageAsync();
         Task NavigateToProfilePageAsync();
+        Task NavigateToRegisterPageAsync();
         Task NavigateBackAsync();
     }
 }

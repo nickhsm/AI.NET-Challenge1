@@ -14,8 +14,8 @@ namespace PassengerTicketService.Services
 
         public async Task NavigateToProfilePageAsync()
         {
-            var page = _serviceProvider.GetRequiredService<ProfilePage>();
-            await Shell.Current.Navigation.PushAsync(page);
+            throw new NotImplementedException();
+            //await Shell.Current.GoToAsync("//ProfilePage");
         }
 
         public async Task NavigateBackAsync()
@@ -49,8 +49,7 @@ namespace PassengerTicketService.Services
         // de ViewModel always gets de BindingContext of a new ViewModel.
         public async Task NavigateToTicketsPageAsync()
         {
-            var page = _serviceProvider.GetRequiredService<TicketPage>();
-            await Shell.Current.Navigation.PushAsync(page);
+            await Shell.Current.GoToAsync("//TicketPage");
         }
 
         // Navbar 'Home'-button: HomePage heeft geen data te pass along, dus no
@@ -76,6 +75,12 @@ namespace PassengerTicketService.Services
                 queryAttributable.ApplyQueryAttributes(parameters);
 
             // 4. Navigeer naar de pagina
+            await Shell.Current.Navigation.PushAsync(page);
+        }
+
+        public async Task NavigateToRegisterPageAsync()
+        {
+            var page = _serviceProvider.GetRequiredService<RegisterPage>();
             await Shell.Current.Navigation.PushAsync(page);
         }
     }
