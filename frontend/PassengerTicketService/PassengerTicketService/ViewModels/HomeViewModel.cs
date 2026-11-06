@@ -20,6 +20,7 @@ namespace PassengerTicketService.ViewModels
         public ICommand NavigateHomeCommand { get; private set; } = null!;
         public ICommand NavigateTicketsCommand { get; private set; } = null!;
         public ICommand NavigateProfileCommand { get; private set; } = null!;
+        public ICommand SwapStationsCommand { get; private set; } = null!;
 
         public HomeViewModel(INavigationService navigationService)
         {
@@ -37,6 +38,17 @@ namespace PassengerTicketService.ViewModels
             NavigateHomeCommand = new RelayCommand(() => { });
             
             NavigateProfileCommand = new AsyncRelayCommand(_navigationService.NavigateToProfilePageAsync);
+
+            SwapStationsCommand = new RelayCommand(SwapStations);
+        }
+
+        // De logica voor het wisselen
+        private void SwapStations()
+        {
+            // Wissel de waarden om via een tijdelijke variabele
+            var temp = StartStation;
+            StartStation = EndStation;
+            EndStation = temp;
         }
 
         private async Task GoToYourTravelPage()
