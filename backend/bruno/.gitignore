@@ -1,0 +1,4 @@
+# Real face photos stay on your machine.
+images/*.jpg
+images/*.jpeg
+images/no-face.png

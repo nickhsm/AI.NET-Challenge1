@@ -35,7 +35,7 @@ namespace PassengerTicketService.ViewModels
             NavigateTicketsCommand = new AsyncRelayCommand(_navigationService.NavigateToTicketsPageAsync);
 
             NavigateHomeCommand = new RelayCommand(() => { });
-            
+
             NavigateProfileCommand = new AsyncRelayCommand(_navigationService.NavigateToProfilePageAsync);
         }
 

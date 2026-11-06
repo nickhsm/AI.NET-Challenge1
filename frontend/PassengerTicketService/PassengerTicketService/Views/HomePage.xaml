@@ -38,9 +38,9 @@
 
                         <Grid VerticalOptions="Center">
                             <!-- Bind aan StartStation -->
-                            <Entry Placeholder="station, halte of adres" 
-                                   Text="{Binding StartStation}" 
-                                   TextColor="White" 
+                            <Entry Placeholder="station, halte of adres"
+                                   Text="{Binding StartStation}"
+                                   TextColor="White"
                                    PlaceholderColor="#888888"
                                    HorizontalOptions="Fill"/>
                         </Grid>
@@ -49,8 +49,8 @@
 
                         <Grid VerticalOptions="Center">
                             <!-- Bind aan EndStation -->
-                            <Entry Placeholder="station, halte of adres" 
-                                   Text="{Binding EndStation}" 
+                            <Entry Placeholder="station, halte of adres"
+                                   Text="{Binding EndStation}"
                                    TextColor="White"
                                    PlaceholderColor="#888888"
                                    HorizontalOptions="Fill"/>
@@ -100,8 +100,8 @@
                 <!-- Zoeken Button -->
                 <Button Grid.Row="2" 
                     Text="Kopen" 
-                    Command="{Binding BuyTicketCommand}" 
-                    BackgroundColor="#E86A22" 
+                    Command="{Binding BuyTicketCommand}"
+                    BackgroundColor="#E86A22"
                     TextColor="White" 
                     FontAttributes="Bold" 
                     FontSize="18" 
