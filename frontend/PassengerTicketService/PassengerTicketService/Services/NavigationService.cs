@@ -14,8 +14,7 @@ namespace PassengerTicketService.Services
 
         public async Task NavigateToProfilePageAsync()
         {
-            throw new NotImplementedException();
-            //await Shell.Current.GoToAsync("//ProfilePage");
+            await Shell.Current.GoToAsync("//ProfilePage");
         }
 
         public async Task NavigateBackAsync()
