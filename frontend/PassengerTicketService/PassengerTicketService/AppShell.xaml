@@ -11,14 +11,14 @@
         ContentTemplate="{DataTemplate views:StartPage}"
         Route="MainPage" />
 
-    <ShellContent 
-        Title="Home" 
-        ContentTemplate="{DataTemplate views:HomePage}" 
+    <ShellContent
+        Title="Home"
+        ContentTemplate="{DataTemplate views:HomePage}"
         Route="HomePage" />
 
-    <ShellContent 
-        Title="Tickets" 
-        ContentTemplate="{DataTemplate views:TicketPage}" 
+    <ShellContent
+        Title="Tickets"
+        ContentTemplate="{DataTemplate views:TicketPage}"
         Route="TicketPage" />
 
 </Shell>

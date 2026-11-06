@@ -55,7 +55,7 @@ namespace PassengerTicketService.ViewModels
 
             // Navbar Home-ikoon → to the Home-page
             NavigateHomeCommand = new AsyncRelayCommand(_navigationService.NavigateToHomePageAsync);
-            
+
             NavigateProfileCommand = new AsyncRelayCommand(_navigationService.NavigateToProfilePageAsync);
 
             LoadMockData();

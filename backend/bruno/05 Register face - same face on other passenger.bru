@@ -1,0 +1,21 @@
+meta {
+  name: Register face - same face on other passenger
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/api/passenger/{{sarahPassengerId}}/face
+  body: multipartForm
+  auth: none
+}
+
+body:multipart-form {
+  photo: @file(images/nick.jpg)
+}
+tests {
+  test("409 face already used by another account", function() {
+    expect(res.getStatus()).to.equal(409);
+    expect(res.getBody()).to.contain("another account");
+  });
+}
