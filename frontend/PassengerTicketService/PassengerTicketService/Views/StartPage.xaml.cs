@@ -7,9 +7,9 @@ using PassengerTicketService.ViewModels;
 
 namespace PassengerTicketService.Views;
 
-public partial class ProfilePage : ContentPage
+public partial class StartPage : ContentPage
 {
-    public ProfilePage(IProfileViewModel viewModel)
+    public StartPage(IStartViewModel viewModel)
     {
         InitializeComponent();
         BindingContext = viewModel;
