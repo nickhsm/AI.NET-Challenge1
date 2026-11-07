@@ -217,6 +217,7 @@ public class FaceViewModel : ObservableObject, IFaceViewModel
     {
         if (ticket is null) return;
 
+        IsBusy = true;
         try
         {
             await _ticketService.ConsumeTicket(ticket.Id);
@@ -245,6 +246,10 @@ public class FaceViewModel : ObservableObject, IFaceViewModel
         {
             StatusMessage = "We kunnen de server niet bereiken. Heeft u verbinding met het internet?";
             Debug.WriteLine(ex);
+        }
+        finally
+        {
+            IsBusy = false;
         }
     }
 }
