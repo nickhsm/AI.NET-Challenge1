@@ -12,6 +12,9 @@ namespace PassengerTicketService.ViewModels
         string ConfirmPassword { get; set; }
         DateTime BirthDate { get; set; }
 
+        // True terwijl we wachten op de backend (spinner)
+        bool IsBusy { get; set; }
+
         // Zichtbaarheid
         bool IsPasswordVisible { get; set; }
         bool IsConfirmPasswordVisible { get; set; }
