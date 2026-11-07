@@ -102,5 +102,11 @@ namespace PassengerTicketService.Services
             if (Shell.Current.CurrentState.Location.OriginalString.Contains("ProfilePage")) return;
             await Shell.Current.GoToAsync("//ProfilePage");
         }
+
+        public async Task NavigateToChangePassword()
+        {
+            var page = _serviceProvider.GetRequiredService<ChangePasswordPage>();
+            await Shell.Current.Navigation.PushAsync(page);
+        }
     }
 }
