@@ -11,7 +11,10 @@
 
         <Label Grid.Row="0" Text="Face Scan" FontSize="24" />
 
-        <Button Grid.Row="1" Command="{Binding TakePhotoCommand}" Text="Neem foto" />
+        <Button Grid.Row="1"
+                Command="{Binding TakePhotoCommand}"
+                Text="Neem foto"
+                IsEnabled="{Binding IsNotBusy}" />
 
         <!-- Status message in a highlighted box so the conductor notices it right away -->
         <Border Grid.Row="2"
@@ -38,6 +41,14 @@
                    Source="{Binding PhotoPreview}"
                    Aspect="AspectFit"
                    MaximumHeightRequest="200" />
+
+            <!-- Loading spinner while the face is being checked. Shares the column with the
+                 passenger info, which is hidden during loading (RequestResult is null then). -->
+            <ActivityIndicator Grid.Column="1"
+                               IsRunning="{Binding IsBusy}"
+                               IsVisible="{Binding IsBusy}"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
 
             <VerticalStackLayout Grid.Column="1"
                                  Spacing="5"
