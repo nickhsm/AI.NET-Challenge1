@@ -1,0 +1,17 @@
+meta {
+  name: Get ticket by QR - unknown QR
+  type: http
+  seq: 24
+}
+
+get {
+  url: {{baseUrl}}/api/ticket/qr/00000000-0000-0000-0000-000000000000
+  body: none
+  auth: inherit
+}
+
+tests {
+  test("404 no ticket with this QR code", function() {
+    expect(res.getStatus()).to.equal(404);
+  });
+}

@@ -1,0 +1,17 @@
+auth {
+  mode: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+script:pre-request {
+  // The free Azure Face tier (F0) allows 20 calls per minute.
+  // One face request can make several Azure calls, so wait before every request that uses Azure.
+  // Without this the collection runs too fast and Azure answers with 429 (too many requests).
+  const url = req.getUrl();
+  if (url.includes("/face") || url.includes("/dev/")) {
+    await bru.sleep(6000);
+  }
+}

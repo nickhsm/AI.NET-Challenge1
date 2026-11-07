@@ -49,6 +49,9 @@ namespace TicketService.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
                     b.ToTable("Conductors");
                 });
 
@@ -160,6 +163,9 @@ namespace TicketService.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DestinationStationId");
+
+                    b.HasIndex("GuidQrCode")
+                        .IsUnique();
 
                     b.HasIndex("PassengerId");
 

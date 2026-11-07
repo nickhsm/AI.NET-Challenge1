@@ -1,0 +1,17 @@
+meta {
+  name: Unregister face - as conductor
+  type: http
+  seq: 25
+}
+
+delete {
+  url: {{baseUrl}}/api/passenger/me/face
+  body: none
+  auth: inherit
+}
+
+tests {
+  test("403 a conductor may not use passenger endpoints", function() {
+    expect(res.getStatus()).to.equal(403);
+  });
+}

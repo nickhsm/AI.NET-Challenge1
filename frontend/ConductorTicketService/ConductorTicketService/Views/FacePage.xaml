@@ -3,15 +3,120 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:ConductorTicketService.ViewModels"
+             xmlns:models="clr-namespace:ConductorTicketService.Models"
              x:Class="ConductorTicketService.Views.FacePage"
              x:DataType="viewModels:IFaceViewModel">
 
-    <VerticalStackLayout Spacing="10" Padding="20">
-        <Label Text="Face Scan" FontSize="24" />
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,*" RowSpacing="10" Padding="20">
 
-        <Button Command="{Binding TakePhotoCommand}" Text="Neem foto" />
+        <Label Grid.Row="0" Text="Face Scan" FontSize="24" />
 
-        <Label Text="{Binding StatusMessage}" IsVisible="{Binding HasStatusMessage}" />
-        <Image Source="{Binding PhotoPreview}" />
-    </VerticalStackLayout>
+        <Button Grid.Row="1"
+                Command="{Binding TakePhotoCommand}"
+                Text="Neem foto"
+                IsEnabled="{Binding IsNotBusy}" />
+
+        <!-- Status message in a highlighted box so the conductor notices it right away -->
+        <Border Grid.Row="2"
+                IsVisible="{Binding HasStatusMessage}"
+                Padding="16"
+                Margin="0,10"
+                StrokeThickness="0"
+                BackgroundColor="{AppThemeBinding Light=#E8F0FE, Dark=#1E2A3A}">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="8" />
+            </Border.StrokeShape>
+
+            <Label Text="{Binding StatusMessage}"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   LineBreakMode="WordWrap"
+                   HorizontalTextAlignment="Center"
+                   TextColor="{AppThemeBinding Light=#1A1A1A, Dark=#F0F0F0}" />
+        </Border>
+
+        <!-- Photo on the left, passenger info on the right -->
+        <Grid Grid.Row="3" ColumnDefinitions="*,*" ColumnSpacing="10">
+            <Image Grid.Column="0"
+                   Source="{Binding PhotoPreview}"
+                   Aspect="AspectFit"
+                   MaximumHeightRequest="200" />
+
+            <!-- Loading spinner while the face is being checked. Shares the column with the
+                 passenger info, which is hidden during loading (RequestResult is null then). -->
+            <ActivityIndicator Grid.Column="1"
+                               IsRunning="{Binding IsBusy}"
+                               IsVisible="{Binding IsBusy}"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+
+            <VerticalStackLayout Grid.Column="1"
+                                 Spacing="5"
+                                 VerticalOptions="Start"
+                                 IsVisible="{Binding HasRequestResult}">
+                <Label Text="Passagier" FontAttributes="Bold" />
+                <Label LineBreakMode="WordWrap">
+                    <Label.Text>
+                        <MultiBinding StringFormat="{}{0} {1}">
+                            <Binding Path="RequestResult.FirstName" />
+                            <Binding Path="RequestResult.Surname" />
+                        </MultiBinding>
+                    </Label.Text>
+                </Label>
+            </VerticalStackLayout>
+        </Grid>
+
+        <Label Grid.Row="4"
+               Text="Geldige tickets"
+               FontSize="18"
+               FontAttributes="Bold"
+               IsVisible="{Binding HasRequestResult}" />
+
+        <CollectionView Grid.Row="5"
+                        ItemsSource="{Binding TicketListItemResult}"
+                        IsVisible="{Binding HasRequestResult}"
+                        SelectionMode="None">
+
+            <CollectionView.EmptyView>
+                <Label Text="Deze passagier heeft geen geldige tickets."
+                       HorizontalOptions="Center"
+                       Margin="0,20" />
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
+            </CollectionView.ItemsLayout>
+
+            <CollectionView.ItemTemplate>
+                <!-- Inside the template the binding context is one ticket, not the view model -->
+                <DataTemplate x:DataType="models:TicketListItemResult">
+                    <Border Padding="12" StrokeThickness="1" Stroke="Gray">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="8" />
+                        </Border.StrokeShape>
+
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Ticket" FontAttributes="Bold" />
+                            <Label LineBreakMode="WordWrap">
+                                <Label.Text>
+                                    <MultiBinding StringFormat="{}{0} → {1}">
+                                        <Binding Path="StartingStation" />
+                                        <Binding Path="DestinationStation" />
+                                    </MultiBinding>
+                                </Label.Text>
+                            </Label>
+                            <Label Text="{Binding Date, StringFormat='Geldig op {0:dd/MM/yyyy}'}" />
+
+                            <!-- The command lives on the view model, so look it up via the page's binding context.
+                                 The ticket itself is passed along as CommandParameter. -->
+                            <Button Text="Gebruik"
+                                    Margin="0,10,0,0"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:IFaceViewModel}}, Path=ConsumeTicketCommand, x:DataType=viewModels:IFaceViewModel}"
+                                    CommandParameter="{Binding .}" />
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
 </ContentPage>

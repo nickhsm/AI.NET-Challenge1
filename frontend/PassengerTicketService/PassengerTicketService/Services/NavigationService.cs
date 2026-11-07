@@ -76,7 +76,10 @@ namespace PassengerTicketService.Services
 
         public async Task NavigateToStartPageAsync()
         {
-            await Shell.Current.GoToAsync("//StartPage");
+            // The AuthHeaderHandler can call this from a background thread,
+            // and navigating is only allowed on the main (UI) thread.
+            // When we are already on the main thread, this just runs immediately.
+            await MainThread.InvokeOnMainThreadAsync(() => Shell.Current.GoToAsync("//StartPage"));
         }
 
         public async Task NavigateToHomeAfterLoginAsync()
@@ -101,6 +104,12 @@ namespace PassengerTicketService.Services
         {
             if (Shell.Current.CurrentState.Location.OriginalString.Contains("ProfilePage")) return;
             await Shell.Current.GoToAsync("//ProfilePage");
+        }
+
+        public async Task NavigateToChangePassword()
+        {
+            var page = _serviceProvider.GetRequiredService<ChangePasswordPage>();
+            await Shell.Current.Navigation.PushAsync(page);
         }
     }
 }

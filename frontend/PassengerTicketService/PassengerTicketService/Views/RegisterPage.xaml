@@ -50,7 +50,8 @@
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="8" />
                         </Border.StrokeShape>
-                        <Entry Text="{Binding Email}" TextColor="White" BackgroundColor="Transparent" Margin="10,0" />
+                        <Entry Text="{Binding Email}" TextColor="White" BackgroundColor="Transparent" Keyboard="Email"
+                               IsSpellCheckEnabled="False" IsTextPredictionEnabled="False" Margin="10,0" />
                     </Border>
                 </VerticalStackLayout>
 

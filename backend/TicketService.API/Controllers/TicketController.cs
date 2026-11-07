@@ -1,13 +1,16 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TicketService.API.MappingProfiles;
 using TicketService.Contracts.Models;
 using TicketService.Infrastructure.Exceptions;
 using TicketService.Infrastructure.Repositories;
+using TicketService.Shared;
 
 namespace TicketService.API.Controllers;
 
 [Route("api/ticket")]
 [ApiController]
+[Authorize(Roles = Roles.Conductor)]
 public class TicketController : ControllerBase
 {
     private ITicketRepository  _ticketRepository;
@@ -19,7 +22,7 @@ public class TicketController : ControllerBase
         _passengerRepository = passengerRepository;
     }
 
-    [HttpGet("passenger/{FacePersonId}")]
+    [HttpGet("passenger/{FacePersonId:guid}")]
     public async Task<ActionResult<IEnumerable<TicketListDto>>> GetPassengerTickets(Guid facePersonId)
     {
         var passenger = await _passengerRepository.GetPassengerByFacePersonIdAsync(facePersonId);
@@ -57,5 +60,18 @@ public class TicketController : ControllerBase
         }
 
         return NoContent();
+    }
+
+    [HttpGet("qr/{qrCode:guid}")]
+    public async Task<ActionResult<TicketQrCodeDto>> GetTicketByQrCode(Guid qrCode)
+    {
+        var result = await _ticketRepository.GetTicketByQrCodeAsync(qrCode);
+
+        if (result is null)
+        {
+            return NotFound("Ticket does not exist.");
+        }
+
+        return Ok(TicketMapper.ToTicketQrCodeDto(result));
     }
 }

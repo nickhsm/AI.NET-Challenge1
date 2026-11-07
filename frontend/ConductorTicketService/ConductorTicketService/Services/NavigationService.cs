@@ -23,11 +23,6 @@ public class NavigationService : INavigationService
         await _navigation.PushAsync(_serviceProvider.GetRequiredService<FacePage>());
     }
 
-    public async Task NavigateToScanIdPageAsync()
-    {
-        await _navigation.PushAsync(_serviceProvider.GetRequiredService<IdPage>());
-    }
-
     public async Task NavigateBackAsync()
     {
         if (_navigation.NavigationStack.Count > 1)
@@ -38,5 +33,15 @@ public class NavigationService : INavigationService
         {
             throw new InvalidOperationException("There are no pages left to navigate back to.");
         }
+    }
+
+    public async Task NavigateToMainPageAsync()
+    {
+        await Shell.Current.GoToAsync("//MainPage");
+    }
+
+    public async Task NavigateToLoginPageAsync()
+    {
+        await MainThread.InvokeOnMainThreadAsync(() => Shell.Current.GoToAsync("//LoginPage"));
     }
 }

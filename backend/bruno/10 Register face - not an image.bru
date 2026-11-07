@@ -1,0 +1,20 @@
+meta {
+  name: Register face - not an image
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{baseUrl}}/api/passenger/me/face
+  body: multipartForm
+  auth: inherit
+}
+
+body:multipart-form {
+  photo: @file(images/not-an-image.txt)
+}
+tests {
+  test("415 wrong file type", function() {
+    expect(res.getStatus()).to.equal(415);
+  });
+}

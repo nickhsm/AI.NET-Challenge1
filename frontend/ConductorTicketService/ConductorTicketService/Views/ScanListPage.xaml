@@ -5,9 +5,12 @@
              xmlns:viewModels="clr-namespace:ConductorTicketService.ViewModels"
              x:DataType="viewModels:IScanListViewModel"
              x:Class="ConductorTicketService.Views.ScanListPage">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Uitloggen" Command="{Binding LogoutCommand}" />
+    </ContentPage.ToolbarItems>
+
     <VerticalStackLayout Spacing="10" Padding="20">
         <Button Text="Scan QR Code" Command="{Binding ScanQrCodeCommand}" />
         <Button Text="Scan Face" Command="{Binding ScanFaceCommand}" />
-        <Button Text="Scan Id" Command="{Binding ScanIdCommand}" />
     </VerticalStackLayout>
 </ContentPage>

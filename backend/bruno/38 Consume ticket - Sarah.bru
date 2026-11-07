@@ -1,0 +1,17 @@
+meta {
+  name: Consume ticket - Sarah
+  type: http
+  seq: 38
+}
+
+patch {
+  url: {{baseUrl}}/api/ticket/consume/{{sarahTicketId}}
+  body: none
+  auth: inherit
+}
+
+tests {
+  test("204 ticket consumed", function() {
+    expect(res.getStatus()).to.equal(204);
+  });
+}
