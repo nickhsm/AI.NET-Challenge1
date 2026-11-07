@@ -25,6 +25,19 @@ public static class MauiProgram
         // --- REGISTREER SERVICES ---
         builder.Services.AddSingleton<INavigationService, NavigationService>();
 
+        // --- HTTPCLIENTS VOOR DE BACKEND ---
+        Uri baseAddress = new Uri("http://10.10.1.188:5271");
+
+        // Login does not need a token, so no AuthHeaderHandler here.
+        builder.Services.AddHttpClient<IAuthService, AuthService>(client =>
+        {
+            client.BaseAddress = baseAddress;
+        });
+
+        // Adds the token to every request of the clients it is attached to
+        // with .AddHttpMessageHandler<AuthHeaderHandler>().
+        builder.Services.AddTransient<AuthHeaderHandler>();
+
         // --- REGISTREER VIEWMODELS ---
         // Koppel de Interface aan de class
         builder.Services.AddTransient<IHomeViewModel, HomeViewModel>();

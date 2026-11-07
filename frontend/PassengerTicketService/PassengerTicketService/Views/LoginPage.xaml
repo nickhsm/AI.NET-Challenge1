@@ -32,7 +32,9 @@
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="8" />
                         </Border.StrokeShape>
-                        <Entry Text="{Binding Email}" TextColor="White" BackgroundColor="Transparent" Keyboard="Email" Margin="10,0" />
+                        <!-- Spell check and text prediction off, so the keyboard doesn't "correct" the email address -->
+                        <Entry Text="{Binding Email}" TextColor="White" BackgroundColor="Transparent" Keyboard="Email"
+                               IsSpellCheckEnabled="False" IsTextPredictionEnabled="False" Margin="10,0" />
                     </Border>
                 </VerticalStackLayout>
 
@@ -77,6 +79,9 @@
                         CornerRadius="8" 
                         HeightRequest="55" 
                         Margin="0,20,0,0" />
+
+                <!-- Spinner while waiting on the backend -->
+                <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" Color="#E86A22" />
 
             </VerticalStackLayout>
         </ScrollView>
