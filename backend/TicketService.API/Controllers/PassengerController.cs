@@ -1,9 +1,12 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TicketService.API.MappingProfiles;
 using TicketService.Contracts.Models;
 using TicketService.Infrastructure.Exceptions;
 using TicketService.Infrastructure.Repositories;
 using TicketService.Infrastructure.Services;
+using TicketService.Shared;
 
 namespace TicketService.API.Controllers;
 
@@ -40,10 +43,17 @@ public class PassengerController : ControllerBase
         return null;
     }
 
-    [HttpPost("{id}/face")]
-    public async Task<ActionResult<PassengerFaceDto>> RegisterFace(int id,
-        IFormFile photo)
+    private int GetPassengerId()
     {
+        return int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    }
+
+    [Authorize(Roles = Roles.Passenger)]
+    [HttpPost("me/face")]
+    public async Task<ActionResult<PassengerFaceDto>> RegisterFace(IFormFile photo)
+    {
+        int id = GetPassengerId();
+
         ActionResult? photoError = ValidatePhoto(photo);
         if (photoError is not null)
         {
@@ -100,9 +110,12 @@ public class PassengerController : ControllerBase
         return StatusCode(StatusCodes.Status201Created, mappedResult);
     }
 
-    [HttpDelete("{id}/face")]
-    public async Task<ActionResult> UnregisterFace(int id)
+    [Authorize(Roles = Roles.Passenger)]
+    [HttpDelete("me/face")]
+    public async Task<ActionResult> UnregisterFace()
     {
+        int id = GetPassengerId();
+
         var passenger = await _passengerRepository.GetPassengerByIdAsync(id);
         if (passenger is null)
         {
@@ -128,6 +141,7 @@ public class PassengerController : ControllerBase
         return NoContent();
     }
 
+    [Authorize(Roles = Roles.Conductor)]
     [HttpPost("check-face")]
     public async Task<ActionResult<CheckFaceDto>> CheckFace(IFormFile photo)
     {
