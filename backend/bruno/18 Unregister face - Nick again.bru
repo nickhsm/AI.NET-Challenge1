@@ -1,0 +1,17 @@
+meta {
+  name: Unregister face - Nick again
+  type: http
+  seq: 18
+}
+
+delete {
+  url: {{baseUrl}}/api/passenger/me/face
+  body: none
+  auth: inherit
+}
+
+tests {
+  test("404 no face registered", function() {
+    expect(res.getStatus()).to.equal(404);
+  });
+}

@@ -1,0 +1,17 @@
+meta {
+  name: Consume ticket - not valid today
+  type: http
+  seq: 23
+}
+
+patch {
+  url: {{baseUrl}}/api/ticket/consume/{{yesterdayTicketId}}
+  body: none
+  auth: inherit
+}
+
+tests {
+  test("409 ticket is not valid today", function() {
+    expect(res.getStatus()).to.equal(409);
+  });
+}

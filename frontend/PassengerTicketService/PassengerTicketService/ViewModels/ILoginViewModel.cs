@@ -8,6 +8,9 @@ namespace PassengerTicketService.ViewModels
         string Email { get; set; }
         string Password { get; set; }
 
+        // True terwijl we wachten op de backend (spinner)
+        bool IsBusy { get; set; }
+
         // Voor het oogje
         bool IsPasswordVisible { get; set; }
         bool IsPasswordHidden { get; }

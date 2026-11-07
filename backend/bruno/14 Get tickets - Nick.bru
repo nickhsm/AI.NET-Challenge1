@@ -1,0 +1,21 @@
+meta {
+  name: Get tickets - Nick
+  type: http
+  seq: 14
+}
+
+get {
+  url: {{baseUrl}}/api/ticket/passenger/{{nickFacePersonId}}
+  body: none
+  auth: inherit
+}
+
+tests {
+  test("200 OK", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  test("returns a list of tickets", function() {
+    expect(res.getBody()).to.be.an("array");
+  });
+}

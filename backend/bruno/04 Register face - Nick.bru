@@ -1,0 +1,30 @@
+meta {
+  name: Register face - Nick
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/passenger/me/face
+  body: multipartForm
+  auth: inherit
+}
+
+body:multipart-form {
+  photo: @file(images/nick.jpg)
+}
+script:post-response {
+  if (res.getStatus() === 201) {
+    bru.setVar("nickFacePersonId", res.getBody().azureFaceId);
+  }
+}
+
+tests {
+  test("201 Created", function() {
+    expect(res.getStatus()).to.equal(201);
+  });
+
+  test("returns the Azure person id", function() {
+    expect(res.getBody().azureFaceId).to.match(/^[0-9a-f-]{36}$/);
+  });
+}

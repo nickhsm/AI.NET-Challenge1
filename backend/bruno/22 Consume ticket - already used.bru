@@ -1,0 +1,17 @@
+meta {
+  name: Consume ticket - already used
+  type: http
+  seq: 22
+}
+
+patch {
+  url: {{baseUrl}}/api/ticket/consume/{{usedTicketId}}
+  body: none
+  auth: inherit
+}
+
+tests {
+  test("409 ticket is already used", function() {
+    expect(res.getStatus()).to.equal(409);
+  });
+}

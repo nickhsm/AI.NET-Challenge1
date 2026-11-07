@@ -1,0 +1,21 @@
+meta {
+  name: Register face - same passenger again
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/api/passenger/me/face
+  body: multipartForm
+  auth: inherit
+}
+
+body:multipart-form {
+  photo: @file(images/nick.jpg)
+}
+tests {
+  test("409 passenger already has a face", function() {
+    expect(res.getStatus()).to.equal(409);
+    expect(res.getBody()).to.contain("already has a registered face");
+  });
+}

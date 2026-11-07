@@ -1,0 +1,29 @@
+meta {
+  name: Login - Nick
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/auth/passenger/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "nick@test.be",
+    "password": "password"
+  }
+}
+
+script:post-response {
+  // Every request after this one sends this token (see collection.bru).
+  bru.setVar("token", res.getStatus() === 200 ? res.getBody().token : "");
+}
+
+tests {
+  test("200 OK", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+}

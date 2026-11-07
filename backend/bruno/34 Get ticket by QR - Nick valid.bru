@@ -1,0 +1,29 @@
+meta {
+  name: Get ticket by QR - Nick valid
+  type: http
+  seq: 34
+}
+
+get {
+  url: {{baseUrl}}/api/ticket/qr/{{nickValidQr}}
+  body: none
+  auth: inherit
+}
+
+tests {
+  test("200 OK", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  test("returns Nick's ticket from Antwerpen to Brussel", function() {
+    const body = res.getBody();
+    expect(body.firstName).to.equal("Nick");
+    expect(body.startingStation).to.equal("Antwerpen-Centraal");
+    expect(body.destinationStation).to.equal("Brussel-Centraal");
+  });
+
+  test("valid today and not used", function() {
+    expect(res.getBody().isValidToday).to.equal(true);
+    expect(res.getBody().used).to.equal(false);
+  });
+}

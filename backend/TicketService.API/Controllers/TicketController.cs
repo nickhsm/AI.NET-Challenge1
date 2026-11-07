@@ -1,13 +1,16 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TicketService.API.MappingProfiles;
 using TicketService.Contracts.Models;
 using TicketService.Infrastructure.Exceptions;
 using TicketService.Infrastructure.Repositories;
+using TicketService.Shared;
 
 namespace TicketService.API.Controllers;
 
 [Route("api/ticket")]
 [ApiController]
+[Authorize(Roles = Roles.Conductor)]
 public class TicketController : ControllerBase
 {
     private ITicketRepository  _ticketRepository;
