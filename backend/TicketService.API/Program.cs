@@ -40,6 +40,7 @@ builder.Services.AddScoped<IPassengerRepository, PassengerRepository>();
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 builder.Services.AddScoped<IStationRepository, StationRepository>();
 builder.Services.AddScoped<IConductorRepository, ConductorRepository>();
+builder.Services.AddScoped<IStationRepository, StationRepository>();
 
 // Seeder
 builder.Services.AddScoped<IDatabaseSeeder, DatabaseSeeder>();

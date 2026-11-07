@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using TicketService.API.MappingProfiles;
 using TicketService.Contracts.Models;
 using TicketService.Domain;
+using TicketService.Domain.Entities;
 using TicketService.Infrastructure.Exceptions;
 using TicketService.Infrastructure.Repositories;
 using TicketService.Shared;
@@ -16,11 +17,13 @@ public class TicketController : ControllerBase
 {
     private ITicketRepository  _ticketRepository;
     private IPassengerRepository _passengerRepository;
+    private IStationRepository _stationRepository;
 
-    public TicketController(ITicketRepository ticketRepository, IPassengerRepository passengerRepository)
+    public TicketController(ITicketRepository ticketRepository, IPassengerRepository passengerRepository, IStationRepository stationRepository)
     {
         _ticketRepository = ticketRepository;
         _passengerRepository = passengerRepository;
+        _stationRepository = stationRepository;
     }
 
     private int GetPassengerId()
@@ -88,10 +91,13 @@ public class TicketController : ControllerBase
     [HttpGet("passenger/me/all")]
     public async Task<ActionResult<IEnumerable<PassengerTicketDto>>> GetMyTickets()
     {
+        // 1. Haal het ID veilig uit het token
         int passengerId = GetPassengerId();
 
+        // 2. Haal ALLE tickets op (actief + archief)
         var tickets = await _ticketRepository.GetTicketsByPassengerIdAsync(passengerId);
 
+        // 3. Map naar DTO
         var mapped = TicketMapper.ToPassengerTicketDtos(tickets);
 
         return Ok(mapped);
@@ -107,5 +113,58 @@ public class TicketController : ControllerBase
         var response = new PriceCalculationResponseDto(outboundPrice, totalPrice);
 
         return Ok(response);
+    }
+    
+    [HttpPost("purchase")]
+    public async Task<ActionResult<IEnumerable<TicketListDto>>> PurchaseTickets([FromBody] PurchaseTicketRequestDto request)
+    {
+        // 1. Controleer of de passagier bestaat
+        var passengerExists = await _passengerRepository.PassengerExistsAsync(request.PassengerId);
+        if (!passengerExists)
+            return NotFound("Passenger does not exist.");
+
+        // 2. Controleer of de stations bestaan (met een simpele check)
+        var startStation = await _stationRepository.GetStationByIdAsync(request.StartStationId);
+        var endStation = await _stationRepository.GetStationByIdAsync(request.EndStationId);
+
+        if (startStation == null || endStation == null)
+            return BadRequest("Ongeldige stations opgegeven.");
+
+        // 3. Prijsberekening
+        decimal basePrice = 2.85m;
+
+        var newTickets = new List<Ticket>();
+
+        // 4. Maak de tickets aan
+        for (int i = 0; i < request.PassengerCount; i++)
+        {
+            // Heenreis Ticket (Altijd de basisprijs)
+            var outboundTicket = new Ticket(
+                request.ExpirationDate,
+                request.PassengerId,
+                request.StartStationId, 
+                request.EndStationId,
+                basePrice // <-- AANGEPAST naar basePrice
+            );
+            newTickets.Add(outboundTicket);
+
+            // Terugreis Ticket (Alleen als het een retour is)
+            if (request.IsRoundTrip)
+            {
+                var returnTicket = new Ticket(
+                    request.ReturnExpirationDate,
+                    request.PassengerId,
+                    request.EndStationId, 
+                    request.StartStationId,
+                    basePrice // <-- Dit is al goed
+                );
+                newTickets.Add(returnTicket);
+            }
+        }
+
+        await _ticketRepository.AddTicketsAsync(newTickets);
+        var mappedTickets = TicketMapper.ToTicketListDto(newTickets);
+
+        return Ok(mappedTickets);
     }
 }

@@ -90,4 +90,10 @@ public class TicketRepository : ITicketRepository
             .OrderByDescending(t => t.ExpirationDate) // Nieuwste bovenaan
             .ToListAsync();
     }
+    
+    public async Task AddTicketsAsync(IEnumerable<Ticket> tickets)
+    {
+        _context.Tickets.AddRange(tickets);
+        await _context.SaveChangesAsync();
+    }
 }
