@@ -38,6 +38,22 @@ public class FaceViewModel : ObservableObject, IFaceViewModel
         set => SetProperty(ref _photoPreview, value);
     }
 
+    // Inverse of IsBusy, so the XAML can bind IsEnabled without a converter.
+    public bool IsNotBusy => !IsBusy;
+    private bool _isBusy;
+
+    public bool IsBusy
+    {
+        get => _isBusy;
+        set
+        {
+            if (SetProperty(ref _isBusy, value))
+            {
+                OnPropertyChanged(nameof(IsNotBusy));
+            }
+        }
+    }
+
     public bool HasRequestResult => RequestResult is not null;
     private CheckFaceResult? _checkFaceResult;
 
@@ -109,6 +125,9 @@ public class FaceViewModel : ObservableObject, IFaceViewModel
             RequestResult = null;
             TicketListItemResult = [];
 
+            // Only now: the camera app is closed and we start waiting for the API.
+            IsBusy = true;
+
             await using var fileStream = await fileResult.OpenReadAsync();
             var result = await _faceCheckService.CheckFaceAsync(fileStream);
 
@@ -148,12 +167,17 @@ public class FaceViewModel : ObservableObject, IFaceViewModel
             StatusMessage =
                 "Passagier niet gevonden, waarschijnlijk heeft hij zijn gezicht niet geregistreerd. Scan de QR-code van de ticket.";
         }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
     private async Task ConsumeTicketAsync(TicketListItemResult? ticket)
     {
         if (ticket is null) return;
 
+        IsBusy = true;
         try
         {
             await _ticketService.ConsumeTicket(ticket.Id);
@@ -182,6 +206,10 @@ public class FaceViewModel : ObservableObject, IFaceViewModel
         {
             StatusMessage = "We kunnen de server niet bereiken. Heeft u verbinding met het internet?";
             Debug.WriteLine(ex);
+        }
+        finally
+        {
+            IsBusy = false;
         }
     }
 }
