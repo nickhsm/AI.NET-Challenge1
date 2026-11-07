@@ -23,9 +23,14 @@ public static class MauiProgram
 #endif
 
         // HttpClient for requests to endpoint.
+        Uri baseAddress = new Uri("http://10.10.1.188:5271");
         builder.Services.AddHttpClient<IFaceCheckService, FaceCheckService>(client =>
         {
-            client.BaseAddress = new Uri("http://10.10.1.188:5271");
+            client.BaseAddress = baseAddress;
+        });
+        builder.Services.AddHttpClient<ITicketService, TicketService>(client =>
+        {
+            client.BaseAddress = baseAddress;
         });
 
         builder.Services.AddSingleton<INavigationService, NavigationService>();
