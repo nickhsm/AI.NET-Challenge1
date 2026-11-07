@@ -74,4 +74,24 @@ public class TicketController : ControllerBase
 
         return Ok(TicketMapper.ToTicketQrCodeDto(result));
     }
+    
+    // Voeg deze toe aan je bestaande TicketController
+    [HttpGet("passenger/{passengerId}/all")]
+    public async Task<ActionResult<IEnumerable<TicketListDto>>> GetTicketsByPassengerId(int passengerId)
+    {
+        // 1. Check of de passagier bestaat
+        var passengerExists = await _passengerRepository.PassengerExistsAsync(passengerId);
+        if (!passengerExists)
+        {
+            return NotFound("Passenger does not exist.");
+        }
+
+        // 2. Haal ALLE tickets op (actief + archief)
+        var tickets = await _ticketRepository.GetTicketsByPassengerIdAsync(passengerId);
+
+        // 3. Map naar DTO
+        var mapped = TicketMapper.ToTicketListDto(tickets);
+
+        return Ok(mapped);
+    }
 }

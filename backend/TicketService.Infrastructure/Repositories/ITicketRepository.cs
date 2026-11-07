@@ -10,4 +10,5 @@ public interface ITicketRepository
     public Task ConsumeTicketAsync(int ticketId);
     public Task<bool> TicketExistsAsync(int ticketId);
     public Task<Ticket?> GetTicketByQrCodeAsync(Guid qrCode);
+    public Task<IEnumerable<Ticket>> GetTicketsByPassengerIdAsync(int passengerId);
 }
