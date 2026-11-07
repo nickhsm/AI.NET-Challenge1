@@ -85,8 +85,11 @@ namespace PassengerTicketService.ViewModels
                 EndStation = EndStation.ToUpper(),
                 PassengerCount = 1,     // Standaard 1 passagier
                 IsRoundTrip = false,    // Standaard enkele reis
-                ExpirationDate = SelectedDate
+                ExpirationDate = SelectedDate,
             };
+
+            if (request.ExpirationDate < DateTime.Today)
+                request.ExpirationDate = DateTime.Today;
 
             // Navigeer en geef de request mee via de NavigationService
             await _navigationService.NavigateToYourTravelPageAsync(request);
