@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using TicketService.API.Services;
 using TicketService.Domain.Entities;
 using TicketService.Infrastructure.DbContexts;
 using TicketService.Infrastructure.Repositories;
@@ -32,12 +33,16 @@ builder.Services.AddHttpClient<IFaceRecognitionService, FaceRecognitionService>(
 // Repositories
 builder.Services.AddScoped<IPassengerRepository, PassengerRepository>();
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+builder.Services.AddScoped<IConductorRepository, ConductorRepository>();
 
 // Seeder
 builder.Services.AddScoped<IDatabaseSeeder, DatabaseSeeder>();
 
 // Password hash
 builder.Services.AddScoped<IPasswordHasher<IUser>, PasswordHasher<IUser>>();
+
+// Creates JWT tokens at login
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 // Controllers
 builder.Services.AddControllers();
