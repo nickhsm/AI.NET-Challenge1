@@ -19,7 +19,6 @@ namespace PassengerTicketService.ViewModels
         public ICommand NavigateHomeCommand { get; private set; } = null!;
         public ICommand NavigateTicketsCommand { get; private set; } = null!;
         public ICommand NavigateProfileCommand { get; private set; } = null!;
-        public ICommand NavigateEditProfileCommand { get; private set; } = null!;
 
         public ProfileViewModel(INavigationService navigationService)
         {
@@ -39,6 +38,7 @@ namespace PassengerTicketService.ViewModels
             // Navigatiebalk acties
             NavigateHomeCommand = new AsyncRelayCommand(_navigationService.NavigateToHomePageAsync);
             NavigateTicketsCommand = new AsyncRelayCommand(_navigationService.NavigateToTicketsPageAsync);
+            NavigateHomeCommand = new RelayCommand(() => { });
 
             // We zijn al op de Profile pagina, dus dit is een leeg commando
             NavigateProfileCommand = new RelayCommand(() => { });

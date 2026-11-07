@@ -15,6 +15,5 @@ namespace PassengerTicketService.ViewModels
         ICommand NavigateHomeCommand { get; }
         ICommand NavigateTicketsCommand { get; }
         ICommand NavigateProfileCommand { get; }
-        ICommand NavigateEditProfileCommand { get; }
     }
 }

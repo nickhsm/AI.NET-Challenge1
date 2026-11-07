@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:PassengerTicketService.ViewModels"
+             xmlns:sys="clr-namespace:System;assembly=System.Runtime"
              x:Class="PassengerTicketService.Views.EditProfilePage"
              x:DataType="viewModels:IEditProfileViewModel"
              BackgroundColor="#101010"
@@ -53,7 +54,7 @@
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="8" />
                         </Border.StrokeShape>
-                        <DatePicker Date="{Binding BirthDate}" Format="dd-MM-yyyy" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="Fill" Margin="10,0" />
+                        <DatePicker Date="{Binding BirthDate}" MaximumDate="{x:Static sys:DateTime.Today}"  Format="dd-MM-yyyy" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="Fill" Margin="10,0" />
                     </Border>
                 </VerticalStackLayout>
 
