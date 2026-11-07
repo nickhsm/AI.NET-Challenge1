@@ -73,7 +73,7 @@ namespace PassengerTicketService.ViewModels
                 // TODO: Roep hier later de API aan om het account te verwijderen
                 await Application.Current.MainPage.DisplayAlert("Verwijderd", "Je account is verwijderd.", "OK");
                 // Stuur de gebruiker terug naar het startscherm / login
-                await _navigationService.NavigateToHomePageAsync();
+                await _navigationService.NavigateToStartPageAsync();
             }
         }
     }

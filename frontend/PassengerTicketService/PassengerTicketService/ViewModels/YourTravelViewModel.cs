@@ -51,6 +51,13 @@ namespace PassengerTicketService.ViewModels
         private async Task GoToShoppingCart()
         {
             if (CurrentRequest == null) return;
+
+            if (CurrentRequest.ExpirationDate < DateTime.Today)
+                CurrentRequest.ExpirationDate = DateTime.Today;
+
+            if (CurrentRequest.IsRoundTrip && CurrentRequest.ReturnExpirationDate < CurrentRequest.ExpirationDate)
+                CurrentRequest.ReturnExpirationDate = CurrentRequest.ExpirationDate;
+
             // 2. Navigeer naar de winkelwagen en geef de UPDATED request mee
             await _navigationService.NavigateToShoppingCartPageAsync(CurrentRequest);
         }
