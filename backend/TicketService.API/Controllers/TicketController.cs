@@ -19,7 +19,7 @@ public class TicketController : ControllerBase
         _passengerRepository = passengerRepository;
     }
 
-    [HttpGet("passenger/{FacePersonId}")]
+    [HttpGet("passenger/{FacePersonId:guid}")]
     public async Task<ActionResult<IEnumerable<TicketListDto>>> GetPassengerTickets(Guid facePersonId)
     {
         var passenger = await _passengerRepository.GetPassengerByFacePersonIdAsync(facePersonId);
@@ -57,5 +57,18 @@ public class TicketController : ControllerBase
         }
 
         return NoContent();
+    }
+
+    [HttpGet("qr/{qrCode:guid}")]
+    public async Task<ActionResult<TicketQrCodeDto>> GetTicketByQrCode(Guid qrCode)
+    {
+        var result = await _ticketRepository.GetTicketByQrCodeAsync(qrCode);
+
+        if (result is null)
+        {
+            return NotFound("Ticket does not exist.");
+        }
+
+        return Ok(TicketMapper.ToTicketQrCodeDto(result));
     }
 }
