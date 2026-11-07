@@ -91,4 +91,30 @@ public class TicketController : ControllerBase
 
         return Ok(mapped);
     }
+    
+    [HttpPost("calculate-price")]
+    public ActionResult<PriceCalculationResponseDto> CalculatePrice([FromBody] PriceCalculationRequestDto request)
+    {
+        // Validatie: je kunt geen ticket voor 0 of -1 personen kopen
+        if (request.PassengerCount <= 0)
+        {
+            return BadRequest("Het aantal passagiers moet minimaal 1 zijn.");
+        }
+
+        // BUSINESS LOGIC
+        // Basisprijs voor een enkele reis per persoon
+        decimal basePrice = 2.85m; 
+        
+        decimal totalPrice = basePrice * request.PassengerCount;
+
+        // Als het een retour is, verdubbelt de prijs
+        if (request.IsRoundTrip)
+        {
+            totalPrice *= 2;
+        }
+
+        var response = new PriceCalculationResponseDto(totalPrice);
+        
+        return Ok(response);
+    }
 }
