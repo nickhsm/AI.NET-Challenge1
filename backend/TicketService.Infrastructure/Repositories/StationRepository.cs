@@ -20,7 +20,7 @@ public class StationRepository : IStationRepository
         if (!string.IsNullOrWhiteSpace(searchQuery))
         {
             // Gebruik ILike voor case-insensitive zoeken in PostgreSQL
-            var searchTerm = $"%{searchQuery.Trim()}%";
+            var searchTerm = searchQuery.Trim().ToLower();
             query = query.Where(s => s.Name.ToLower().Contains(searchTerm));
         }
 
