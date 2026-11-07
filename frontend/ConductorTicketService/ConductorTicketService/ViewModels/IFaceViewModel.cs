@@ -17,4 +17,5 @@ public interface IFaceViewModel
 
     ICommand ReturnCommand { get; set; }
     ICommand TakePhotoCommand { get; set; }
+    ICommand ConsumeTicketCommand { get; set; }
 }
