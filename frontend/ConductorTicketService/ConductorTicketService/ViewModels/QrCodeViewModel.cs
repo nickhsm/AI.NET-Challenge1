@@ -37,6 +37,22 @@ public class QrCodeViewModel : ObservableObject, IQrCodeViewModel
         set => SetProperty(ref _isDetecting, value);
     }
 
+    // Inverse of IsBusy, so the XAML can bind IsEnabled/IsVisible without a converter.
+    public bool IsNotBusy => !IsBusy;
+    private bool _isBusy;
+
+    public bool IsBusy
+    {
+        get => _isBusy;
+        set
+        {
+            if (SetProperty(ref _isBusy, value))
+            {
+                OnPropertyChanged(nameof(IsNotBusy));
+            }
+        }
+    }
+
     public bool HasRequestResult => RequestResult is not null;
     private TicketQrCodeResult? _requestResult;
 
@@ -107,6 +123,7 @@ public class QrCodeViewModel : ObservableObject, IQrCodeViewModel
             return;
         }
 
+        IsBusy = true;
         try
         {
             RequestResult = await _ticketService.GetTicketByQrCode(qrCode);
@@ -134,6 +151,10 @@ public class QrCodeViewModel : ObservableObject, IQrCodeViewModel
             StatusMessage = "We kunnen de server niet bereiken. Heeft u verbinding met het internet?";
             Debug.WriteLine(ex);
         }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
     private void ScanAgain()
@@ -147,6 +168,7 @@ public class QrCodeViewModel : ObservableObject, IQrCodeViewModel
     {
         if (RequestResult is null) return;
 
+        IsBusy = true;
         try
         {
             await _ticketService.ConsumeTicket(RequestResult.Id);
@@ -172,6 +194,10 @@ public class QrCodeViewModel : ObservableObject, IQrCodeViewModel
         {
             StatusMessage = "We kunnen de server niet bereiken. Heeft u verbinding met het internet?";
             Debug.WriteLine(ex);
+        }
+        finally
+        {
+            IsBusy = false;
         }
     }
 }
