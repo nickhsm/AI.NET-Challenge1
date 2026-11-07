@@ -80,4 +80,14 @@ public class TicketRepository : ITicketRepository
 
         return ticket;
     }
+    
+    public async Task<IEnumerable<Ticket>> GetTicketsByPassengerIdAsync(int passengerId)
+    {
+        return await _context.Tickets
+            .Include(t => t.StartingStation)
+            .Include(t => t.DestinationStation)
+            .Where(t => t.PassengerId == passengerId)
+            .OrderByDescending(t => t.ExpirationDate) // Nieuwste bovenaan
+            .ToListAsync();
+    }
 }
