@@ -101,6 +101,9 @@ Het wachtwoord is voor alle accounts `password`.
 | `conductor@test.be` | Conducteur |
 | `nick@test.be`, `sarah@test.be`, `tom@test.be` | Reiziger |
 
+Je kunt ook zelf een account aanmaken: in de reizigersapp via *Account aanmaken* op het startscherm, in de conducteursapp via *Registreren* op het loginscherm. Via de API gaat het met `POST /api/auth/passenger/register` en `POST /api/auth/conductor/register`.
+Een conducteur heeft daarbij een registratiecode nodig. In het echt zou die in een uitnodigingsmail staan; voor de demo staat hij in `appsettings.json` onder `Registration:ConductorCode` (standaard `CONDUCTOR2026`).
+
 De tickets in de testdata hebben vaste QR-codes: `00000000-0000-0000-0000-00000000000N`, waarbij N het ticket-id is (1 t.e.m. 5).
 
 ## 5. ngrok starten (HTTPS voor de apps)
