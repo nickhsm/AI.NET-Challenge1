@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TicketService.Domain.Entities;
 using TicketService.Infrastructure.DbContexts;
+using TicketService.Infrastructure.Repositories;
 
 namespace TicketService.Infrastructure.Repositories;
 
