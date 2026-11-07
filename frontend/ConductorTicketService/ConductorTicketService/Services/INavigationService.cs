@@ -7,4 +7,5 @@ public interface INavigationService
     Task NavigateBackAsync();
     Task NavigateToMainPageAsync();
     Task NavigateToLoginPageAsync();
+    Task NavigateToRegisterPageAsync();
 }

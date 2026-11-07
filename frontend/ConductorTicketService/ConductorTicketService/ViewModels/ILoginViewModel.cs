@@ -10,5 +10,6 @@ public interface ILoginViewModel
     bool HasErrorMessage { get; }
     bool IsBusy { get; set; }
     ICommand LoginCommand { get; set; }
+    ICommand NavigateToRegisterCommand { get; set; }
     Task CheckAlreadyLoggedInAsync();
 }

@@ -44,4 +44,10 @@ public class NavigationService : INavigationService
     {
         await MainThread.InvokeOnMainThreadAsync(() => Shell.Current.GoToAsync("//LoginPage"));
     }
+
+    // Pushed on top of the login page (not a Shell route), so the back button returns to login.
+    public async Task NavigateToRegisterPageAsync()
+    {
+        await _navigation.PushAsync(_serviceProvider.GetRequiredService<RegisterPage>());
+    }
 }
