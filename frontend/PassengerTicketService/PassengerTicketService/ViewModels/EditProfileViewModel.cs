@@ -43,7 +43,7 @@ namespace PassengerTicketService.ViewModels
         {
             SaveCommand = new AsyncRelayCommand(SaveAsync);
             NavigateBackCommand = new AsyncRelayCommand(_navigationService.NavigateBackAsync);
-            ChangePasswordCommand = new AsyncRelayCommand(ChangePasswordAsync);
+            ChangePasswordCommand = new AsyncRelayCommand(_navigationService.NavigateToChangePassword);
             DeleteAccountCommand = new AsyncRelayCommand(DeleteAccountAsync);
         }
 
@@ -52,12 +52,6 @@ namespace PassengerTicketService.ViewModels
             // TODO: Roep hier later de API aan om de gegevens op te slaan
             await Application.Current.MainPage.DisplayAlert("Opgeslagen", "Je profielgegevens zijn bijgewerkt.", "OK");
             await _navigationService.NavigateBackAsync();
-        }
-
-        private async Task ChangePasswordAsync()
-        {
-            // TODO: Navigeer later naar een 'Wachtwoord wijzigen' scherm
-            await Application.Current.MainPage.DisplayAlert("Wachtwoord", "Navigeer naar wachtwoord wijzigen...", "OK");
         }
 
         private async Task DeleteAccountAsync()

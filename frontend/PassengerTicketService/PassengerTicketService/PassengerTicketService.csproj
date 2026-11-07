@@ -88,7 +88,11 @@
       </Compile>
     </ItemGroup>
 
+
 	<ItemGroup>
+		<MauiXaml Update="Views\ChangePasswordPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="Views\EditProfilePage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
