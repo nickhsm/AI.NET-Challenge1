@@ -35,4 +35,30 @@ public class TicketService : ITicketService
         // If list is empty return empty list.
         return await response.Content.ReadFromJsonAsync<List<TicketListItemResult>>() ?? [];
     }
+
+    public async Task ConsumeTicket(int ticketId)
+    {
+        string requestUrl = $"/api/ticket/consume/{ticketId}";
+
+        var response = await _httpClient.PatchAsync(requestUrl, null);
+
+        if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            string message = await response.Content.ReadAsStringAsync();
+            throw new TicketNotFoundException(message);
+        }
+
+        if (response.StatusCode == HttpStatusCode.Conflict)
+        {
+            string message = await response.Content.ReadAsStringAsync();
+            throw new TicketNotConsumableException(message);
+        }
+
+        if (!response.IsSuccessStatusCode)
+        {
+            string message = await response.Content.ReadAsStringAsync();
+            throw new ApiException(message);
+        }
+
+    }
 }
