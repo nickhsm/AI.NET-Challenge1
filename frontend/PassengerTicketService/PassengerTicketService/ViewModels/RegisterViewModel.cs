@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PassengerTicketService.Exceptions;
 using PassengerTicketService.Services;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
@@ -9,6 +10,11 @@ namespace PassengerTicketService.ViewModels
     public partial class RegisterViewModel : ObservableObject, IRegisterViewModel
     {
         private readonly INavigationService _navigationService;
+        private readonly IAuthService _authService;
+
+        // True while waiting on the backend, shows the spinner.
+        [ObservableProperty]
+        private bool isBusy = false;
 
         [ObservableProperty]
         private string firstName = string.Empty;
@@ -56,9 +62,10 @@ namespace PassengerTicketService.ViewModels
         public ICommand ToggleConfirmPasswordVisibilityCommand { get; private set; } = null!;
 
 
-        public RegisterViewModel(INavigationService navigationService)
+        public RegisterViewModel(INavigationService navigationService, IAuthService authService)
         {
             _navigationService = navigationService;
+            _authService = authService;
             BindCommands();
         }
 
@@ -93,15 +100,49 @@ namespace PassengerTicketService.ViewModels
                 return;
             }
 
-            // TODO: Hier komt later de API call (bijv. _apiService.RegisterAsync(...))
             // TODO: Validatie van de geboortedatum (bijv. minimaal 18 jaar oud) kan hier ook worden toegevoegd.
-            // TODO: Als eamil al in gebruik is, kan de API een foutmelding teruggeven die hier kan worden afgehandeld.
 
-            // Tijdelijke simulatie van een API call
-            await Application.Current.MainPage.DisplayAlert("Succes", "Je account is aangemaakt! Je kunt nu inloggen.", "OK");
+            // 3. Registreren bij de backend. Bij succes slaat de AuthService de token op, dus de gebruiker is meteen ingelogd.
+            IsBusy = true;
+            try
+            {
+                await _authService.RegisterAsync(
+                    Email.Trim(),
+                    Password,
+                    FirstName.Trim(),
+                    // Achternaam is optioneel: stuur null in plaats van een lege string.
+                    string.IsNullOrWhiteSpace(LastName) ? null : LastName.Trim(),
+                    // De backend verwacht alleen een datum, zonder tijd.
+                    DateOnly.FromDateTime(BirthDate));
+            }
+            catch (EmailAlreadyInUseException ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Fout", ex.Message, "OK");
+                return;
+            }
+            catch (ApiException ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Fout", ex.Message, "OK");
+                return;
+            }
+            catch (HttpRequestException)
+            {
+                // The phone can't reach the backend (no wifi, wrong network, API not running).
+                await Application.Current.MainPage.DisplayAlert("Fout",
+                    "We kunnen de server niet bereiken. Heeft u verbinding met het internet?", "OK");
+                return;
+            }
+            finally
+            {
+                IsBusy = false;
+            }
 
-            // Ga terug naar home pagina na succesvolle registratie   
-            await _navigationService.NavigateBackAsync();
+            // Don't keep the passwords in memory longer than needed.
+            Password = string.Empty;
+            ConfirmPassword = string.Empty;
+
+            // Navigeer naar de Home-pagina (en reset de stack), net zoals na het inloggen.
+            await _navigationService.NavigateToHomeAfterLoginAsync();
         }
     }
 }

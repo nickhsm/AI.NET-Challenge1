@@ -30,6 +30,29 @@ public class AuthService : IAuthService
             throw new InvalidLoginException();
         }
 
+        await SaveTokenAsync(response);
+    }
+
+    public async Task RegisterAsync(string email, string password, string? firstName, string? surname, DateOnly? dateOfBirth)
+    {
+        string requestUrl = "/api/auth/passenger/register";
+
+        // The property names match RegisterDto in the backend.
+        var body = new { email, password, firstName, surname, dateOfBirth };
+        var response = await _httpClient.PostAsJsonAsync(requestUrl, body);
+
+        if (response.StatusCode == HttpStatusCode.Conflict)
+        {
+            throw new EmailAlreadyInUseException();
+        }
+
+        // Register returns the same token as login, so the user is logged in straight away.
+        await SaveTokenAsync(response);
+    }
+
+    // Shared by login and register: both answer with a LoginResult on success.
+    private async Task SaveTokenAsync(HttpResponseMessage response)
+    {
         if (!response.IsSuccessStatusCode)
         {
             string message = await response.Content.ReadAsStringAsync();

@@ -127,8 +127,10 @@
                         FontAttributes="Bold" 
                         FontSize="16"
                         CornerRadius="8" 
-                        HeightRequest="55" 
+                        HeightRequest="55"
                         Margin="0,20,0,0" />
+
+                <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" Color="#E86A22" />
 
             </VerticalStackLayout>
         </ScrollView>
