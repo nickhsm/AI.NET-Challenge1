@@ -95,27 +95,25 @@
                             <RoundRectangle CornerRadius="8" />
                         </Border.StrokeShape>
 
-                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
-                            <VerticalStackLayout Grid.Column="0" Spacing="2" VerticalOptions="Center">
-                                <Label FontAttributes="Bold" LineBreakMode="WordWrap">
-                                    <Label.Text>
-                                        <MultiBinding StringFormat="{}{0} → {1}">
-                                            <Binding Path="StartingStation" />
-                                            <Binding Path="DestinationStation" />
-                                        </MultiBinding>
-                                    </Label.Text>
-                                </Label>
-                                <Label Text="{Binding Date, StringFormat='Geldig op {0:dd/MM/yyyy}'}" />
-                            </VerticalStackLayout>
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Ticket" FontAttributes="Bold" />
+                            <Label LineBreakMode="WordWrap">
+                                <Label.Text>
+                                    <MultiBinding StringFormat="{}{0} → {1}">
+                                        <Binding Path="StartingStation" />
+                                        <Binding Path="DestinationStation" />
+                                    </MultiBinding>
+                                </Label.Text>
+                            </Label>
+                            <Label Text="{Binding Date, StringFormat='Geldig op {0:dd/MM/yyyy}'}" />
 
                             <!-- The command lives on the view model, so look it up via the page's binding context.
                                  The ticket itself is passed along as CommandParameter. -->
-                            <Button Grid.Column="1"
-                                    Text="Gebruik"
-                                    VerticalOptions="Center"
+                            <Button Text="Gebruik"
+                                    Margin="0,10,0,0"
                                     Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:IFaceViewModel}}, Path=ConsumeTicketCommand, x:DataType=viewModels:IFaceViewModel}"
                                     CommandParameter="{Binding .}" />
-                        </Grid>
+                        </VerticalStackLayout>
                     </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
