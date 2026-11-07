@@ -79,12 +79,12 @@ public class DatabaseSeeder : IDatabaseSeeder
             // The QR codes are fixed (instead of random) so they can be used in tests.
             // The last digit is the ticket id after a reset.
             // Nick: one valid ticket, one used, one from yesterday and one for tomorrow
-            CreateTicket(nick, antwerpen, brussel, today, "00000000-0000-0000-0000-000000000001"),
-            CreateTicket(nick, brussel, antwerpen, today, "00000000-0000-0000-0000-000000000002", used: true),
-            CreateTicket(nick, antwerpen, gent, today.AddDays(-1), "00000000-0000-0000-0000-000000000003"),
-            CreateTicket(nick, gent, brugge, today.AddDays(1), "00000000-0000-0000-0000-000000000004"),
+            CreateTicket(nick, antwerpen, brussel, today, "00000000-0000-0000-0000-000000000001", 2.60m),
+            CreateTicket(nick, brussel, antwerpen, today, "00000000-0000-0000-0000-000000000002", 2.60m, used: true),
+            CreateTicket(nick, antwerpen, gent, today.AddDays(-1), "00000000-0000-0000-0000-000000000003", 2.60m),
+            CreateTicket(nick, gent, brugge, today.AddDays(1), "00000000-0000-0000-0000-000000000004", 2.60m),
             // Sarah: one valid ticket
-            CreateTicket(sarah, leuven, brussel, today, "00000000-0000-0000-0000-000000000005")
+            CreateTicket(sarah, leuven, brussel, today, "00000000-0000-0000-0000-000000000005", 5.20m)
             // Tom: no tickets
         );
 
@@ -108,9 +108,9 @@ public class DatabaseSeeder : IDatabaseSeeder
     }
 
     private static Ticket CreateTicket(Passenger passenger, Station from, Station to, DateOnly date, string qrCode,
-        bool used = false)
+        decimal price, bool used = false)
     {
-        return new Ticket(date, 0, 0, 0)
+        return new Ticket(date, 0, 0, 0, price)
         {
             GuidQrCode = Guid.Parse(qrCode),
             Passenger = passenger,
