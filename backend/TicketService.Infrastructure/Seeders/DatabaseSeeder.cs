@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TicketService.Domain.Entities;
 using TicketService.Infrastructure.DbContexts;
@@ -7,10 +8,12 @@ namespace TicketService.Infrastructure.Seeders;
 public class DatabaseSeeder : IDatabaseSeeder
 {
     private readonly TicketServiceDbContext _context;
+    private readonly IPasswordHasher<IUser> _hasher;
 
-    public DatabaseSeeder(TicketServiceDbContext context)
+    public DatabaseSeeder(TicketServiceDbContext context, IPasswordHasher<IUser> hasher)
     {
         _context = context;
+        _hasher = hasher;
     }
 
     public async Task<bool> SeedAsync()
@@ -34,12 +37,13 @@ public class DatabaseSeeder : IDatabaseSeeder
         _context.Stations.AddRange(antwerpen, brussel, gent, leuven, brugge);
 
         // Conductor
-        _context.Conductors.Add(new Conductor("conductor@test.be", "password")
+        var conductor = new Conductor("conductor@test.be", "password")
         {
             FirstName = "Jan",
             Surname = "Peeters",
             DateOfBirth = new DateOnly(1985, 3, 12)
-        });
+        };
+        _context.Conductors.Add(conductor);
 
         // Passengers (no FacePersonId, faces are registered through the API)
         var nick = new Passenger("nick@test.be", "password")
@@ -60,8 +64,13 @@ public class DatabaseSeeder : IDatabaseSeeder
             Surname = "Maes",
             DateOfBirth = new DateOnly(1998, 1, 15)
         };
-
         _context.Passengers.AddRange(nick, sarah, tom);
+
+        // Zorgt dat elke wachtwoord die we boven plaintext hebben ingevuld gehashed wordt.
+        foreach (IUser user in new IUser[] { conductor, sarah, tom, nick })
+        {
+            user.Password = _hasher.HashPassword(user, user.Password);
+        }
 
         // Tickets
         // The ids passed to the constructor are 0 because the stations and passengers don't have ids yet.
