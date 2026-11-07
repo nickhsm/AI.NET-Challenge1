@@ -34,4 +34,14 @@ public class NavigationService : INavigationService
             throw new InvalidOperationException("There are no pages left to navigate back to.");
         }
     }
+
+    public async Task NavigateToMainPageAsync()
+    {
+        await Shell.Current.GoToAsync("//MainPage");
+    }
+
+    public async Task NavigateToLoginPageAsync()
+    {
+        await MainThread.InvokeOnMainThreadAsync(() => Shell.Current.GoToAsync("//LoginPage"));
+    }
 }
