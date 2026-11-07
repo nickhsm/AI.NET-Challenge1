@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PassengerTicketService.Exceptions;
 using PassengerTicketService.Services;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
@@ -9,6 +10,11 @@ namespace PassengerTicketService.ViewModels
     public partial class LoginViewModel : ObservableObject, ILoginViewModel
     {
         private readonly INavigationService _navigationService;
+        private readonly IAuthService _authService;
+
+        // True while waiting on the backend, shows the spinner.
+        [ObservableProperty]
+        private bool isBusy = false;
 
         [ObservableProperty]
         private string email = string.Empty;
@@ -26,9 +32,10 @@ namespace PassengerTicketService.ViewModels
         public ICommand NavigateBackCommand { get; private set; } = null!;
         public ICommand TogglePasswordVisibilityCommand { get; private set; } = null!;  
 
-        public LoginViewModel(INavigationService navigationService)
+        public LoginViewModel(INavigationService navigationService, IAuthService authService)
         {
             _navigationService = navigationService;
+            _authService = authService;
             BindCommands();
         }
 
@@ -62,12 +69,36 @@ namespace PassengerTicketService.ViewModels
                 return;
             }
 
-            // TODO: Hier komt later de API call (bijv. _apiService.LoginAsync(...))
-            // Bij een echte implementatie zou je hier de API aanroepen om de gebruiker te authenticeren.
-            // Bij succes zou je de JWT token opslaan in SecureStorage.
+            // 3. Inloggen bij de backend. Bij succes slaat de AuthService de token op in SecureStorage.
+            IsBusy = true;
+            try
+            {
+                await _authService.LoginAsync(Email.Trim(), Password);
+            }
+            catch (InvalidLoginException ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Fout", ex.Message, "OK");
+                return;
+            }
+            catch (ApiException ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Fout", ex.Message, "OK");
+                return;
+            }
+            catch (HttpRequestException)
+            {
+                // The phone can't reach the backend (no wifi, wrong network, API not running).
+                await Application.Current.MainPage.DisplayAlert("Fout",
+                    "We kunnen de server niet bereiken. Heeft u verbinding met het internet?", "OK");
+                return;
+            }
+            finally
+            {
+                IsBusy = false;
+            }
 
-            // Tijdelijke simulatie van een succesvolle login
-            await Application.Current.MainPage.DisplayAlert("Succes", "Je bent succesvol ingelogd!", "OK");
+            // Don't keep the password in memory longer than needed.
+            Password = string.Empty;
 
             // Navigeer naar de Home-pagina (en reset de stack)
             await _navigationService.NavigateToHomeAfterLoginAsync();
