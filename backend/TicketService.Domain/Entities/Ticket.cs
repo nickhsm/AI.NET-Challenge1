@@ -17,6 +17,7 @@ public class Ticket
     public DateOnly ExpirationDate { get; set; }
     
     [Required]
+    [Precision(10, 2)] 
     public decimal Price { get; set; } 
     
     [Required]
@@ -42,6 +43,8 @@ public class Ticket
 
     public Ticket(DateOnly expirationDate, int passengerId, int startingStationId, int destinationStationId, decimal price)
     {
+        ArgumentOutOfRangeException.ThrowIfNegative(price); 
+        
         GuidQrCode = Guid.NewGuid();
         ExpirationDate = expirationDate;
         PassengerId = passengerId;
