@@ -24,6 +24,7 @@ namespace PassengerTicketService.ViewModels
         public YourTravelViewModel(INavigationService navigationService)
         {
             _navigationService = navigationService;
+            CurrentRequest.ReturnExpirationDate = DateTime.Today;
             BindCommands();
         }
 
@@ -43,7 +44,6 @@ namespace PassengerTicketService.ViewModels
             SelectSingleTripCommand = new RelayCommand(() =>
             {
                 CurrentRequest.IsRoundTrip = false;
-                CurrentRequest.ReturnExpirationDate = CurrentRequest.ExpirationDate;    
             });
             SelectRoundTripCommand = new RelayCommand(() => CurrentRequest.IsRoundTrip = true);
         }

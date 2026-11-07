@@ -42,7 +42,7 @@ public static class MauiProgram
         builder.Services.AddTransient<YourTravelPage>();
         builder.Services.AddTransient<ShoppingCartPage>();
         builder.Services.AddTransient<TicketPage>();
-        builder.Services.AddTransient<StartPage>();   
+        builder.Services.AddTransient<StartPage>();
         builder.Services.AddTransient<RegisterPage>();
         builder.Services.AddTransient<LoginPage>();
         builder.Services.AddTransient<ProfilePage>();

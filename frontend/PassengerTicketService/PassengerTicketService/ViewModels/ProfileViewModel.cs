@@ -60,7 +60,7 @@ namespace PassengerTicketService.ViewModels
 
                 // Stuur de gebruiker terug naar de inlog/startpagina
                 // (Zorg dat je deze methode in je NavigationService hebt toegevoegd)
-                await _navigationService.NavigateToLoginPageAsync();
+                await _navigationService.NavigateToStartPageAsync();
             }
         }
     }

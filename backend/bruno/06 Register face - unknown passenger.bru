@@ -1,0 +1,20 @@
+meta {
+  name: Register face - unknown passenger
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/api/passenger/{{unknownPassengerId}}/face
+  body: multipartForm
+  auth: none
+}
+
+body:multipart-form {
+  photo: @file(images/nick.jpg)
+}
+tests {
+  test("404 passenger does not exist", function() {
+    expect(res.getStatus()).to.equal(404);
+  });
+}

@@ -1,0 +1,17 @@
+meta {
+  name: Seed database
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/dev/seed
+  body: none
+  auth: none
+}
+
+tests {
+  test("200 seeded or 409 already seeded", function() {
+    expect([200, 409]).to.include(res.getStatus());
+  });
+}

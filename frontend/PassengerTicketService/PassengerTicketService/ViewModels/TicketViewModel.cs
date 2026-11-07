@@ -40,7 +40,7 @@ namespace PassengerTicketService.ViewModels
         public ICommand ShowArchiveCommand { get; private set; } = null!;
         public ICommand NavigateHomeCommand { get; private set; } = null!;
         public ICommand NavigateTicketsCommand { get; private set; } = null!;
-        public ICommand NavigateProfileCommand { get; private set; } = null!;   
+        public ICommand NavigateProfileCommand { get; private set; } = null!;
 
         public TicketViewModel(INavigationService navigationService)
         {

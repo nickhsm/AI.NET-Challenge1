@@ -1,0 +1,20 @@
+meta {
+  name: Check face - no face in photo
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{baseUrl}}/api/passenger/check-face
+  body: multipartForm
+  auth: none
+}
+
+body:multipart-form {
+  photo: @file(images/no-face.png)
+}
+tests {
+  test("422 no face detected", function() {
+    expect(res.getStatus()).to.equal(422);
+  });
+}
