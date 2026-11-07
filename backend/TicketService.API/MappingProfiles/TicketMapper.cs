@@ -10,8 +10,15 @@ public static class TicketMapper
         List<TicketListDto> returnDto = new List<TicketListDto>();
         foreach (Ticket ticket in tickets)
         {
-            returnDto.Add(new TicketListDto(ticket.Id, ticket.ExpirationDate, ticket.StartingStation!.Name,
-                ticket.DestinationStation!.Name));
+            returnDto.Add(new TicketListDto(
+                ticket.Id, 
+                ticket.GuidQrCode,
+                ticket.ExpirationDate, 
+                ticket.StartingStation!.Name,
+                ticket.DestinationStation!.Name,
+                ticket.Used,    
+                ticket.Price  
+                ));
         }
 
         return returnDto;
