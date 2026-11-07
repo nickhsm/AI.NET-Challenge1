@@ -2,6 +2,97 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="ConductorTicketService.Views.QrCodePage">
-    <Label Text="Jow, dit is QR Code"></Label>
+             xmlns:viewModels="clr-namespace:ConductorTicketService.ViewModels"
+             xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"             x:Class="ConductorTicketService.Views.QrCodePage"
+             x:DataType="viewModels:IQrCodeViewModel">
+
+    <Grid RowDefinitions="Auto,Auto,*" RowSpacing="10" Padding="20">
+
+        <Label Grid.Row="0" Text="QR-code Scan" FontSize="24" />
+
+        <!-- Status message in a highlighted box so the conductor notices it right away -->
+        <Border Grid.Row="1"
+                IsVisible="{Binding HasStatusMessage}"
+                Padding="16"
+                Margin="0,10"
+                StrokeThickness="0"
+                BackgroundColor="{AppThemeBinding Light=#E8F0FE, Dark=#1E2A3A}">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="8" />
+            </Border.StrokeShape>
+
+            <Label Text="{Binding StatusMessage}"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   LineBreakMode="WordWrap"
+                   HorizontalTextAlignment="Center"
+                   TextColor="{AppThemeBinding Light=#1A1A1A, Dark=#F0F0F0}" />
+        </Border>
+
+        <!-- Row 2: camera while scanning, result once a code has been read -->
+        <Grid Grid.Row="2">
+
+            <Border StrokeThickness="0"
+                    IsVisible="{Binding IsDetecting}">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="8" />
+                </Border.StrokeShape>
+
+                <zxing:CameraBarcodeReaderView x:Name="BarcodeReader"
+                                               IsDetecting="{Binding IsDetecting}"
+                                               BarcodesDetected="OnBarcodesDetected" />
+                <!-- Options are set in the code-behind: BarcodeReaderOptions uses init-only
+                     properties, which the XAML source generator can't assign. -->
+            </Border>
+
+            <!-- Only visible while the camera is paused (= the inverse of IsDetecting) -->
+            <VerticalStackLayout Spacing="10" IsVisible="False">
+                <VerticalStackLayout.Triggers>
+                    <DataTrigger TargetType="VerticalStackLayout" Binding="{Binding IsDetecting}" Value="False">
+                        <Setter Property="IsVisible" Value="True" />
+                    </DataTrigger>
+                </VerticalStackLayout.Triggers>
+
+                <!-- Ticket info, same card style as the ticket list on the face page -->
+                <Border Padding="12"
+                        StrokeThickness="1"
+                        Stroke="Gray"
+                        IsVisible="{Binding HasRequestResult}">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="8" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="Passagier" FontAttributes="Bold" />
+                        <Label LineBreakMode="WordWrap">
+                            <Label.Text>
+                                <MultiBinding StringFormat="{}{0} {1}">
+                                    <Binding Path="RequestResult.FirstName" />
+                                    <Binding Path="RequestResult.Surname" />
+                                </MultiBinding>
+                            </Label.Text>
+                        </Label>
+
+                        <Label Text="Ticket" FontAttributes="Bold" Margin="0,10,0,0" />
+                        <Label LineBreakMode="WordWrap">
+                            <Label.Text>
+                                <MultiBinding StringFormat="{}{0} → {1}">
+                                    <Binding Path="RequestResult.StartingStation" />
+                                    <Binding Path="RequestResult.DestinationStation" />
+                                </MultiBinding>
+                            </Label.Text>
+                        </Label>
+                        <Label Text="{Binding RequestResult.Date, StringFormat='Geldig op {0:dd/MM/yyyy}'}" />
+
+                        <Button Text="Gebruik"
+                                Margin="0,10,0,0"
+                                Command="{Binding ConsumeTicketCommand}"
+                                IsEnabled="{Binding RequestResult.CanConsume}" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Button Text="Opnieuw scannen" Command="{Binding ScanAgainCommand}" />
+            </VerticalStackLayout>
+        </Grid>
+    </Grid>
 </ContentPage>

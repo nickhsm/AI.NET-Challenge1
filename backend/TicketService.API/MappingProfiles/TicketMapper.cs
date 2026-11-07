@@ -16,4 +16,16 @@ public static class TicketMapper
 
         return returnDto;
     }
+
+    public static TicketQrCodeDto ToTicketQrCodeDto(this Ticket ticket)
+    {
+        return new TicketQrCodeDto(ticket.Id,
+            ticket.ExpirationDate,
+            ticket.StartingStation.Name,
+            ticket.DestinationStation.Name,
+            ticket.Passenger.FirstName,
+            ticket.Passenger.Surname,
+            ticket.Used
+        );
+    }
 }
