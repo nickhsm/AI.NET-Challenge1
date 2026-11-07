@@ -68,4 +68,9 @@ public class PassengerRepository : IPassengerRepository
             .Where(p => p.FacePersonId != null)
             .ExecuteUpdateAsync(setters => setters.SetProperty(p => p.FacePersonId, (Guid?)null));
     }
+
+    public async Task<Passenger?> GetPassengerByEmailAsync(string email)
+    {
+        return await _context.Passengers.SingleOrDefaultAsync(p => p.Email == email);
+    }
 }
