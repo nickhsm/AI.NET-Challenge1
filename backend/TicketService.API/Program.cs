@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using TicketService.Domain.Entities;
 using TicketService.Infrastructure.DbContexts;
 using TicketService.Infrastructure.Repositories;
 using TicketService.Infrastructure.Seeders;
@@ -33,6 +35,9 @@ builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 
 // Seeder
 builder.Services.AddScoped<IDatabaseSeeder, DatabaseSeeder>();
+
+// Password hash
+builder.Services.AddScoped<IPasswordHasher<IUser>, PasswordHasher<IUser>>();
 
 // Controllers
 builder.Services.AddControllers();
