@@ -53,6 +53,12 @@
                     </DataTrigger>
                 </VerticalStackLayout.Triggers>
 
+                <!-- Loading spinner while the ticket is being fetched/consumed -->
+                <ActivityIndicator IsRunning="{Binding IsBusy}"
+                                   IsVisible="{Binding IsBusy}"
+                                   HorizontalOptions="Center"
+                                   Margin="0,20" />
+
                 <!-- Ticket info, same card style as the ticket list on the face page -->
                 <Border Padding="12"
                         StrokeThickness="1"
@@ -91,7 +97,9 @@
                     </VerticalStackLayout>
                 </Border>
 
-                <Button Text="Opnieuw scannen" Command="{Binding ScanAgainCommand}" />
+                <Button Text="Opnieuw scannen"
+                        Command="{Binding ScanAgainCommand}"
+                        IsVisible="{Binding IsNotBusy}" />
             </VerticalStackLayout>
         </Grid>
     </Grid>

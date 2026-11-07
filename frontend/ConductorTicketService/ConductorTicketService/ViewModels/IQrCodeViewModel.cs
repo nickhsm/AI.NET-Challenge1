@@ -11,6 +11,10 @@ public interface IQrCodeViewModel
     // Bound to the camera view: false = camera stops looking for codes.
     public bool IsDetecting { get; set; }
 
+    // True while waiting for the API: shows the loading spinner.
+    public bool IsBusy { get; }
+    public bool IsNotBusy { get; }
+
     public bool HasRequestResult { get; }
     public TicketQrCodeResult? RequestResult { get; set; }
 
