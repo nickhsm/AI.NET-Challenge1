@@ -5,8 +5,13 @@ namespace TicketService.API.MappingProfiles;
 
 public static class StationMapper
 {
-    public static StationDto ToStationDto(this Station station)
+    public static IEnumerable<StationDto> ToStationDtos(this IEnumerable<Station> stations)
     {
-        return new StationDto(station.Id, station.Name);
+        var result = new List<StationDto>();
+        foreach (var station in stations)
+        {
+            result.Add(new StationDto(station.Id, station.Name));
+        }
+        return result;
     }
 }

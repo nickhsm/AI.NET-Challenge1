@@ -21,7 +21,7 @@ public class StationRepository : IStationRepository
         {
             // Gebruik ILike voor case-insensitive zoeken in PostgreSQL
             var searchTerm = $"%{searchQuery.Trim()}%";
-            query = query.Where(s => EF.Functions.ILike(s.Name, searchTerm));
+            query = query.Where(s => s.Name.ToLower().Contains(searchTerm));
         }
 
         return await query

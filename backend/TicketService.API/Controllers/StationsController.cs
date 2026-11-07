@@ -21,8 +21,8 @@ public class StationsController : ControllerBase
     {
         var stations = await _stationRepository.GetStationsAsync(searchQuery);
 
-        // Gebruik de extension method voor de mapping
-        var stationDtos = stations.Select(s => s.ToStationDto()).ToList();
+        // De controller vertrouwt erop dat de mapper het werk doet
+        var stationDtos = stations.ToStationDtos();
 
         return Ok(stationDtos);
     }
