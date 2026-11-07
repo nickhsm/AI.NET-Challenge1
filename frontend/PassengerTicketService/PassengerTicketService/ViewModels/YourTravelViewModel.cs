@@ -14,6 +14,8 @@ namespace PassengerTicketService.ViewModels
         [ObservableProperty]
         private TravelRequest currentRequest = new TravelRequest();
 
+        public DateTime MinimumDate => DateTime.Today;
+
         public ICommand ConfirmTravelCommand { get; private set; } = null!;
         public ICommand NavigateBackCommand { get; private set; } = null!;
         public ICommand SelectSingleTripCommand { get; private set; } = null!;
@@ -22,6 +24,7 @@ namespace PassengerTicketService.ViewModels
         public YourTravelViewModel(INavigationService navigationService)
         {
             _navigationService = navigationService;
+            CurrentRequest.ReturnExpirationDate = DateTime.Today;
             BindCommands();
         }
 
@@ -38,7 +41,10 @@ namespace PassengerTicketService.ViewModels
         {
             ConfirmTravelCommand = new AsyncRelayCommand(GoToShoppingCart);
             NavigateBackCommand = new AsyncRelayCommand(_navigationService.NavigateBackAsync);
-            SelectSingleTripCommand = new RelayCommand(() => CurrentRequest.IsRoundTrip = false);
+            SelectSingleTripCommand = new RelayCommand(() =>
+            {
+                CurrentRequest.IsRoundTrip = false;
+            });
             SelectRoundTripCommand = new RelayCommand(() => CurrentRequest.IsRoundTrip = true);
         }
 
