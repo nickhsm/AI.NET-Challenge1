@@ -49,6 +49,9 @@ namespace TicketService.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
                     b.ToTable("Conductors");
                 });
 
