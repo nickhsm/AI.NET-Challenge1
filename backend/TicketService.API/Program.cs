@@ -1,5 +1,6 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -75,7 +76,19 @@ builder.Services.AddAuthorization();
 // Controllers
 builder.Services.AddControllers();
 
+// ngrok handles HTTPS and forwards the request to us over plain HTTP on localhost.
+// It tells us what the original request looked like in X-Forwarded-* headers.
+// Only proxies on this pc (localhost) are trusted by default, which is where ngrok runs.
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+});
+
 var app = builder.Build();
+
+// Must be first: everything after this sees the original request (https + the phone's IP)
+// instead of ngrok's plain http request from localhost.
+app.UseForwardedHeaders();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

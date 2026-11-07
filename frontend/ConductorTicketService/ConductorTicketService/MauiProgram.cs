@@ -1,6 +1,7 @@
 ﻿using ConductorTicketService.Services;
 using ConductorTicketService.ViewModels;
 using ConductorTicketService.Views;
+using System.Reflection;
 using Microsoft.Extensions.Logging;
 using ZXing.Net.Maui.Controls;
 
@@ -25,7 +26,8 @@ public static class MauiProgram
 #endif
 
         // HttpClient for requests to endpoint.
-        Uri baseAddress = new Uri("http://10.10.1.188:5271");
+        // The url comes from frontend/Directory.Build.props (or your own ApiBaseUrl.local.props).
+        Uri baseAddress = new Uri(GetApiBaseUrl());
 
         builder.Services.AddHttpClient<IAuthService, AuthService>(client =>
         {
@@ -57,5 +59,14 @@ public static class MauiProgram
         builder.Services.AddTransient<IFaceViewModel, FaceViewModel>();
 
         return builder.Build();
+    }
+
+    // Reads the url that was baked into the app at build time from Directory.Build.props.
+    private static string GetApiBaseUrl()
+    {
+        return typeof(MauiProgram).Assembly
+                   .GetCustomAttributes<AssemblyMetadataAttribute>()
+                   .FirstOrDefault(attribute => attribute.Key == "ApiBaseUrl")?.Value
+               ?? throw new InvalidOperationException("ApiBaseUrl is missing, check frontend/Directory.Build.props.");
     }
 }

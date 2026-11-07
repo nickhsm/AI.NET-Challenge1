@@ -2,3 +2,6 @@
 .vs/
 .vscode/
 .idea/
+
+# Own API url for the apps, see frontend/ApiBaseUrl.local.props.example
+frontend/ApiBaseUrl.local.props

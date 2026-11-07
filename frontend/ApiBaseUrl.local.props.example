@@ -1,0 +1,10 @@
+<Project>
+  <!--
+    Copy this file to ApiBaseUrl.local.props (same folder) and put your own ngrok domain in it.
+    ApiBaseUrl.local.props is in .gitignore, so everyone can use their own url.
+    Rebuild both apps after changing it.
+  -->
+  <PropertyGroup>
+    <ApiBaseUrl>https://jouw-domein.ngrok-free.dev</ApiBaseUrl>
+  </PropertyGroup>
+</Project>
