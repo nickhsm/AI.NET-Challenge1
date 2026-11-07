@@ -91,6 +91,9 @@
       <MauiXaml Update="Components\BottomNavBar.xaml">
         <Generator>MSBuild:Compile</Generator>
       </MauiXaml>
+      <MauiXaml Update="Views\ChangePasswordPage.xaml">
+        <Generator>MSBuild:Compile</Generator>
+      </MauiXaml>
       <MauiXaml Update="Views\LoginPage.xaml">
         <Generator>MSBuild:Compile</Generator>
       </MauiXaml>
