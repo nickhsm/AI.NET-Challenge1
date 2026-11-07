@@ -18,4 +18,10 @@ public class ConductorRepository : IConductorRepository
     {
         return await _context.Conductors.SingleOrDefaultAsync(c => c.Email == email);
     }
+
+    public async Task AddConductorAsync(Conductor conductor)
+    {
+        _context.Conductors.Add(conductor);
+        await _context.SaveChangesAsync();
+    }
 }

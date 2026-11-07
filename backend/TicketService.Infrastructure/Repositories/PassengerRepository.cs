@@ -73,4 +73,10 @@ public class PassengerRepository : IPassengerRepository
     {
         return await _context.Passengers.SingleOrDefaultAsync(p => p.Email == email);
     }
+
+    public async Task AddPassengerAsync(Passenger passenger)
+    {
+        _context.Passengers.Add(passenger);
+        await _context.SaveChangesAsync();
+    }
 }
