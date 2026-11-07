@@ -52,12 +52,14 @@ public class LoginViewModel : ObservableObject, ILoginViewModel
     }
 
     public ICommand LoginCommand { get; set; }
+    public ICommand NavigateToRegisterCommand { get; set; }
 
     public LoginViewModel(IAuthService authService, INavigationService navigationService)
     {
         _authService = authService;
         _navigationService = navigationService;
         LoginCommand = new AsyncRelayCommand(Login);
+        NavigateToRegisterCommand = new AsyncRelayCommand(_navigationService.NavigateToRegisterPageAsync);
     }
 
     public async Task CheckAlreadyLoggedInAsync()

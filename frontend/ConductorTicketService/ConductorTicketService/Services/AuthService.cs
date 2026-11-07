@@ -29,6 +29,35 @@ public class AuthService : IAuthService
             throw new InvalidLoginException();
         }
 
+        await SaveTokenAsync(response);
+    }
+
+    public async Task RegisterAsync(string email, string password, string? firstName, string? surname, string registrationCode)
+    {
+        string requestUrl = "/api/auth/conductor/register";
+
+        // The property names match ConductorRegisterDto in the backend.
+        // No birth date: the backend doesn't require it and the conductor app doesn't use it.
+        var body = new { email, password, firstName, surname, registrationCode };
+        var response = await _httpClient.PostAsJsonAsync(requestUrl, body);
+
+        if (response.StatusCode == HttpStatusCode.Forbidden)
+        {
+            throw new InvalidRegistrationCodeException();
+        }
+
+        if (response.StatusCode == HttpStatusCode.Conflict)
+        {
+            throw new EmailAlreadyInUseException();
+        }
+
+        // Register returns the same token as login, so the conductor is logged in straight away.
+        await SaveTokenAsync(response);
+    }
+
+    // Shared by login and register: both answer with a LoginResult on success.
+    private async Task SaveTokenAsync(HttpResponseMessage response)
+    {
         if (!response.IsSuccessStatusCode)
         {
             string message = await response.Content.ReadAsStringAsync();

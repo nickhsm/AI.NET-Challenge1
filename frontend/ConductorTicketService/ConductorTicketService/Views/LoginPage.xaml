@@ -29,5 +29,10 @@
         <Button Text="Inloggen" Command="{Binding LoginCommand}" />
 
         <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+
+        <Button Text="Nog geen account? Registreren"
+                Command="{Binding NavigateToRegisterCommand}"
+                BackgroundColor="Transparent"
+                TextColor="{StaticResource Primary}" />
     </VerticalStackLayout>
 </ContentPage>
