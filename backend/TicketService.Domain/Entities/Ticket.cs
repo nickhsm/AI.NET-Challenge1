@@ -1,8 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace TicketService.Domain.Entities;
 
+[Index(nameof(GuidQrCode), IsUnique = true)]
 public class Ticket
 {
     [Key]
@@ -47,5 +49,11 @@ public class Ticket
         DestinationStationId = destinationStationId;
         Price = price; 
         Used = false;
+    }
+
+    public void RegenerateQrCode()
+    {
+        // Voor als er een collision ooit zal gebeuren.
+        GuidQrCode = Guid.NewGuid();
     }
 }

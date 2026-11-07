@@ -164,6 +164,9 @@ namespace TicketService.Infrastructure.Migrations
 
                     b.HasIndex("DestinationStationId");
 
+                    b.HasIndex("GuidQrCode")
+                        .IsUnique();
+
                     b.HasIndex("PassengerId");
 
                     b.HasIndex("StartingStationId");
