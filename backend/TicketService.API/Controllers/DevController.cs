@@ -44,6 +44,31 @@ public class DevController : ControllerBase
         return Ok("Database seeded.");
     }
 
+    [HttpPost("reset")]
+    public async Task<ActionResult> Reset()
+    {
+        // Act like the endpoint doesn't exist outside Development.
+        if (!_environment.IsDevelopment())
+        {
+            return NotFound();
+        }
+
+        // Azure first. After the reset no passenger has a FacePersonId anymore,
+        // so the Persons in Azure would be left behind without a passenger.
+        try
+        {
+            await _faceRecognitionService.DeleteAllAsync();
+        }
+        catch (AzureServiceException ex)
+        {
+            return StatusCode(StatusCodes.Status502BadGateway, ex.Message);
+        }
+
+        await _databaseSeeder.ResetAsync();
+
+        return Ok("Database reset and seeded.");
+    }
+
     [HttpDelete("faces")]
     public async Task<ActionResult> WipeFaces()
     {

@@ -1,13 +1,13 @@
 meta {
   name: Check face - Nick after unregister
   type: http
-  seq: 14
+  seq: 20
 }
 
 post {
   url: {{baseUrl}}/api/passenger/check-face
   body: multipartForm
-  auth: none
+  auth: inherit
 }
 
 body:multipart-form {

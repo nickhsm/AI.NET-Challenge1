@@ -1,0 +1,17 @@
+meta {
+  name: Consume ticket - Sarah again
+  type: http
+  seq: 39
+}
+
+patch {
+  url: {{baseUrl}}/api/ticket/consume/{{sarahTicketId}}
+  body: none
+  auth: inherit
+}
+
+tests {
+  test("409 a ticket can only be used once", function() {
+    expect(res.getStatus()).to.equal(409);
+  });
+}

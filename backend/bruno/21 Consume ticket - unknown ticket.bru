@@ -1,0 +1,17 @@
+meta {
+  name: Consume ticket - unknown ticket
+  type: http
+  seq: 21
+}
+
+patch {
+  url: {{baseUrl}}/api/ticket/consume/{{unknownTicketId}}
+  body: none
+  auth: inherit
+}
+
+tests {
+  test("404 ticket does not exist", function() {
+    expect(res.getStatus()).to.equal(404);
+  });
+}

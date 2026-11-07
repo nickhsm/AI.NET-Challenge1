@@ -1,13 +1,13 @@
 meta {
   name: Register face - Nick
   type: http
-  seq: 3
+  seq: 4
 }
 
 post {
-  url: {{baseUrl}}/api/passenger/{{nickPassengerId}}/face
+  url: {{baseUrl}}/api/passenger/me/face
   body: multipartForm
-  auth: none
+  auth: inherit
 }
 
 body:multipart-form {

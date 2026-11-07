@@ -76,13 +76,15 @@ public class DatabaseSeeder : IDatabaseSeeder
         // The ids passed to the constructor are 0 because the stations and passengers don't have ids yet.
         // EF Core fills in the foreign keys from the navigation properties when saving.
         _context.Tickets.AddRange(
+            // The QR codes are fixed (instead of random) so they can be used in tests.
+            // The last digit is the ticket id after a reset.
             // Nick: one valid ticket, one used, one from yesterday and one for tomorrow
-            CreateTicket(nick, antwerpen, brussel, today),
-            CreateTicket(nick, brussel, antwerpen, today, used: true),
-            CreateTicket(nick, antwerpen, gent, today.AddDays(-1)),
-            CreateTicket(nick, gent, brugge, today.AddDays(1)),
+            CreateTicket(nick, antwerpen, brussel, today, "00000000-0000-0000-0000-000000000001"),
+            CreateTicket(nick, brussel, antwerpen, today, "00000000-0000-0000-0000-000000000002", used: true),
+            CreateTicket(nick, antwerpen, gent, today.AddDays(-1), "00000000-0000-0000-0000-000000000003"),
+            CreateTicket(nick, gent, brugge, today.AddDays(1), "00000000-0000-0000-0000-000000000004"),
             // Sarah: one valid ticket
-            CreateTicket(sarah, leuven, brussel, today)
+            CreateTicket(sarah, leuven, brussel, today, "00000000-0000-0000-0000-000000000005")
             // Tom: no tickets
         );
 
@@ -91,10 +93,26 @@ public class DatabaseSeeder : IDatabaseSeeder
         return true;
     }
 
-    private static Ticket CreateTicket(Passenger passenger, Station from, Station to, DateOnly date, bool used = false)
+    public async Task ResetAsync()
+    {
+        // TRUNCATE empties the tables in one query.
+        // RESTART IDENTITY makes the ids start at 1 again, so the seeded tickets always get the same ids.
+        // CASCADE also empties tables that point to these tables with a foreign key.
+        await _context.Database.ExecuteSqlRawAsync(
+            "TRUNCATE \"Tickets\", \"StationTickets\", \"Passengers\", \"Conductors\", \"Stations\" RESTART IDENTITY CASCADE");
+
+        // Forget entities EF Core already loaded, they no longer exist in the database.
+        _context.ChangeTracker.Clear();
+
+        await SeedAsync();
+    }
+
+    private static Ticket CreateTicket(Passenger passenger, Station from, Station to, DateOnly date, string qrCode,
+        bool used = false)
     {
         return new Ticket(date, 0, 0, 0)
         {
+            GuidQrCode = Guid.Parse(qrCode),
             Passenger = passenger,
             StartingStation = from,
             DestinationStation = to,
