@@ -2,6 +2,7 @@
 using PassengerTicketService.Services;
 using PassengerTicketService.ViewModels;
 using PassengerTicketService.Views;
+using System.Reflection;
 
 namespace PassengerTicketService;
 
@@ -26,7 +27,8 @@ public static class MauiProgram
         builder.Services.AddSingleton<INavigationService, NavigationService>();
 
         // --- HTTPCLIENTS VOOR DE BACKEND ---
-        Uri baseAddress = new Uri("http://10.10.1.188:5271");
+        // De url komt uit frontend/Directory.Build.props (of je eigen ApiBaseUrl.local.props).
+        Uri baseAddress = new Uri(GetApiBaseUrl());
 
         // Login does not need a token, so no AuthHeaderHandler here.
         builder.Services.AddHttpClient<IAuthService, AuthService>(client =>
@@ -64,5 +66,14 @@ public static class MauiProgram
         builder.Services.AddTransient<EditProfilePage>();
 
         return builder.Build();
+    }
+
+    // Leest de url die tijdens het builden uit Directory.Build.props in de app is gezet.
+    private static string GetApiBaseUrl()
+    {
+        return typeof(MauiProgram).Assembly
+                   .GetCustomAttributes<AssemblyMetadataAttribute>()
+                   .FirstOrDefault(attribute => attribute.Key == "ApiBaseUrl")?.Value
+               ?? throw new InvalidOperationException("ApiBaseUrl is missing, check frontend/Directory.Build.props.");
     }
 }

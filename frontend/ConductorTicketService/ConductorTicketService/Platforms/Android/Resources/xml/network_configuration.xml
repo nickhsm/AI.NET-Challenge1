@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
-    <base-config cleartextTrafficPermitted="true">
+    <!--
+        Only HTTPS is allowed. Android refuses plain http:// requests from this app,
+        so the password and the login token are always sent encrypted.
+        The backend is reached through ngrok (https), see frontend/Directory.Build.props.
+    -->
+    <base-config cleartextTrafficPermitted="false">
     </base-config>
 </network-security-config>

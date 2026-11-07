@@ -1,0 +1,24 @@
+<Project>
+  <!--
+    MSBuild imports this file automatically into every project in this folder and below,
+    so both apps (Conductor and Passenger) get the same API url from here.
+  -->
+
+  <!-- Default url of the backend (through ngrok). -->
+  <PropertyGroup>
+    <ApiBaseUrl>https://overtly-ideally-steadier.ngrok-free.dev</ApiBaseUrl>
+  </PropertyGroup>
+
+  <!--
+    Your own url without changing this file: copy ApiBaseUrl.local.props.example
+    to ApiBaseUrl.local.props (not in git) and put your ngrok domain in it.
+    It is imported after the default above, so its value wins.
+  -->
+  <Import Project="$(MSBuildThisFileDirectory)ApiBaseUrl.local.props"
+          Condition="Exists('$(MSBuildThisFileDirectory)ApiBaseUrl.local.props')" />
+
+  <!-- Bakes the url into the app at build time. MauiProgram.cs reads it back. -->
+  <ItemGroup>
+    <AssemblyMetadata Include="ApiBaseUrl" Value="$(ApiBaseUrl)" />
+  </ItemGroup>
+</Project>
