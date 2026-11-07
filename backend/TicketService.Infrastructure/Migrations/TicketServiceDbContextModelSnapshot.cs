@@ -151,6 +151,9 @@ namespace TicketService.Infrastructure.Migrations
                     b.Property<int>("PassengerId")
                         .HasColumnType("integer");
 
+                    b.Property<decimal>("Price")
+                        .HasColumnType("numeric");
+
                     b.Property<int>("StartingStationId")
                         .HasColumnType("integer");
 

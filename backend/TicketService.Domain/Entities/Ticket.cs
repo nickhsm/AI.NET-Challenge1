@@ -15,6 +15,10 @@ public class Ticket
     public Guid GuidQrCode { get; set; }
     [Required]
     public DateOnly ExpirationDate { get; set; }
+    
+    [Required]
+    public decimal Price { get; set; } 
+    
     [Required]
     public bool Used { get; set; }
 
@@ -36,13 +40,14 @@ public class Ticket
     public ICollection<StationTicket>  StationTickets { get; set; } = new List<StationTicket>();
     public ICollection<Station> Stations { get; set; } = new List<Station>();
 
-    public Ticket(DateOnly expirationDate, int passengerId, int startingStationId, int destinationStationId)
+    public Ticket(DateOnly expirationDate, int passengerId, int startingStationId, int destinationStationId, decimal price)
     {
         GuidQrCode = Guid.NewGuid();
         ExpirationDate = expirationDate;
         PassengerId = passengerId;
         StartingStationId = startingStationId;
         DestinationStationId = destinationStationId;
+        Price = price; 
         Used = false;
     }
 

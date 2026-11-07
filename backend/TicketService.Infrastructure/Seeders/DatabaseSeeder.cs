@@ -68,12 +68,12 @@ public class DatabaseSeeder : IDatabaseSeeder
         // EF Core fills in the foreign keys from the navigation properties when saving.
         _context.Tickets.AddRange(
             // Nick: one valid ticket, one used, one from yesterday and one for tomorrow
-            CreateTicket(nick, antwerpen, brussel, today),
-            CreateTicket(nick, brussel, antwerpen, today, used: true),
-            CreateTicket(nick, antwerpen, gent, today.AddDays(-1)),
-            CreateTicket(nick, gent, brugge, today.AddDays(1)),
+            CreateTicket(nick, antwerpen, brussel, today, 2.60m),
+            CreateTicket(nick, brussel, antwerpen, today, 2.60m, used: true),
+            CreateTicket(nick, antwerpen, gent, today.AddDays(-1), 2.60m),
+            CreateTicket(nick, gent, brugge, today.AddDays(1), 2.60m),
             // Sarah: one valid ticket
-            CreateTicket(sarah, leuven, brussel, today)
+            CreateTicket(sarah, leuven, brussel, today, 5.20m)
             // Tom: no tickets
         );
 
@@ -82,9 +82,9 @@ public class DatabaseSeeder : IDatabaseSeeder
         return true;
     }
 
-    private static Ticket CreateTicket(Passenger passenger, Station from, Station to, DateOnly date, bool used = false)
+    private static Ticket CreateTicket(Passenger passenger, Station from, Station to, DateOnly date, decimal price, bool used = false)
     {
-        return new Ticket(date, 0, 0, 0)
+        return new Ticket(date, 0, 0, 0, price)
         {
             Passenger = passenger,
             StartingStation = from,
