@@ -87,26 +87,28 @@
       </Compile>
     </ItemGroup>
 
-    <ItemGroup>
-      <MauiXaml Update="Views\EditProfilePage.xaml">
-      <MauiXaml Update="Components\BottomNavBar.xaml">
-        <Generator>MSBuild:Compile</Generator>
-      </MauiXaml>
-      <MauiXaml Update="Views\LoginPage.xaml">
-        <Generator>MSBuild:Compile</Generator>
-      </MauiXaml>
-      <MauiXaml Update="Views\ProfilePage.xaml">
-        <Generator>MSBuild:Compile</Generator>
-      </MauiXaml>
-      <MauiXaml Update="Views\RegisterPage.xaml">
-        <Generator>MSBuild:Compile</Generator>
-      </MauiXaml>
-      <MauiXaml Update="Views\HomePage.xaml">
-        <Generator>MSBuild:Compile</Generator>
-      </MauiXaml>
-      <MauiXaml Update="Views\ShoppingCartPage.xaml">
-        <Generator>MSBuild:Compile</Generator>
-      </MauiXaml>
-    </ItemGroup>
+	<ItemGroup>
+		<MauiXaml Update="Views\EditProfilePage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Components\BottomNavBar.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\LoginPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\ProfilePage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\RegisterPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\HomePage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\ShoppingCartPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+	</ItemGroup>
 
 </Project>
