@@ -1,0 +1,24 @@
+meta {
+  name: Login - conductor on passenger login
+  type: http
+  seq: 32
+}
+
+post {
+  url: {{baseUrl}}/api/auth/passenger/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "conductor@test.be",
+    "password": "password"
+  }
+}
+
+tests {
+  test("401 conductor accounts cannot use the passenger login", function() {
+    expect(res.getStatus()).to.equal(401);
+  });
+}

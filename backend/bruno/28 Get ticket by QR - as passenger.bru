@@ -1,0 +1,17 @@
+meta {
+  name: Get ticket by QR - as passenger
+  type: http
+  seq: 28
+}
+
+get {
+  url: {{baseUrl}}/api/ticket/qr/00000000-0000-0000-0000-000000000000
+  body: none
+  auth: inherit
+}
+
+tests {
+  test("403 a passenger may not use conductor endpoints", function() {
+    expect(res.getStatus()).to.equal(403);
+  });
+}

@@ -1,0 +1,27 @@
+meta {
+  name: Get ticket by QR - tampered token
+  type: http
+  seq: 26
+}
+
+get {
+  url: {{baseUrl}}/api/ticket/qr/00000000-0000-0000-0000-000000000000
+  body: none
+  auth: none
+}
+
+script:pre-request {
+  // Take the real conductor token from 19 and change one character of the signature.
+  // With the real token this request gives 404 (see 24). With the changed one it must give 401,
+  // which proves the API checks the signature.
+  const parts = bru.getVar("token").split(".");
+  const i = 10;
+  parts[2] = parts[2].substring(0, i) + (parts[2][i] === "A" ? "B" : "A") + parts[2].substring(i + 1);
+  req.setHeader("Authorization", "Bearer " + parts.join("."));
+}
+
+tests {
+  test("401 a changed token is rejected", function() {
+    expect(res.getStatus()).to.equal(401);
+  });
+}

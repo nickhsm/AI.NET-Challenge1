@@ -1,13 +1,13 @@
 meta {
-  name: Check face - no face in photo
+  name: Register face - no face in photo
   type: http
-  seq: 10
+  seq: 9
 }
 
 post {
-  url: {{baseUrl}}/api/passenger/check-face
+  url: {{baseUrl}}/api/passenger/me/face
   body: multipartForm
-  auth: none
+  auth: inherit
 }
 
 body:multipart-form {
@@ -16,5 +16,6 @@ body:multipart-form {
 tests {
   test("422 no face detected", function() {
     expect(res.getStatus()).to.equal(422);
+    expect(res.getBody()).to.contain("No face detected");
   });
 }

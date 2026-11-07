@@ -1,13 +1,13 @@
 meta {
   name: Unregister face - Nick
   type: http
-  seq: 12
+  seq: 17
 }
 
 delete {
-  url: {{baseUrl}}/api/passenger/{{nickPassengerId}}/face
+  url: {{baseUrl}}/api/passenger/me/face
   body: none
-  auth: none
+  auth: inherit
 }
 
 tests {

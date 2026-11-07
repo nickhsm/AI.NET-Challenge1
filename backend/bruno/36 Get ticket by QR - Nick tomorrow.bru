@@ -1,0 +1,21 @@
+meta {
+  name: Get ticket by QR - Nick tomorrow
+  type: http
+  seq: 36
+}
+
+get {
+  url: {{baseUrl}}/api/ticket/qr/{{nickTomorrowQr}}
+  body: none
+  auth: inherit
+}
+
+tests {
+  test("200 OK", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  test("not valid today", function() {
+    expect(res.getBody().isValidToday).to.equal(false);
+  });
+}

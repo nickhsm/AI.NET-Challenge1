@@ -1,0 +1,28 @@
+meta {
+  name: Login - unknown email
+  type: http
+  seq: 30
+}
+
+post {
+  url: {{baseUrl}}/api/auth/passenger/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "nobody@test.be",
+    "password": "password"
+  }
+}
+
+tests {
+  test("401 unknown email", function() {
+    expect(res.getStatus()).to.equal(401);
+  });
+
+  test("same message as a wrong password, so nobody can find out which emails exist", function() {
+    expect(res.getBody()).to.equal(bru.getVar("loginErrorMessage"));
+  });
+}

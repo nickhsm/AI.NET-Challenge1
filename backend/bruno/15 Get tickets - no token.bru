@@ -1,0 +1,17 @@
+meta {
+  name: Get tickets - no token
+  type: http
+  seq: 15
+}
+
+get {
+  url: {{baseUrl}}/api/ticket/passenger/{{nickFacePersonId}}
+  body: none
+  auth: none
+}
+
+tests {
+  test("401 without a token", function() {
+    expect(res.getStatus()).to.equal(401);
+  });
+}

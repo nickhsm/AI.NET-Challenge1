@@ -1,13 +1,13 @@
 meta {
   name: Get tickets - Nick
   type: http
-  seq: 11
+  seq: 14
 }
 
 get {
   url: {{baseUrl}}/api/ticket/passenger/{{nickFacePersonId}}
   body: none
-  auth: none
+  auth: inherit
 }
 
 tests {

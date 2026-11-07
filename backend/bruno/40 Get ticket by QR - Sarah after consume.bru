@@ -1,0 +1,21 @@
+meta {
+  name: Get ticket by QR - Sarah after consume
+  type: http
+  seq: 40
+}
+
+get {
+  url: {{baseUrl}}/api/ticket/qr/{{sarahValidQr}}
+  body: none
+  auth: inherit
+}
+
+tests {
+  test("200 OK", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  test("the ticket is now marked as used", function() {
+    expect(res.getBody().used).to.equal(true);
+  });
+}
