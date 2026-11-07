@@ -61,4 +61,26 @@ public class TicketService : ITicketService
         }
 
     }
+
+    public async Task<TicketQrCodeResult> GetTicketByQrCode(Guid qrCode)
+    {
+        string requestUrl = $"/api/ticket/qr/{qrCode}";
+
+        var response = await _httpClient.GetAsync(requestUrl);
+
+        if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            string message = await response.Content.ReadAsStringAsync();
+            throw new TicketNotFoundException(message);
+        }
+
+        if (response.StatusCode != HttpStatusCode.OK)
+        {
+            string message = await response.Content.ReadAsStringAsync();
+            throw new ApiException(message);
+        }
+
+        return await response.Content.ReadFromJsonAsync<TicketQrCodeResult>()
+               ?? throw new ApiException("Empty response body.");
+    }
 }
