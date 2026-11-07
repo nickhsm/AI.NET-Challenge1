@@ -9,6 +9,10 @@ public interface IFaceViewModel
     public string? StatusMessage { get; }
     public ImageSource? PhotoPreview { get; set; }
 
+    // True while waiting for the API: shows the loading spinner.
+    public bool IsBusy { get; }
+    public bool IsNotBusy { get; }
+
     public bool HasRequestResult { get;  }
     public CheckFaceResult? RequestResult { get; set; }
 
