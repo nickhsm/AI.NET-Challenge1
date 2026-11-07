@@ -15,6 +15,7 @@ namespace PassengerTicketService.ViewModels
 
         // Datum weergave (bijv. "Vandaag, 05/11/2026" of alleen de datum)
         public string ExpirationDateDisplay => $"{CurrentRequest.ExpirationDate:dd/MM/yyyy}";
+        public string ReturnExpirationDateDisplay => $"{CurrentRequest.ReturnExpirationDate:dd/MM/yyyy}";
 
         // Aantal passagiers weergave
         public string PassengerCountDisplay => $"Aantal passagiers: {CurrentRequest.PassengerCount}";
@@ -53,6 +54,7 @@ namespace PassengerTicketService.ViewModels
                 CurrentRequest = request;
                 // Update alle berekende properties
                 OnPropertyChanged(nameof(ExpirationDateDisplay));
+                OnPropertyChanged(nameof(ReturnExpirationDateDisplay));
                 OnPropertyChanged(nameof(PassengerCountDisplay));
                 OnPropertyChanged(nameof(OutboundPriceDisplay));
                 OnPropertyChanged(nameof(ReturnPriceDisplay));

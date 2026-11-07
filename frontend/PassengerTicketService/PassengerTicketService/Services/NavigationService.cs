@@ -68,6 +68,12 @@ namespace PassengerTicketService.Services
             await Shell.Current.Navigation.PushAsync(page);
         }
 
+        public async Task NavigateToEditProfilePageAsync()
+        {
+            var page = _serviceProvider.GetRequiredService<EditProfilePage>();
+            await Shell.Current.Navigation.PushAsync(page);
+        }
+
         public async Task NavigateToStartPageAsync()
         {
             await Shell.Current.GoToAsync("//StartPage");

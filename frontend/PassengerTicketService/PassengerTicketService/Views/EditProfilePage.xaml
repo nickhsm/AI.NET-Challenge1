@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:PassengerTicketService.ViewModels"
+             xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+             x:Class="PassengerTicketService.Views.EditProfilePage"
+             x:DataType="viewModels:IEditProfileViewModel"
+             BackgroundColor="#101010"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto, *">
+
+        <!-- 1. HEADER -->
+        <Grid Grid.Row="0" Padding="20,40,20,15" ColumnDefinitions="Auto, *" ColumnSpacing="15">
+            <Grid Grid.Column="0" WidthRequest="40" HeightRequest="40" HorizontalOptions="Start" VerticalOptions="Center">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding NavigateBackCommand}" />
+                </Grid.GestureRecognizers>
+                <Label Text="←" TextColor="White" FontSize="26" HorizontalOptions="Center" VerticalOptions="Center" />
+            </Grid>
+            <Label Grid.Column="1" Text="Mijn profiel" TextColor="White" FontSize="22" FontAttributes="Bold" VerticalOptions="Center" />
+        </Grid>
+
+        <!-- 2. FORMULIER -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="20,10,20,30" Spacing="15">
+
+                <!-- Voornaam -->
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Voornaam:" TextColor="#5AA2F0" FontSize="14" Margin="5,0,0,0"/>
+                    <Border Stroke="#444444" StrokeThickness="1" BackgroundColor="#1E1E1E" HeightRequest="50">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="8" />
+                        </Border.StrokeShape>
+                        <Entry Text="{Binding FirstName}" TextColor="White" BackgroundColor="Transparent" Margin="10,0" />
+                    </Border>
+                </VerticalStackLayout>
+
+                <!-- Familienaam -->
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Familienaam:" TextColor="#5AA2F0" FontSize="14" Margin="5,0,0,0"/>
+                    <Border Stroke="#444444" StrokeThickness="1" BackgroundColor="#1E1E1E" HeightRequest="50">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="8" />
+                        </Border.StrokeShape>
+                        <Entry Text="{Binding LastName}" TextColor="White" BackgroundColor="Transparent" Margin="10,0" />
+                    </Border>
+                </VerticalStackLayout>
+
+                <!-- Geboortedatum -->
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Geboortedatum:" TextColor="#5AA2F0" FontSize="14" Margin="5,0,0,0"/>
+                    <Border Stroke="#444444" StrokeThickness="1" BackgroundColor="#1E1E1E" HeightRequest="50">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="8" />
+                        </Border.StrokeShape>
+                        <DatePicker Date="{Binding BirthDate}" MaximumDate="{x:Static sys:DateTime.Today}"  Format="dd-MM-yyyy" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="Fill" Margin="10,0" />
+                    </Border>
+                </VerticalStackLayout>
+
+                <!-- E-mail -->
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="E-mail:" TextColor="#5AA2F0" FontSize="14" Margin="5,0,0,0"/>
+                    <Border Stroke="#444444" StrokeThickness="1" BackgroundColor="#1E1E1E" HeightRequest="50">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="8" />
+                        </Border.StrokeShape>
+                        <Entry Text="{Binding Email}" TextColor="White" BackgroundColor="Transparent" Keyboard="Email" Margin="10,0" />
+                    </Border>
+                </VerticalStackLayout>
+
+                <!-- Opslaan Knop (Oranje, net als Register) -->
+                <Button Text="Wijzigingen opslaan" 
+                        Command="{Binding SaveCommand}"
+                        BackgroundColor="#E86A22" 
+                        TextColor="White" 
+                        FontAttributes="Bold" 
+                        FontSize="16"
+                        CornerRadius="8" 
+                        HeightRequest="55" 
+                        Margin="0,15,0,15" />
+
+                <!-- Wachtwoord Sectie -->
+                <Label Text="Wachtwoord" TextColor="White" FontSize="18" FontAttributes="Bold" Margin="0,10,0,5" />
+
+                <BoxView Color="#333333" HeightRequest="1" HorizontalOptions="Fill" />
+
+                <!-- Wachtwoord wijzigen (Klikbare rij) -->
+                <Grid ColumnDefinitions="*, Auto" Padding="0,15">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ChangePasswordCommand}" />
+                    </Grid.GestureRecognizers>
+                    <Label Text="Je wachtwoord wijzigen" TextColor="White" FontSize="16" VerticalOptions="Center" />
+                    <Label Grid.Column="1" Text="›" TextColor="White" FontSize="24" VerticalOptions="Center" />
+                </Grid>
+
+                <BoxView Color="#333333" HeightRequest="1" HorizontalOptions="Fill" />
+
+                <!-- Account Verwijderen Sectie -->
+                <Label Text="Verwijder uw account" TextColor="White" FontSize="18" FontAttributes="Bold" Margin="0,20,0,5" />
+
+                <!-- Verwijder nu (Klikbare rij, oranje tekst) -->
+                <Grid ColumnDefinitions="*, Auto" Padding="0,15">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding DeleteAccountCommand}" />
+                    </Grid.GestureRecognizers>
+                    <Label Text="Verwijder nu" TextColor="#E86A22" FontSize="16" VerticalOptions="Center" />
+                    <Label Grid.Column="1" Text="›" TextColor="#E86A22" FontSize="24" VerticalOptions="Center" />
+                </Grid>
+
+                <BoxView Color="#333333" HeightRequest="1" HorizontalOptions="Fill" />
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

@@ -2,6 +2,16 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="ConductorTicketService.Views.FacePage">
-    <Label Text="Dit is de Face Scan Pagina" />
+             xmlns:viewModels="clr-namespace:ConductorTicketService.ViewModels"
+             x:Class="ConductorTicketService.Views.FacePage"
+             x:DataType="viewModels:IFaceViewModel">
+
+    <VerticalStackLayout Spacing="10" Padding="20">
+        <Label Text="Face Scan" FontSize="24" />
+
+        <Button Command="{Binding TakePhotoCommand}" Text="Neem foto" />
+
+        <Label Text="{Binding StatusMessage}" IsVisible="{Binding HasStatusMessage}" />
+        <Image Source="{Binding PhotoPreview}" />
+    </VerticalStackLayout>
 </ContentPage>

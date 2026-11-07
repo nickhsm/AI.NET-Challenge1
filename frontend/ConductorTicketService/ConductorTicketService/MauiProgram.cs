@@ -22,6 +22,12 @@ public static class MauiProgram
         builder.Logging.AddDebug();
 #endif
 
+        // HttpClient for requests to endpoint.
+        builder.Services.AddHttpClient<IFaceCheckService, FaceCheckService>(client =>
+        {
+            client.BaseAddress = new Uri("http://10.10.1.188:5271");
+        });
+
         builder.Services.AddSingleton<INavigationService, NavigationService>();
 
         builder.Services.AddTransient<ScanListPage>();
