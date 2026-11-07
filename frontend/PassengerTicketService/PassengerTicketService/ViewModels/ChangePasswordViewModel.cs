@@ -60,16 +60,19 @@ namespace PassengerTicketService.ViewModels
 
         private async Task SaveAsync()
         {
-            // Basis validatie
-            if (string.IsNullOrWhiteSpace(CurrentPassword) || string.IsNullOrWhiteSpace(NewPassword))
+            // Basis validatie: check of ALLE drie de velden zijn ingevuld
+            if (string.IsNullOrWhiteSpace(CurrentPassword) ||
+                string.IsNullOrWhiteSpace(NewPassword) ||
+                string.IsNullOrWhiteSpace(ConfirmNewPassword))
             {
                 await Application.Current.MainPage.DisplayAlert("Fout", "Vul alstublieft alle velden in.", "OK");
                 return;
             }
 
+            // Check of de nieuwe wachtwoorden overeenkomen
             if (NewPassword != ConfirmNewPassword)
             {
-                await Application.Current.MainPage.DisplayAlert("Fout", "De wachtwoorden komen niet overeen.", "OK");
+                await Application.Current.MainPage.DisplayAlert("Fout", "De nieuwe wachtwoorden komen niet overeen.", "OK");
                 return;
             }
 
