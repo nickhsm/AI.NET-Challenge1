@@ -69,6 +69,17 @@ public class TicketRepository : ITicketRepository
     {
         return _context.Tickets.AnyAsync(t => t.Id == ticketId);
     }
+
+    public async Task<Ticket?> GetTicketByQrCodeAsync(Guid qrCode)
+    {
+        var ticket = await _context.Tickets
+            .Include(t => t.Passenger)
+            .Include(t => t.StartingStation)
+            .Include(t => t.DestinationStation)
+            .SingleOrDefaultAsync(t => t.GuidQrCode == qrCode);
+
+        return ticket;
+    }
     
     public async Task<IEnumerable<Ticket>> GetTicketsByPassengerIdAsync(int passengerId)
     {
