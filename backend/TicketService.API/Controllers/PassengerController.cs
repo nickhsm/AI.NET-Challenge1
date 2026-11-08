@@ -189,7 +189,7 @@ public class PassengerController : ControllerBase
         return Ok(mappedResponse);
     }
     
-    [Authorize] // Heb nog geen rol restrictie gezet. Weet niet dat het ook gebruikt zal voor conducteur. 
+    [Authorize (Roles=Roles.Passenger)] 
     [HttpGet("me")]
     public async Task<ActionResult<PassengerProfileDto>> GetMyProfile()
     {
