@@ -160,4 +160,18 @@ public class PassengerRepository : IPassengerRepository
         // We gebruiken ToLower() zodat de check niet uitmaakt of er hoofdletters of kleine letters worden gebruikt
         return await _context.Passengers.AnyAsync(p => p.Email.ToLower() == email.ToLower());
     }
+    
+    public async Task UpdatePasswordAsync(int passengerId, string newHashedPassword)
+    {
+        var passenger = await _context.Passengers.FindAsync(passengerId);
+
+        if (passenger == null)
+        {
+            throw new InvalidOperationException($"Passenger with id {passengerId} not found.");
+        }
+
+        // Hier passen we de entity aan, binnen de repository
+        passenger.Password = newHashedPassword;
+        await _context.SaveChangesAsync();
+    }
 }

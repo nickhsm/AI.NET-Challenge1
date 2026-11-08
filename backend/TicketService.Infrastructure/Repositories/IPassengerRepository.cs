@@ -17,4 +17,5 @@ public interface IPassengerRepository
     public Task<UpdateProfileResult> UpdateProfileAsync(int passengerId, string? firstName, string? surname,
         string email, DateOnly? dateOfBirth);
     public Task<bool> EmailExistsAsync(string email);
+    public Task UpdatePasswordAsync(int passengerId, string newHashedPassword);
 }

@@ -341,7 +341,7 @@ public class PassengerController : ControllerBase
     }
     
     // --- NIEUWE ENDPOINT ---
-    [Authorize]
+    [Authorize (Roles = Roles.Passenger)]
     [HttpPatch("me/password")]
     public async Task<ActionResult> ChangeMyPassword([FromBody] ChangePasswordRequestDto request)
     {
@@ -354,8 +354,14 @@ public class PassengerController : ControllerBase
         {
             return NotFound("Passenger does not exist.");
         }
+        
+        // 3. Controleer of het nieuwe wachtwoord niet hetzelfde is als het oude
+        if (request.CurrentPassword == request.NewPassword)
+        {
+            return BadRequest("Het nieuwe wachtwoord mag niet hetzelfde zijn als het huidige wachtwoord.");
+        }
 
-        // 3. Controleer of het HUIDIGE wachtwoord klopt met de Identity Hasher
+        // 4. Controleer of het HUIDIGE wachtwoord klopt met de Identity Hasher
         var verificationResult = _passwordHasher.VerifyHashedPassword(passenger, passenger.Password, request.CurrentPassword);
         
         if (verificationResult == PasswordVerificationResult.Failed)
@@ -363,18 +369,13 @@ public class PassengerController : ControllerBase
             return BadRequest("Het huidige wachtwoord is onjuist.");
         }
 
-        // 4. Controleer of het nieuwe wachtwoord niet hetzelfde is als het oude
-        if (request.CurrentPassword == request.NewPassword)
-        {
-            return BadRequest("Het nieuwe wachtwoord mag niet hetzelfde zijn als het huidige wachtwoord.");
-        }
+        // 5. Hash het NIEUWE wachtwoord (dit mag in de controller, het is business logic)
+        string newHashedPassword = _passwordHasher.HashPassword(passenger, request.NewPassword);
 
-        // 5. Hash het NIEUWE wachtwoord met de Identity Hasher
-        passenger.Password = _passwordHasher.HashPassword(passenger, request.NewPassword);
-
-        // 6. Werk de passagier bij
-        await _passengerRepository.UpdatePassengerAsync(passenger);
-
+        // 6. Werk de passagier bij via de specifieke repository methode
+        // We geven alleen het ID en de nieuwe hash-string mee!
+        await _passengerRepository.UpdatePasswordAsync(passengerId, newHashedPassword);
+        
         // 7. Stuur een 204 No Content
         return NoContent();
     }
