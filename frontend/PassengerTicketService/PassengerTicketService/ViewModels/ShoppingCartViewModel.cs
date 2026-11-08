@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PassengerTicketService.Exceptions;
 using PassengerTicketService.Models;
 using PassengerTicketService.Services;
 using System.Windows.Input;
@@ -9,6 +10,19 @@ namespace PassengerTicketService.ViewModels
     public partial class ShoppingCartViewModel : ObservableObject, IShoppingCartViewModel, IQueryAttributable
     {
         private readonly INavigationService _navigationService;
+        private readonly ITicketService _ticketService;
+
+        // True while waiting on the backend, shows the spinner.
+        [ObservableProperty]
+        private bool isBusy = false;
+
+        // Null until the backend has answered.
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(OutboundPriceDisplay))]
+        [NotifyPropertyChangedFor(nameof(ReturnPriceDisplay))]
+        [NotifyPropertyChangedFor(nameof(TotalPriceDisplay))]
+        [NotifyPropertyChangedFor(nameof(HasPrice))]
+        private PriceResult? price;
 
         [ObservableProperty]
         private TravelRequest currentRequest = new();
@@ -20,23 +34,21 @@ namespace PassengerTicketService.ViewModels
         // Aantal passagiers weergave
         public string PassengerCountDisplay => $"Aantal passagiers: {CurrentRequest.PassengerCount}";
 
-        // Prijsberekening (Stopgap voor API)
-        private decimal BasePrice => 2.85m; // Basisprijs per persoon per enkele reis
-        private decimal CalculateOutboundPrice() => BasePrice * CurrentRequest.PassengerCount;
+        // Paying is only possible once the backend has given a price.
+        public bool HasPrice => Price is not null;
 
-        public string OutboundPriceDisplay => $"€ {CalculateOutboundPrice():F2}".Replace(".", ",");
+        public string OutboundPriceDisplay => FormatPrice(Price?.OutboundPrice);
         public string ReturnPriceDisplay => OutboundPriceDisplay; // Retour iszelfde prijs
-        public string TotalPriceDisplay => CurrentRequest.IsRoundTrip
-            ? $"€ {(CalculateOutboundPrice() * 2):F2}".Replace(".", ",")
-            : OutboundPriceDisplay;
+        public string TotalPriceDisplay => FormatPrice(Price?.TotalPrice);
 
         public ICommand PayCommand { get; private set; } = null!;
         public ICommand CancelCommand { get; private set; } = null!;
         public ICommand NavigateBackCommand { get; private set; } = null!;
 
-        public ShoppingCartViewModel(INavigationService navigationService)
+        public ShoppingCartViewModel(INavigationService navigationService, ITicketService ticketService)
         {
             _navigationService = navigationService;
+            _ticketService = ticketService;
             BindCommands();
         }
 
@@ -56,9 +68,38 @@ namespace PassengerTicketService.ViewModels
                 OnPropertyChanged(nameof(ExpirationDateDisplay));
                 OnPropertyChanged(nameof(ReturnExpirationDateDisplay));
                 OnPropertyChanged(nameof(PassengerCountDisplay));
-                OnPropertyChanged(nameof(OutboundPriceDisplay));
-                OnPropertyChanged(nameof(ReturnPriceDisplay));
-                OnPropertyChanged(nameof(TotalPriceDisplay));
+
+                // Can't be awaited here, ApplyQueryAttributes is not async. LoadPriceAsync handles its own errors.
+                _ = LoadPriceAsync();
+            }
+        }
+
+        private static string FormatPrice(decimal? price)
+        {
+            return price is null ? "..." : $"€ {price:F2}".Replace(".", ",");
+        }
+
+        private async Task LoadPriceAsync()
+        {
+            Price = null;
+            IsBusy = true;
+            try
+            {
+                Price = await _ticketService.CalculatePriceAsync(CurrentRequest.PassengerCount, CurrentRequest.IsRoundTrip);
+            }
+            catch (ApiException ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Fout", ex.Message, "OK");
+            }
+            catch (HttpRequestException)
+            {
+                // The phone can't reach the backend (no wifi, wrong network, API not running).
+                await Application.Current.MainPage.DisplayAlert("Fout",
+                    "We kunnen de server niet bereiken. Heeft u verbinding met het internet?", "OK");
+            }
+            finally
+            {
+                IsBusy = false;
             }
         }
 
