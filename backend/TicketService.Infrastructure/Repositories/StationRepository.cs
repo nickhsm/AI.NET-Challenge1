@@ -35,4 +35,9 @@ public class StationRepository : IStationRepository
             .Take(20)
             .ToListAsync();
     }
+
+    public async Task<Station?> GetStationByIdAsync(int stationId)
+    {
+        return await _context.Stations.FindAsync(stationId);
+    }
 }

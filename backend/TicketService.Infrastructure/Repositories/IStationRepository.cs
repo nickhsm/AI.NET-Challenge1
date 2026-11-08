@@ -4,5 +4,6 @@ namespace TicketService.Infrastructure.Repositories;
 
 public interface IStationRepository
 {
-    Task<IEnumerable<Station>> GetStationsAsync(string? searchQuery);
+    public Task<IEnumerable<Station>> GetStationsAsync(string? searchQuery);
+    public Task<Station?> GetStationByIdAsync(int stationId);
 }
