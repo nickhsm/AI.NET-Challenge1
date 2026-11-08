@@ -29,23 +29,31 @@ public static class MauiProgram
         // The url comes from frontend/Directory.Build.props (or your own ApiBaseUrl.local.props).
         Uri baseAddress = new Uri(GetApiBaseUrl());
 
+        // The default timeout is 100 seconds, far too long to look at a spinner.
+        // 30 seconds leaves room for a slow face check or a bad connection on the train.
+        TimeSpan timeout = TimeSpan.FromSeconds(30);
+
         builder.Services.AddHttpClient<IAuthService, AuthService>(client =>
         {
             client.BaseAddress = baseAddress;
+            client.Timeout = timeout;
         });
 
         builder.Services.AddTransient<AuthHeaderHandler>();
         builder.Services.AddHttpClient<IFaceCheckService, FaceCheckService>(client =>
         {
             client.BaseAddress = baseAddress;
+            client.Timeout = timeout;
         }).AddHttpMessageHandler<AuthHeaderHandler>();
         builder.Services.AddHttpClient<ITicketService, TicketService>(client =>
         {
             client.BaseAddress = baseAddress;
+            client.Timeout = timeout;
         }).AddHttpMessageHandler<AuthHeaderHandler>();
         builder.Services.AddHttpClient<IAccountService, AccountService>(client =>
         {
             client.BaseAddress = baseAddress;
+            client.Timeout = timeout;
         }).AddHttpMessageHandler<AuthHeaderHandler>();
 
         builder.Services.AddSingleton<INavigationService, NavigationService>();
