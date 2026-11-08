@@ -26,8 +26,13 @@ namespace PassengerTicketService.ViewModels
         [ObservableProperty]
         private string endStationText = string.Empty;
 
-        public ObservableCollection<StationDto> StartSuggestions { get; } = new();
-        public ObservableCollection<StationDto> EndSuggestions { get; } = new();
+        // De AutoCompleteEntry op Android (single select) volgt Add/Clear niet:
+        // hij ziet nieuwe suggesties alleen als ItemsSource een nieuwe collectie krijgt.
+        [ObservableProperty]
+        private ObservableCollection<StationDto> startSuggestions = new();
+
+        [ObservableProperty]
+        private ObservableCollection<StationDto> endSuggestions = new();
 
         [ObservableProperty]
         private StationDto? selectedStartStation;
@@ -125,8 +130,8 @@ namespace PassengerTicketService.ViewModels
             // Sluit én leeg de lijsten: control kan niet heropenen met oude items.
             IsStartSuggestionsVisible = false;
             IsEndSuggestionsVisible = false;
-            StartSuggestions.Clear();
-            EndSuggestions.Clear();
+            StartSuggestions = new();
+            EndSuggestions = new();
         }
 
         partial void OnSelectedEndStationChanged(StationDto? value)
@@ -140,8 +145,8 @@ namespace PassengerTicketService.ViewModels
 
             IsEndSuggestionsVisible = false;
             IsStartSuggestionsVisible = false;
-            EndSuggestions.Clear();
-            StartSuggestions.Clear();
+            EndSuggestions = new();
+            StartSuggestions = new();
         }
 
         // ---------- ZOEKOPDRACHTEN ----------
@@ -157,7 +162,7 @@ namespace PassengerTicketService.ViewModels
             {
                 if (generation == _startSearchGeneration)
                 {
-                    StartSuggestions.Clear();
+                    StartSuggestions = new();
                     IsStartSuggestionsVisible = false;
                 }
                 return;
@@ -179,8 +184,10 @@ namespace PassengerTicketService.ViewModels
                     return;
                 }
 
-                StartSuggestions.Clear();
-                foreach (var station in results) StartSuggestions.Add(station);
+                // Forceer false -> true: de control opent bij focus al een lege popup (hoogte 0)
+                // en meet die alleen opnieuw als de lijst echt opnieuw geopend wordt.
+                IsStartSuggestionsVisible = false;
+                StartSuggestions = new ObservableCollection<StationDto>(results);
                 IsStartSuggestionsVisible = StartSuggestions.Any();
             }
             catch (OperationCanceledException) { /* verwacht */ }
@@ -203,7 +210,7 @@ namespace PassengerTicketService.ViewModels
             {
                 if (generation == _endSearchGeneration)
                 {
-                    EndSuggestions.Clear();
+                    EndSuggestions = new();
                     IsEndSuggestionsVisible = false;
                 }
                 return;
@@ -223,8 +230,9 @@ namespace PassengerTicketService.ViewModels
                     return;
                 }
 
-                EndSuggestions.Clear();
-                foreach (var station in results) EndSuggestions.Add(station);
+                // Zelfde reden als bij het startstation: forceer false -> true.
+                IsEndSuggestionsVisible = false;
+                EndSuggestions = new ObservableCollection<StationDto>(results);
                 IsEndSuggestionsVisible = EndSuggestions.Any();
             }
             catch (OperationCanceledException) { }
