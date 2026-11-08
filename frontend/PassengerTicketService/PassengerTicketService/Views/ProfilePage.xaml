@@ -17,6 +17,8 @@
             <VerticalStackLayout Grid.Column="0" Spacing="5">
                 <!-- Naam -->
                 <Label Text="{Binding UserName}" TextColor="White" FontAttributes="Bold" FontSize="18" />
+                <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" Color="#E86A22" HorizontalOptions="Start" />
+                <Label Text="{Binding ErrorMessage}" IsVisible="{Binding HasErrorMessage}" TextColor="#FF6B6B" FontSize="14" />
             </VerticalStackLayout>
 
             <!-- Uitloggen Knop (Wit met tekst en SVG) -->
