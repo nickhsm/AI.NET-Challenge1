@@ -52,7 +52,7 @@ public class TicketService : ITicketService
         return await response.Content.ReadApiResultAsync<List<PassengerTicketResult>>();
     }
 
-    public async Task<bool> PurchaseTicketsAsync(TravelRequest request)
+    public async Task PurchaseTicketsAsync(TravelRequest request)
     {
         // Converteer de DateTime naar DateOnly voor de backend
         var requestDto = new
@@ -68,13 +68,16 @@ public class TicketService : ITicketService
         // De AuthHeaderHandler voegt automatisch het token toe!
         var response = await _httpClient.PostAsJsonAsync("api/ticket/purchase", requestDto);
 
-        if (!response.IsSuccessStatusCode)
+        if (response.StatusCode == HttpStatusCode.Unauthorized)
         {
-            // Optioneel: lees de foutmelding uit de response (zoals "Station does not exist")
-            var errorContent = await response.Content.ReadAsStringAsync();
-            System.Diagnostics.Debug.WriteLine($"Purchase Error: {errorContent}");
+            throw new SessionExpiredException();
         }
 
-        return response.IsSuccessStatusCode;
+        if (!response.IsSuccessStatusCode)
+        {
+            // De backend legt uit wat er mis is (bv. een reisdatum in het verleden), dus geef dat door.
+            string message = await response.Content.ReadAsStringAsync();
+            throw new ApiException(message);
+        }
     }
 }

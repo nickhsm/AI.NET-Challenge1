@@ -116,29 +116,31 @@ namespace PassengerTicketService.ViewModels
             try
             {
                 // 1. Roep de API aan om de tickets te kopen
-                var success = await _ticketService.PurchaseTicketsAsync(CurrentRequest);
+                await _ticketService.PurchaseTicketsAsync(CurrentRequest);
 
-                if (success)
-                {
-                    // 2. Succes! Toon een melding
-                    await Application.Current.MainPage.DisplayAlert("Succes", "Betaling geslaagd! Je tickets zijn aangemaakt.", "OK");
+                // 2. Succes! Toon een melding
+                await Application.Current.MainPage.DisplayAlert("Succes", "Betaling geslaagd! Je tickets zijn aangemaakt.", "OK");
 
-                    // 3. Wis de navigatie-stack (Home -> YourTravel -> Cart) en ga naar de Tickets pagina
-                    // Dit voorkomt dat de gebruiker met de 'Terug' knop weer in de winkelwagen belandt.
-                    await _navigationService.NavigateToTicketsPageAsync();
-                }
-                else
-                {
-                    await Application.Current.MainPage.DisplayAlert("Fout", "Er ging iets mis bij het kopen van de tickets. Probeer het later opnieuw.", "OK");
-                }
+                // 3. Wis de navigatie-stack (Home -> YourTravel -> Cart) en ga naar de Tickets pagina
+                // Dit voorkomt dat de gebruiker met de 'Terug' knop weer in de winkelwagen belandt.
+                await _navigationService.NavigateToTicketsPageAsync();
             }
             catch (SessionExpiredException)
             {
                 // Als het token verlopen is, stuurt de AuthHeaderHandler je al naar de login/startpagina.
             }
+            catch (ApiException ex)
+            {
+                // De backend heeft geantwoord en de aankoop geweigerd, dus er is niets gekocht.
+                await Application.Current.MainPage.DisplayAlert("Fout", ex.Message, "OK");
+            }
             catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
             {
-                await Application.Current.MainPage.DisplayAlert("Fout", "We kunnen de server niet bereiken. Controleer je internetverbinding.", "OK");
+                // We kregen geen antwoord, dus de aankoop kan wel gelukt zijn. Stuur de gebruiker
+                // naar zijn tickets, zodat hij niet vanuit de winkelwagen opnieuw betaalt.
+                await Application.Current.MainPage.DisplayAlert("Aankoop niet bevestigd",
+                    "We weten niet of je aankoop gelukt is. Controleer je tickets voordat je opnieuw koopt.", "OK");
+                await _navigationService.NavigateToTicketsPageAsync();
             }
             catch (Exception ex)
             {
