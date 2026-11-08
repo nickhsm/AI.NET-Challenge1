@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TicketService.API.MappingProfiles;
@@ -5,13 +6,11 @@ using TicketService.Contracts.Models;
 using TicketService.Infrastructure.Exceptions;
 using TicketService.Infrastructure.Repositories;
 using TicketService.Shared;
-using System.Security.Claims;  
 
 namespace TicketService.API.Controllers;
 
 [Route("api/ticket")]
 [ApiController]
-[Authorize(Roles = Roles.Conductor)]
 public class TicketController : ControllerBase
 {
     private ITicketRepository  _ticketRepository;
@@ -22,12 +21,13 @@ public class TicketController : ControllerBase
         _ticketRepository = ticketRepository;
         _passengerRepository = passengerRepository;
     }
-    
+
     private int GetPassengerId()
     {
         return int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
     }
 
+    [Authorize(Roles = Roles.Conductor)]
     [HttpGet("passenger/{FacePersonId:guid}")]
     public async Task<ActionResult<IEnumerable<TicketListDto>>> GetPassengerTickets(Guid facePersonId)
     {
@@ -45,6 +45,7 @@ public class TicketController : ControllerBase
         return Ok(mapped);
     }
 
+    [Authorize(Roles = Roles.Conductor)]
     [HttpPatch("consume/{id}")]
     public async Task<ActionResult> ConsumeTicket(int id)
     {
@@ -68,6 +69,7 @@ public class TicketController : ControllerBase
         return NoContent();
     }
 
+    [Authorize(Roles = Roles.Conductor)]
     [HttpGet("qr/{qrCode:guid}")]
     public async Task<ActionResult<TicketQrCodeDto>> GetTicketByQrCode(Guid qrCode)
     {
@@ -80,19 +82,15 @@ public class TicketController : ControllerBase
 
         return Ok(TicketMapper.ToTicketQrCodeDto(result));
     }
-    
+
     [Authorize(Roles = Roles.Passenger)]
     [HttpGet("passenger/me/all")]
-    public async Task<ActionResult<IEnumerable<TicketListDto>>> GetMyTickets()
-
+    public async Task<ActionResult<IEnumerable<PassengerTicketDto>>> GetMyTickets()
     {
-        // 1. Haal het ID veilig uit het token
         int passengerId = GetPassengerId();
 
-        // 2. Haal ALLE tickets op (actief + archief)
         var tickets = await _ticketRepository.GetTicketsByPassengerIdAsync(passengerId);
 
-        // 3. Map naar DTO
         var mapped = TicketMapper.ToPassengerTicketDtos(tickets);
 
         return Ok(mapped);

@@ -212,44 +212,4 @@ public class FaceViewModel : ObservableObject, IFaceViewModel
             IsBusy = false;
         }
     }
-
-    private async Task ConsumeTicketAsync(TicketListItemResult? ticket)
-    {
-        if (ticket is null) return;
-
-        IsBusy = true;
-        try
-        {
-            await _ticketService.ConsumeTicket(ticket.Id);
-
-            // Alles is succesvol afgerond, de conducteur kan naar de volgende passagier.
-            PhotoPreview = null;
-            RequestResult = null;
-            TicketListItemResult = [];
-
-            StatusMessage = "Ticket gebruikt. U kan de volgende passagier scannen.";
-        }
-        catch (TicketNotConsumableException)
-        {
-            StatusMessage = "Dit ticket kan niet gebruikt worden: het is al gebruikt of niet geldig vandaag.";
-        }
-        catch (TicketNotFoundException)
-        {
-            StatusMessage = "Dit ticket kan niet worden gevonden.";
-        }
-        catch (ApiException ex)
-        {
-            StatusMessage = "Er is iets foutgelopen. Probeer het later opnieuw.";
-            Debug.WriteLine(ex);
-        }
-        catch (HttpRequestException ex)
-        {
-            StatusMessage = "We kunnen de server niet bereiken. Heeft u verbinding met het internet?";
-            Debug.WriteLine(ex);
-        }
-        finally
-        {
-            IsBusy = false;
-        }
-    }
 }
