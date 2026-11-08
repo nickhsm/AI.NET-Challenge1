@@ -116,4 +116,16 @@ public class PassengerRepository : IPassengerRepository
 
         return true;
     }
+    
+    public async Task UpdatePassengerAsync(Passenger passenger)
+    {
+        _context.Passengers.Update(passenger);
+        await _context.SaveChangesAsync();
+    }
+    
+    public async Task<bool> EmailExistsAsync(string email)
+    {
+        // We gebruiken ToLower() zodat de check niet uitmaakt of er hoofdletters of kleine letters worden gebruikt
+        return await _context.Passengers.AnyAsync(p => p.Email.ToLower() == email.ToLower());
+    }
 }

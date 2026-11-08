@@ -14,5 +14,4 @@ public interface IPassengerRepository
     public Task<Passenger?> GetPassengerByEmailAsync(string email);
     public Task AddPassengerAsync(Passenger passenger);
     public Task<bool> DeletePassengerAsync(int passengerId);
-
 }
