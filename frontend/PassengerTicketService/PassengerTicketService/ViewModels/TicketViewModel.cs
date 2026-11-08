@@ -37,6 +37,18 @@ namespace PassengerTicketService.ViewModels
         // Only say there are no tickets when we actually know that.
         public bool ShowEmptyMessage => !IsBusy && !HasErrorMessage && DisplayedTickets.Count == 0;
 
+        // The ticket shown in the QR popup. Null means the popup is closed.
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsQrPopupVisible))]
+        [NotifyPropertyChangedFor(nameof(SelectedQrValue))]
+        private PassengerTicketResult? selectedTicket;
+
+        public bool IsQrPopupVisible => SelectedTicket is not null;
+
+        // The conductor app reads the scanned text with Guid.TryParse, so the QR code holds just the Guid.
+        // The hidden popup still exists when closed. An empty Guid instead of "" keeps the generator's input valid.
+        public string SelectedQrValue => (SelectedTicket?.GuidQrCode ?? Guid.Empty).ToString();
+
         [ObservableProperty]
         private bool isActiveTabSelected = true;
 
@@ -60,6 +72,8 @@ namespace PassengerTicketService.ViewModels
         public ICommand NavigateHomeCommand { get; private set; } = null!;
         public ICommand NavigateTicketsCommand { get; private set; } = null!;
         public ICommand NavigateProfileCommand { get; private set; } = null!;
+        public ICommand OpenQrCommand { get; private set; } = null!;
+        public ICommand CloseQrCommand { get; private set; } = null!;
 
         public TicketViewModel(INavigationService navigationService, ITicketService ticketService)
         {
@@ -107,6 +121,8 @@ namespace PassengerTicketService.ViewModels
             //Dit is door de navbar.
             NavigateTicketsCommand = new RelayCommand(() => { });
             NavigateProfileCommand = new AsyncRelayCommand(_navigationService.NavigateToProfilePageAsync);
+            OpenQrCommand = new RelayCommand<PassengerTicketResult>(ticket => SelectedTicket = ticket);
+            CloseQrCommand = new RelayCommand(() => SelectedTicket = null);
         }
 
         private void SwitchTab(bool showActive)

@@ -17,6 +17,13 @@ namespace PassengerTicketService.ViewModels
 
         Task LoadTicketsAsync();
 
+        // QR popup
+        PassengerTicketResult? SelectedTicket { get; set; }
+        bool IsQrPopupVisible { get; }
+        string SelectedQrValue { get; }
+        ICommand OpenQrCommand { get; }
+        ICommand CloseQrCommand { get; }
+
         bool IsActiveTabSelected { get; set; }
         ICommand ShowActiveCommand { get; }
         ICommand ShowArchiveCommand { get; }

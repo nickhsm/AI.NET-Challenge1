@@ -4,6 +4,7 @@
              xmlns:viewModels="clr-namespace:PassengerTicketService.ViewModels"
              xmlns:components="clr-namespace:PassengerTicketService.Components"
              xmlns:models="clr-namespace:PassengerTicketService.Models"
+             xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
              x:Class="PassengerTicketService.Views.TicketPage"
              x:DataType="viewModels:ITicketViewModel"
              BackgroundColor="#101010"
@@ -92,19 +93,16 @@
                             <Grid ColumnDefinitions="*, Auto" Margin="0,5,0,5">
                                 <Label Grid.Column="0" Text="{Binding Price, StringFormat='&#8364; {0:F2}'}" TextColor="#5AA2F0" FontSize="16" FontAttributes="Bold" VerticalOptions="Center" />
 
-                                <!-- QR Code Placeholder -->
-                                <Border Grid.Column="1" BackgroundColor="Black" Padding="5" WidthRequest="80" HeightRequest="80">
-                                    <Border.StrokeShape>
-                                        <RoundRectangle CornerRadius="4" />
-                                    </Border.StrokeShape>
-                                    <Grid RowDefinitions="*,*,*,*" ColumnDefinitions="*,*,*,*" RowSpacing="2" ColumnSpacing="2">
-                                        <BoxView Grid.Row="0" Grid.Column="0" Color="White" />
-                                        <BoxView Grid.Row="0" Grid.Column="3" Color="White" />
-                                        <BoxView Grid.Row="3" Grid.Column="0" Color="White" />
-                                        <BoxView Grid.Row="1" Grid.Column="1" Color="White" />
-                                        <BoxView Grid.Row="2" Grid.Column="2" Color="White" />
-                                    </Grid>
-                                </Border>
+                                <!-- Inside a card the binding context is the ticket, so the ViewModel is found through the parents. -->
+                                <Button Grid.Column="1"
+                                        Text="Toon QR"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:ITicketViewModel}}, Path=OpenQrCommand, x:DataType=viewModels:ITicketViewModel}"
+                                        CommandParameter="{Binding .}"
+                                        IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewModels:ITicketViewModel}}, Path=IsActiveTabSelected, x:DataType=viewModels:ITicketViewModel}"
+                                        BackgroundColor="#5AA2F0"
+                                        TextColor="Black"
+                                        FontAttributes="Bold"
+                                        CornerRadius="8" />
                             </Grid>
                         </VerticalStackLayout>
                     </Border>
@@ -120,6 +118,40 @@
         <!-- 3. BOTTOM NAVIGATIE BALK (Ongewijzigd gelaten) -->
         <components:BottomNavBar Grid.Row="3" SelectedTab="Tickets" />
 
+        <!-- 4. QR POPUP: last child, so it is drawn on top of the whole page.
+             The empty TapGestureRecognizer makes sure taps don't reach the page underneath. -->
+        <Grid Grid.RowSpan="4" BackgroundColor="#CC000000" IsVisible="{Binding IsQrPopupVisible}">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer />
+            </Grid.GestureRecognizers>
+
+            <Border BackgroundColor="White" StrokeThickness="0" Padding="20" Margin="20"
+                    HorizontalOptions="Center" VerticalOptions="Center">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="12" />
+                </Border.StrokeShape>
+
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="{Binding SelectedTicket.StartingStation}" TextColor="Black" FontSize="16" FontAttributes="Bold" HorizontalOptions="Center" />
+                    <Label Text="{Binding SelectedTicket.DestinationStation}" TextColor="Black" FontSize="16" FontAttributes="Bold" HorizontalOptions="Center" />
+                    <Label Text="{Binding SelectedTicket.Date, StringFormat='Geldig op {0:dd/MM/yyyy}'}" TextColor="#444444" FontSize="14" HorizontalOptions="Center" />
+
+                    <zxing:BarcodeGeneratorView Format="QrCode"
+                                                Value="{Binding SelectedQrValue}"
+                                                ForegroundColor="Black"
+                                                BackgroundColor="White"
+                                                WidthRequest="250"
+                                                HeightRequest="250" />
+
+                    <Button Text="Sluiten"
+                            Command="{Binding CloseQrCommand}"
+                            BackgroundColor="#5AA2F0"
+                            TextColor="Black"
+                            FontAttributes="Bold"
+                            CornerRadius="8" />
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
 
     </Grid>
 </ContentPage>
