@@ -10,12 +10,12 @@
     <!-- The first ShellContent is shown when the app starts, so the login page comes first.
          FlyoutBehavior="Disabled" hides the menu, otherwise you could open "Home" without logging in. -->
     <ShellContent
-        Title="Login"
+        Title="Inloggen"
         ContentTemplate="{DataTemplate views:LoginPage}"
         Route="LoginPage" />
 
     <ShellContent
-        Title="Home"
+        Title="Start"
         ContentTemplate="{DataTemplate views:ScanListPage}"
         Route="MainPage" />
 

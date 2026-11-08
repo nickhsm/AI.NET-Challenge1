@@ -9,11 +9,11 @@
 
     <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,*" RowSpacing="10" Padding="20">
 
-        <Label Grid.Row="0" Text="Face Scan" FontSize="24" />
+        <Label Grid.Row="0" Text="Gezicht scannen" FontSize="24" />
 
         <Button Grid.Row="1"
                 Command="{Binding TakePhotoCommand}"
-                Text="Neem foto"
+                Text="Foto nemen"
                 IsEnabled="{Binding IsNotBusy}" />
 
         <!-- Status message in a highlighted box so the conductor notices it right away -->

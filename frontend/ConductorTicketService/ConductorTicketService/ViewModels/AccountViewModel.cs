@@ -135,7 +135,7 @@ public class AccountViewModel : ObservableObject, IAccountViewModel
 
         if (string.IsNullOrWhiteSpace(Email))
         {
-            ErrorMessage = "U moet uw e-mail invullen.";
+            ErrorMessage = "U moet uw e-mailadres invullen.";
             return;
         }
 

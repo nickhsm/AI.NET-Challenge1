@@ -179,7 +179,7 @@ public class QrCodeViewModel : ObservableObject, IQrCodeViewModel
         }
         catch (TicketNotConsumableException)
         {
-            StatusMessage = "Dit ticket kan niet gebruikt worden: het is al gebruikt of niet geldig vandaag.";
+            StatusMessage = "Dit ticket kan niet gebruikt worden: het is al gebruikt of vandaag niet geldig.";
         }
         catch (TicketNotFoundException)
         {
