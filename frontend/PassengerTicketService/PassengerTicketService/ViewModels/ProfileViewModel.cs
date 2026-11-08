@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PassengerTicketService.Exceptions;
 using PassengerTicketService.Services;
+using System.Diagnostics;
 using System.Windows.Input;
 
 namespace PassengerTicketService.ViewModels
@@ -9,9 +11,20 @@ namespace PassengerTicketService.ViewModels
     {
         private readonly INavigationService _navigationService;
         private readonly IAuthService _authService;
+        private readonly IAccountService _accountService;
 
-        // Voor nu hardcoded. Later haal je dit uit je ingelogde user object of API.
-        public string UserName => "JONATHAN YANG";
+        [ObservableProperty]
+        private string userName = string.Empty;
+
+        // True while waiting on the backend, shows the spinner.
+        [ObservableProperty]
+        private bool isBusy = false;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasErrorMessage))]
+        private string? errorMessage;
+
+        public bool HasErrorMessage => !string.IsNullOrEmpty(ErrorMessage);
 
         public ICommand LogoutCommand { get; private set; } = null!;
         public ICommand EditAccountCommand { get; private set; } = null!;
@@ -21,11 +34,44 @@ namespace PassengerTicketService.ViewModels
         public ICommand NavigateTicketsCommand { get; private set; } = null!;
         public ICommand NavigateProfileCommand { get; private set; } = null!;
 
-        public ProfileViewModel(INavigationService navigationService, IAuthService authService)
+        public ProfileViewModel(INavigationService navigationService, IAuthService authService,
+            IAccountService accountService)
         {
             _navigationService = navigationService;
             _authService = authService;
+            _accountService = accountService;
             BindCommands();
+        }
+
+        // Called on every OnAppearing, so edits show up when coming back from the edit page.
+        public async Task LoadProfileAsync()
+        {
+            ErrorMessage = null;
+            IsBusy = true;
+            try
+            {
+                var profile = await _accountService.GetProfileAsync();
+
+                // Either name can be null: only show the ones that are filled in.
+                string fullName = string.Join(" ",
+                    new[] { profile.FirstName, profile.Surname }.Where(name => !string.IsNullOrWhiteSpace(name)));
+
+                UserName = fullName.Length > 0 ? fullName : profile.Email;
+            }
+            catch (ApiException ex)
+            {
+                ErrorMessage = "Er is iets foutgelopen. Probeer het later opnieuw.";
+                Debug.WriteLine(ex);
+            }
+            catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
+            {
+                ErrorMessage = "We kunnen de server niet bereiken. Heeft u verbinding met het internet?";
+                Debug.WriteLine(ex);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
         }
 
         private void BindCommands()

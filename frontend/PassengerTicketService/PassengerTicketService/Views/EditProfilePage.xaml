@@ -8,7 +8,7 @@
              BackgroundColor="#101010"
              Shell.NavBarIsVisible="False">
 
-    <Grid RowDefinitions="Auto, *">
+    <Grid RowDefinitions="Auto, Auto, *">
 
         <!-- 1. HEADER -->
         <Grid Grid.Row="0" Padding="20,40,20,15" ColumnDefinitions="Auto, *" ColumnSpacing="15">
@@ -21,8 +21,14 @@
             <Label Grid.Column="1" Text="Mijn profiel" TextColor="White" FontSize="22" FontAttributes="Bold" VerticalOptions="Center" />
         </Grid>
 
+        <!-- Outside the ScrollView, so it stays visible when scrolled down to "Verwijder nu" -->
+        <VerticalStackLayout Grid.Row="1" Padding="20,0">
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" Color="#E86A22" />
+            <Label Text="{Binding ErrorMessage}" IsVisible="{Binding HasErrorMessage}" TextColor="#FF6B6B" FontSize="14" />
+        </VerticalStackLayout>
+
         <!-- 2. FORMULIER -->
-        <ScrollView Grid.Row="1">
+        <ScrollView Grid.Row="2">
             <VerticalStackLayout Padding="20,10,20,30" Spacing="15">
 
                 <!-- Voornaam -->

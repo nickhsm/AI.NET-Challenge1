@@ -59,6 +59,12 @@ public static class MauiProgram
             client.Timeout = timeout;
         }).AddHttpMessageHandler<AuthHeaderHandler>();
 
+        builder.Services.AddHttpClient<IAccountService, AccountService>(client =>
+        {
+            client.BaseAddress = baseAddress;
+            client.Timeout = timeout;
+        }).AddHttpMessageHandler<AuthHeaderHandler>();
+
         // --- REGISTREER VIEWMODELS ---
         // Koppel de Interface aan de class
         builder.Services.AddTransient<IHomeViewModel, HomeViewModel>();

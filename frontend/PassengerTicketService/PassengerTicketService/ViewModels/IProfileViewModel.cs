@@ -6,6 +6,14 @@ namespace PassengerTicketService.ViewModels
     {
         string UserName { get; }
 
+        // True terwijl we wachten op de backend (spinner)
+        bool IsBusy { get; set; }
+
+        string? ErrorMessage { get; set; }
+        bool HasErrorMessage { get; }
+
+        Task LoadProfileAsync();
+
         // Acties
         ICommand LogoutCommand { get; }
         ICommand EditAccountCommand { get; }

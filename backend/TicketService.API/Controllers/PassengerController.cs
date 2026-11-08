@@ -325,7 +325,9 @@ public class PassengerController : ControllerBase
         
         if (verificationResult == PasswordVerificationResult.Failed)
         {
-            return BadRequest("Het huidige wachtwoord is onjuist.");
+            // 403 and not 401: the token is valid, only the password check failed.
+            // A 401 would make the app think the passenger is logged out.
+            return StatusCode(StatusCodes.Status403Forbidden, "Het huidige wachtwoord is onjuist.");
         }
 
         // 5. Hash het NIEUWE wachtwoord (dit mag in de controller, het is business logic)

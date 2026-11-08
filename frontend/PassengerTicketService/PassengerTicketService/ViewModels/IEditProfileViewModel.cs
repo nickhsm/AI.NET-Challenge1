@@ -10,10 +10,18 @@ namespace PassengerTicketService.ViewModels
         string Email { get; set; }
         DateTime BirthDate { get; set; }
 
+        // True terwijl we wachten op de backend (spinner)
+        bool IsBusy { get; set; }
+
+        string? ErrorMessage { get; set; }
+        bool HasErrorMessage { get; }
+
         // Acties
         ICommand SaveCommand { get; }
         ICommand NavigateBackCommand { get; }
         ICommand ChangePasswordCommand { get; }
         ICommand DeleteAccountCommand { get; }
+
+        Task LoadProfileAsync();
     }
 }
