@@ -254,13 +254,17 @@ namespace PassengerTicketService.ViewModels
             _startSearchCts?.Cancel();
             _endSearchCts?.Cancel();
 
-            var tempText = StartStationText;
-            StartStationText = EndStationText;
-            EndStationText = tempText;
+            // Bewaar eerst beide teksten: de control past de tekst zelf aan als de selectie wijzigt.
+            var oldStartText = StartStationText;
+            var oldEndText = EndStationText;
 
-            var tempObj = SelectedStartStation;
+            // Eerst de selecties: anders wist de tekstwijziging ze voordat ze gewisseld zijn.
+            var oldStartStation = SelectedStartStation;
             SelectedStartStation = SelectedEndStation;
-            SelectedEndStation = tempObj;
+            SelectedEndStation = oldStartStation;
+
+            StartStationText = oldEndText;
+            EndStationText = oldStartText;
         }
 
         // ---------- NAVIGATIE ----------
