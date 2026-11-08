@@ -4,5 +4,5 @@ namespace ConductorTicketService.Services;
 
 public interface IFaceCheckService
 {
-    public Task<CheckFaceResult?> CheckFaceAsync(Stream photo);
+    Task<CheckFaceResult?> CheckFaceAsync(Stream photo);
 }
