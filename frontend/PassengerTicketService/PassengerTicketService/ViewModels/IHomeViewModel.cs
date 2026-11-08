@@ -1,23 +1,34 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
+using PassengerTicketService.Models;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace PassengerTicketService.ViewModels
 {
     public interface IHomeViewModel
     {
-        string StartStation { get; set; }
-        string EndStation { get; set; }
+        // Voor de autocomplete (deze hebben we nu)
+        string StartStationText { get; set; }
+        string EndStationText { get; set; }
+        StationDto? SelectedStartStation { get; set; }
+        StationDto? SelectedEndStation { get; set; }
+        ObservableCollection<StationDto> StartSuggestions { get; }
+        ObservableCollection<StationDto> EndSuggestions { get; }
 
+        // Verwijderd: IsStartSuggestionsVisible
+        // Verwijderd: IsEndSuggestionsVisible
+        // Verwijderd: SelectStartStationCommand
+        // Verwijderd: SelectEndStationCommand
+
+        // Voor de datum
         DateTime SelectedDate { get; set; }
-        DateTime MinimumDate { get; } 
+        DateTime MinimumDate { get; }
         string DateDisplayText { get; }
 
+        // Commando's
         ICommand BuyTicketCommand { get; }
-        ICommand SwapStationsCommand { get; }
         ICommand NavigateHomeCommand { get; }
         ICommand NavigateTicketsCommand { get; }
         ICommand NavigateProfileCommand { get; }
+        ICommand SwapStationsCommand { get; }
     }
 }
