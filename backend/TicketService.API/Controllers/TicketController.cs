@@ -96,6 +96,7 @@ public class TicketController : ControllerBase
         return Ok(mapped);
     }
 
+    [Authorize(Roles = Roles.Passenger)]
     [HttpPost("calculate-price")]
     public ActionResult<PriceCalculationResponseDto> CalculatePrice([FromBody] PriceCalculationRequestDto request)
     {
