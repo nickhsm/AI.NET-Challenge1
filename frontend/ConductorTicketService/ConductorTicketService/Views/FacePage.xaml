@@ -5,6 +5,7 @@
              xmlns:viewModels="clr-namespace:ConductorTicketService.ViewModels"
              xmlns:models="clr-namespace:ConductorTicketService.Models"
              x:Class="ConductorTicketService.Views.FacePage"
+             x:Name="RootPage"
              x:DataType="viewModels:IFaceViewModel">
 
     <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,*" RowSpacing="10" Padding="20">
@@ -111,7 +112,7 @@
                                  The ticket itself is passed along as CommandParameter. -->
                             <Button Text="Gebruik"
                                     Margin="0,10,0,0"
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:IFaceViewModel}}, Path=ConsumeTicketCommand, x:DataType=viewModels:IFaceViewModel}"
+                                    Command="{Binding Source={x:Reference RootPage}, Path=BindingContext.ConsumeTicketCommand}"
                                     CommandParameter="{Binding .}" />
                         </VerticalStackLayout>
                     </Border>
