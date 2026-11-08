@@ -1,16 +1,21 @@
 using Microsoft.EntityFrameworkCore;
 using TicketService.Domain.Entities;
 using TicketService.Infrastructure.DbContexts;
+using TicketService.Infrastructure.Exceptions; 
+using TicketService.Infrastructure.Services;  
+
 
 namespace TicketService.Infrastructure.Repositories;
 
 public class PassengerRepository : IPassengerRepository
 {
     private TicketServiceDbContext _context;
+    private readonly IFaceRecognitionService _faceRecognitionService; 
 
-    public PassengerRepository(TicketServiceDbContext context)
+    public PassengerRepository(TicketServiceDbContext context, IFaceRecognitionService faceRecognitionService)
     {
         _context = context;
+        _faceRecognitionService = faceRecognitionService;
     }
 
     public async Task<Passenger?> GetPassengerByIdAsync(int passengerId)
@@ -83,15 +88,32 @@ public class PassengerRepository : IPassengerRepository
     public async Task<bool> DeletePassengerAsync(int passengerId)
     {
         var passenger = await _context.Passengers.FindAsync(passengerId);
-    
+
         if (passenger == null)
         {
             return false;
         }
 
+        // 1. Verwijder eerst het gezicht uit Azure (indien er een gezicht is geregistreerd)
+        if (passenger.FacePersonId.HasValue)
+        {
+            try
+            {
+                await _faceRecognitionService.DeleteAsync(passenger.FacePersonId.Value);
+            }
+            catch (AzureServiceException)
+            {
+                // Als Azure faalt, gooien we de error door.
+                // We verwijderen het account dan NIET, zodat de data consistent blijft.
+                // De controller vangt deze exception op.
+                throw; 
+            }
+        }
+
+        // 2. Pas als Azure succesvol is (of als er geen gezicht was), verwijderen we de passagier
         _context.Passengers.Remove(passenger);
         await _context.SaveChangesAsync();
-    
+
         return true;
     }
 }

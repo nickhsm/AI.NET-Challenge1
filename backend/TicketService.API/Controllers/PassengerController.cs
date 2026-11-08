@@ -210,22 +210,29 @@ public class PassengerController : ControllerBase
         return Ok(mappedProfile);
     }
     
-    [Authorize] // Heb nog geen rol restrictie gezet. Weet niet dat het ook gebruikt zal voor conducteur.
+    [Authorize (Roles = Roles.Passenger)] 
     [HttpDelete("me")]
     public async Task<ActionResult> DeleteMyAccount()
     {
         // 1. Haal het ID veilig uit het token
         int passengerId = GetPassengerId();
 
-        // 2. Probeer de passagier te verwijderen
-        bool isDeleted = await _passengerRepository.DeletePassengerAsync(passengerId);
-
-        if (!isDeleted)
+        try
         {
-            return NotFound("Passenger does not exist.");
-        }
+            bool isDeleted = await _passengerRepository.DeletePassengerAsync(passengerId);
 
-        // 3. Geef een 204 No Content terug (standaard voor een succesvolle DELETE)
-        return NoContent();
+            if (!isDeleted)
+            {
+                return NotFound("Passenger does not exist.");
+            }
+
+            return NoContent();
+        }
+        catch (AzureServiceException ex)
+        {
+            // Als Azure in de fout gaat, sturen we een 502 Bad Gateway terug.
+            // Het account is in dit geval NIET verwijderd.
+            return StatusCode(StatusCodes.Status502BadGateway, ex.Message);
+        }
     }
 }
