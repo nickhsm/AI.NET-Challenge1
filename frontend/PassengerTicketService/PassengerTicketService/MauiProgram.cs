@@ -30,10 +30,14 @@ public static class MauiProgram
         // De url komt uit frontend/Directory.Build.props (of je eigen ApiBaseUrl.local.props).
         Uri baseAddress = new Uri(GetApiBaseUrl());
 
+        // The default timeout is 100 seconds, far too long to look at a spinner.
+        TimeSpan timeout = TimeSpan.FromSeconds(30);
+
         // Login does not need a token, so no AuthHeaderHandler here.
         builder.Services.AddHttpClient<IAuthService, AuthService>(client =>
         {
             client.BaseAddress = baseAddress;
+            client.Timeout = timeout;
         });
 
         // Adds the token to every request of the clients it is attached to
@@ -43,6 +47,7 @@ public static class MauiProgram
         builder.Services.AddHttpClient<ITicketService, TicketService>(client =>
         {
             client.BaseAddress = baseAddress;
+            client.Timeout = timeout;
         }).AddHttpMessageHandler<AuthHeaderHandler>();
 
         // --- REGISTREER VIEWMODELS ---
