@@ -257,7 +257,6 @@ public class PassengerController : ControllerBase
         }
     }
     
-    // --- NIEUWE ENDPOINT ---
     [Authorize (Roles=Roles.Passenger)]
     [HttpPut("me")]
     public async Task<ActionResult> UpdateMyProfile([FromBody] UpdateProfileRequestDto request)
@@ -301,46 +300,6 @@ public class PassengerController : ControllerBase
         };
     }
     
-    // --- NIEUWE ENDPOINT ---
-    [Authorize]
-    [HttpPut("me")]
-    public async Task<ActionResult> UpdateMyProfile([FromBody] UpdateProfileRequestDto request)
-    {
-        // 1. Haal het ID veilig uit het token
-        int passengerId = GetPassengerId();
-
-        // 2. Zoek de bestaande passagier
-        var passenger = await _passengerRepository.GetPassengerByIdAsync(passengerId);
-        if (passenger is null)
-        {
-            return NotFound("Passenger does not exist.");
-        }
-
-        // 3. Controleer of het nieuwe e-mailadres al door iemand anders wordt gebruikt
-        if (passenger.Email.ToLower() != request.Email.ToLower())
-        {
-            var emailTaken = await _passengerRepository.EmailExistsAsync(request.Email);
-            if (emailTaken)
-            {
-                return Conflict("Dit e-mailadres is al in gebruik door een ander account.");
-            }
-        }
-
-        // 4. Werk de gegevens bij
-        passenger.FirstName = request.FirstName;
-        passenger.Surname = request.Surname;
-        passenger.Email = request.Email;
-        passenger.DateOfBirth = request.DateOfBirth;
-
-        // 5. Sla de wijzigingen op
-        await _passengerRepository.UpdatePassengerAsync(passenger);
-
-        // 6. Geef een 204 No Content terug (geslaagd, geen data om terug te sturen)
-        // Je zou er ook voor kunnen kiezen om de geüpdatete PassengerProfileDto terug te sturen.
-        return NoContent();
-    }
-    
-    // --- NIEUWE ENDPOINT ---
     [Authorize (Roles = Roles.Passenger)]
     [HttpPatch("me/password")]
     public async Task<ActionResult> ChangeMyPassword([FromBody] ChangePasswordRequestDto request)
@@ -374,8 +333,12 @@ public class PassengerController : ControllerBase
 
         // 6. Werk de passagier bij via de specifieke repository methode
         // We geven alleen het ID en de nieuwe hash-string mee!
-        await _passengerRepository.UpdatePasswordAsync(passengerId, newHashedPassword);
-        
+        var updated = await _passengerRepository.UpdatePasswordAsync(passengerId, newHashedPassword);
+        if (!updated)
+        {
+            return NotFound("Passenger does not exist.");
+        }
+
         // 7. Stuur een 204 No Content
         return NoContent();
     }

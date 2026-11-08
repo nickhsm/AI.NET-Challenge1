@@ -161,17 +161,28 @@ public class PassengerRepository : IPassengerRepository
         return await _context.Passengers.AnyAsync(p => p.Email.ToLower() == email.ToLower());
     }
     
-    public async Task UpdatePasswordAsync(int passengerId, string newHashedPassword)
+    public async Task<bool> UpdatePasswordAsync(int passengerId, string newHashedPassword)
     {
         var passenger = await _context.Passengers.FindAsync(passengerId);
 
         if (passenger == null)
         {
-            throw new InvalidOperationException($"Passenger with id {passengerId} not found.");
+            return false;
         }
 
         // Hier passen we de entity aan, binnen de repository
         passenger.Password = newHashedPassword;
-        await _context.SaveChangesAsync();
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            // Het account werd verwijderd nadat we het hierboven ophaalden.
+            return false;
+        }
+
+        return true;
     }
 }
