@@ -8,7 +8,7 @@
 
     <Grid RowDefinitions="Auto,Auto,*" RowSpacing="10" Padding="20">
 
-        <Label Grid.Row="0" Text="QR-code Scan" FontSize="24" />
+        <Label Grid.Row="0" Text="QR-code scannen" FontSize="24" />
 
         <!-- Status message in a highlighted box so the conductor notices it right away -->
         <Border Grid.Row="1"

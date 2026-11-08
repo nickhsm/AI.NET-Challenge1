@@ -133,7 +133,7 @@ public class FaceViewModel : ObservableObject, IFaceViewModel
 
             if (result is null)
             {
-                StatusMessage = "Passagier niet herkend";
+                StatusMessage = "Passagier niet herkend.";
                 return;
             }
 
@@ -165,7 +165,7 @@ public class FaceViewModel : ObservableObject, IFaceViewModel
         catch (PassengerNotFoundException)
         {
             StatusMessage =
-                "Passagier niet gevonden, waarschijnlijk heeft hij zijn gezicht niet geregistreerd. Scan de QR-code van de ticket.";
+                "Passagier niet gevonden. Waarschijnlijk is het gezicht van deze passagier niet geregistreerd. Scan de QR-code van het ticket.";
         }
         finally
         {
@@ -191,7 +191,7 @@ public class FaceViewModel : ObservableObject, IFaceViewModel
         }
         catch (TicketNotConsumableException)
         {
-            StatusMessage = "Dit ticket kan niet gebruikt worden: het is al gebruikt of niet geldig vandaag.";
+            StatusMessage = "Dit ticket kan niet gebruikt worden: het is al gebruikt of vandaag niet geldig.";
         }
         catch (TicketNotFoundException)
         {

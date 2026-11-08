@@ -102,7 +102,7 @@ public class RegisterViewModel : ObservableObject, IRegisterViewModel
         if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password) ||
             string.IsNullOrWhiteSpace(RegistrationCode))
         {
-            ErrorMessage = "U moet uw e-mail, wachtwoord en registratiecode invullen.";
+            ErrorMessage = "U moet uw e-mailadres, wachtwoord en registratiecode invullen.";
             return;
         }
 

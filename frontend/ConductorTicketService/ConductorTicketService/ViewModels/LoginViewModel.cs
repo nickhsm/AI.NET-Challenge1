@@ -76,7 +76,7 @@ public class LoginViewModel : ObservableObject, ILoginViewModel
 
         if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password))
         {
-            ErrorMessage = "U moet uw e-mail en wachtwoord invullen.";
+            ErrorMessage = "U moet uw e-mailadres en wachtwoord invullen.";
             return;
         }
 

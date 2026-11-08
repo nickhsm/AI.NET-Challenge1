@@ -7,7 +7,7 @@
              x:Class="ConductorTicketService.Views.LoginPage"
              Shell.NavBarIsVisible="False">
     <VerticalStackLayout Spacing="10" Padding="20" VerticalOptions="Center">
-        <Label Text="Conducteur login" FontSize="24" HorizontalOptions="Center" />
+        <Label Text="Inloggen als conducteur" FontSize="24" HorizontalOptions="Center" />
 
         <!-- Keyboard="Email" shows a keyboard with @ and doesn't capitalize the first letter.
              Spell check and text prediction are off so the keyboard doesn't "correct" the address. -->
