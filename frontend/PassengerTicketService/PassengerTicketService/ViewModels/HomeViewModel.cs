@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using PassengerTicketService.Models;
 using PassengerTicketService.Services;
 using System.Collections.ObjectModel;
+using System.Net;
 using System.Windows.Input;
 
 namespace PassengerTicketService.ViewModels
@@ -45,6 +46,9 @@ namespace PassengerTicketService.ViewModels
 
         [ObservableProperty]
         private bool isEndSuggestionsVisible;
+
+        [ObservableProperty]
+        private string searchErrorMessage = string.Empty;
 
         [ObservableProperty]
         private DateTime selectedDate = DateTime.Today;
@@ -177,6 +181,8 @@ namespace PassengerTicketService.ViewModels
                 if (generation != _startSearchGeneration) return;
                 token.ThrowIfCancellationRequested();
 
+                SearchErrorMessage = string.Empty;
+
                 // Niet heropenen als de zoekopdracht overeenkomt met de selectie.
                 if (SelectedStartStation != null && SelectedStartStation.Name == query)
                 {
@@ -190,12 +196,16 @@ namespace PassengerTicketService.ViewModels
                 StartSuggestions = new ObservableCollection<StationDto>(results);
                 IsStartSuggestionsVisible = StartSuggestions.Any();
             }
-            catch (OperationCanceledException) { /* verwacht */ }
+            catch (OperationCanceledException) when (token.IsCancellationRequested) { /* verwacht */ }
             catch (Exception ex)
             {
-                if (generation == _startSearchGeneration)
-                    IsStartSuggestionsVisible = false;
-                System.Diagnostics.Debug.WriteLine($"API Error: {ex.Message}");
+                if (generation != _startSearchGeneration) return;
+                IsStartSuggestionsVisible = false;
+
+                // Bij 401 stuurt AuthHeaderHandler de gebruiker al naar het startscherm.
+                if (ex is HttpRequestException { StatusCode: HttpStatusCode.Unauthorized }) return;
+
+                SearchErrorMessage = "We kunnen de server niet bereiken. Heeft u verbinding met het internet?";
             }
         }
 
@@ -224,6 +234,8 @@ namespace PassengerTicketService.ViewModels
                 if (generation != _endSearchGeneration) return;
                 token.ThrowIfCancellationRequested();
 
+                SearchErrorMessage = string.Empty;
+
                 if (SelectedEndStation != null && SelectedEndStation.Name == query)
                 {
                     IsEndSuggestionsVisible = false;
@@ -235,12 +247,16 @@ namespace PassengerTicketService.ViewModels
                 EndSuggestions = new ObservableCollection<StationDto>(results);
                 IsEndSuggestionsVisible = EndSuggestions.Any();
             }
-            catch (OperationCanceledException) { }
+            catch (OperationCanceledException) when (token.IsCancellationRequested) { }
             catch (Exception ex)
             {
-                if (generation == _endSearchGeneration)
-                    IsEndSuggestionsVisible = false;
-                System.Diagnostics.Debug.WriteLine($"API Error: {ex.Message}");
+                if (generation != _endSearchGeneration) return;
+                IsEndSuggestionsVisible = false;
+
+                // Bij 401 stuurt AuthHeaderHandler de gebruiker al naar het startscherm.
+                if (ex is HttpRequestException { StatusCode: HttpStatusCode.Unauthorized }) return;
+
+                SearchErrorMessage = "We kunnen de server niet bereiken. Heeft u verbinding met het internet?";
             }
         }
 

@@ -15,6 +15,7 @@ namespace PassengerTicketService.ViewModels
         ObservableCollection<StationDto> EndSuggestions { get; }
         bool IsStartSuggestionsVisible { get; set; }
         bool IsEndSuggestionsVisible { get; set; }
+        string SearchErrorMessage { get; }
 
         // Voor de datum
         DateTime SelectedDate { get; set; }
