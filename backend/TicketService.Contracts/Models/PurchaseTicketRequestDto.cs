@@ -2,8 +2,6 @@ namespace TicketService.Contracts.Models;
 
 public class PurchaseTicketRequestDto
 {
-    public int PassengerId { get; set; }
-    
     public int StartStationId { get; set; }
     public int EndStationId { get; set; }
     
