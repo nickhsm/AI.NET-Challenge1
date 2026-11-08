@@ -14,4 +14,16 @@ public static class PassengerMapper
     {
         return new CheckFaceDto(passenger.FirstName, passenger.Surname, passenger.FacePersonId.ToString()!, hasTickets);
     }
+    
+    public static PassengerProfileDto ToPassengerProfileDto(this Passenger passenger)
+    {
+        return new PassengerProfileDto(
+            passenger.Id,
+            passenger.FirstName ?? string.Empty,
+            passenger.Surname ?? string.Empty,
+            passenger.Email,
+            passenger.DateOfBirth,
+            passenger.FacePersonId != null
+        );
+    }
 }

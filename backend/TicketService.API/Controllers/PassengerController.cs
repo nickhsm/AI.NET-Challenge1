@@ -188,4 +188,25 @@ public class PassengerController : ControllerBase
 
         return Ok(mappedResponse);
     }
+    
+    [Authorize] // Heb nog geen rol restrictie gezet. Weet niet dat het ook gebruikt zal voor conducteur. 
+    [HttpGet("me")]
+    public async Task<ActionResult<PassengerProfileDto>> GetMyProfile()
+    {
+        // 1. Haal het ID veilig uit het token
+        int passengerId = GetPassengerId();
+
+        // 2. Zoek de passagier in de database
+        var passenger = await _passengerRepository.GetPassengerByIdAsync(passengerId);
+
+        if (passenger is null)
+        {
+            return NotFound("Passenger does not exist.");
+        }
+
+        // 3. Map naar de DTO (inclusief de check of er een FacePersonId is)
+        var mappedProfile = passenger.ToPassengerProfileDto();
+
+        return Ok(mappedProfile);
+    }
 }
