@@ -142,9 +142,10 @@ public class RegisterViewModel : ObservableObject, IRegisterViewModel
             ErrorMessage = "Er is iets foutgelopen. Probeer het later opnieuw.";
             Debug.WriteLine(ex);
         }
-        catch (HttpRequestException)
+        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
         {
             ErrorMessage = "We kunnen de server niet bereiken. Heeft u verbinding met het internet?";
+            Debug.WriteLine(ex);
         }
         finally
         {

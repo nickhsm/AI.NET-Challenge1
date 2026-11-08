@@ -146,7 +146,7 @@ public class QrCodeViewModel : ObservableObject, IQrCodeViewModel
             StatusMessage = "Er is iets foutgelopen. Probeer het later opnieuw.";
             Debug.WriteLine(ex);
         }
-        catch (HttpRequestException ex)
+        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
         {
             StatusMessage = "We kunnen de server niet bereiken. Heeft u verbinding met het internet?";
             Debug.WriteLine(ex);
@@ -190,7 +190,7 @@ public class QrCodeViewModel : ObservableObject, IQrCodeViewModel
             StatusMessage = "Er is iets foutgelopen. Probeer het later opnieuw.";
             Debug.WriteLine(ex);
         }
-        catch (HttpRequestException ex)
+        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
         {
             StatusMessage = "We kunnen de server niet bereiken. Heeft u verbinding met het internet?";
             Debug.WriteLine(ex);
