@@ -73,4 +73,19 @@ public class PassengerRepository : IPassengerRepository
     {
         return await _context.Passengers.SingleOrDefaultAsync(p => p.Email == email);
     }
+    
+    public async Task<bool> DeletePassengerAsync(int passengerId)
+    {
+        var passenger = await _context.Passengers.FindAsync(passengerId);
+    
+        if (passenger == null)
+        {
+            return false;
+        }
+
+        _context.Passengers.Remove(passenger);
+        await _context.SaveChangesAsync();
+    
+        return true;
+    }
 }

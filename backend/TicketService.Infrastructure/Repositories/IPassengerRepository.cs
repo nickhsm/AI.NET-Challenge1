@@ -12,4 +12,6 @@ public interface IPassengerRepository
     // Only for development. Removes the FacePersonId from every passenger.
     public Task UnregisterAllFacesAsync();
     public Task<Passenger?> GetPassengerByEmailAsync(string email);
+    Task<bool> DeletePassengerAsync(int passengerId);
+
 }
