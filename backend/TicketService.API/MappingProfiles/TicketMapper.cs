@@ -12,12 +12,9 @@ public static class TicketMapper
         {
             returnDto.Add(new TicketListDto(
                 ticket.Id, 
-                ticket.GuidQrCode,
                 ticket.ExpirationDate, 
                 ticket.StartingStation!.Name,
-                ticket.DestinationStation!.Name,
-                ticket.Used,    
-                ticket.Price  
+                ticket.DestinationStation!.Name
                 ));
         }
 
@@ -34,5 +31,23 @@ public static class TicketMapper
             ticket.Passenger.Surname,
             ticket.Used
         );
+    }
+    
+    public static IEnumerable<PassengerTicketDto> ToPassengerTicketDtos(this IEnumerable<Ticket> tickets)
+    {
+        var returnDto = new List<PassengerTicketDto>();
+        foreach (Ticket ticket in tickets)
+        {
+            returnDto.Add(new PassengerTicketDto(
+                ticket.Id, 
+                ticket.GuidQrCode, 
+                ticket.ExpirationDate, 
+                ticket.StartingStation!.Name,
+                ticket.DestinationStation!.Name,
+                ticket.Used,    
+                ticket.Price    
+            ));
+        }
+        return returnDto;
     }
 }
