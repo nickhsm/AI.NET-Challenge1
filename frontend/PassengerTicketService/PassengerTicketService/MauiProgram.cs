@@ -4,6 +4,7 @@ using PassengerTicketService.ViewModels;
 using PassengerTicketService.Views;
 using System.Reflection;
 using zoft.MauiExtensions.Controls;
+using ZXing.Net.Maui.Controls;
 
 namespace PassengerTicketService;
 
@@ -15,6 +16,7 @@ public static class MauiProgram
         builder
             .UseMauiApp<App>()
             .UseZoftAutoCompleteEntry()
+            .UseBarcodeReader() // ZXing setup, same call as the conductor app.
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

@@ -36,4 +36,19 @@ public class TicketService : ITicketService
         return await response.Content.ReadFromJsonAsync<PriceResult>()
                ?? throw new ApiException("Leeg antwoord van de server.");
     }
+
+    public async Task<List<PassengerTicketResult>> GetMyTicketsAsync()
+    {
+        string requestUrl = "/api/ticket/passenger/me/all";
+
+        var response = await _httpClient.GetAsync(requestUrl);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            string message = await response.Content.ReadAsStringAsync();
+            throw new ApiException(message);
+        }
+
+        return await response.Content.ReadApiResultAsync<List<PassengerTicketResult>>();
+    }
 }

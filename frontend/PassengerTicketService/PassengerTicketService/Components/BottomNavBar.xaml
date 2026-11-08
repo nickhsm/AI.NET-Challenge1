@@ -4,7 +4,9 @@
              x:Class="PassengerTicketService.Components.BottomNavBar"
              x:Name="NavBarComponent">
 
-    <Grid VerticalOptions="End" Margin="0,20,0,0">
+    <!-- 105 = bar (70) + the part of the round button above the bar (35).
+         The button must stay inside this Grid: Android ignores taps outside a parent's bounds. -->
+    <Grid VerticalOptions="End" HeightRequest="105">
         <Border BackgroundColor="#1C1C1E" StrokeThickness="0" HeightRequest="70" VerticalOptions="End">
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="25,25,0,0" />
@@ -50,7 +52,7 @@
         </Border>
 
         <!-- FLOATING ACTION BUTTON (TICKETS) -->
-        <Border BackgroundColor="#E86A22" StrokeThickness="0" WidthRequest="65" HeightRequest="65" HorizontalOptions="Center" VerticalOptions="Start" Margin="0,-35,0,0" ZIndex="1">
+        <Border BackgroundColor="#E86A22" StrokeThickness="0" WidthRequest="65" HeightRequest="65" HorizontalOptions="Center" VerticalOptions="Start" ZIndex="1">
             <Border.Triggers>
                 <DataTrigger TargetType="Border" Binding="{Binding Source={x:Reference NavBarComponent}, Path=SelectedTab}" Value="Tickets">
                     <Setter Property="BackgroundColor" Value="#5AA2F0" />
