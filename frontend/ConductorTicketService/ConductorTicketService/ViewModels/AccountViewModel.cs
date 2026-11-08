@@ -79,11 +79,13 @@ public class AccountViewModel : ObservableObject, IAccountViewModel
     }
 
     public ICommand SaveCommand { get; set; }
+    public ICommand ChangePasswordCommand { get; set; }
 
-    public AccountViewModel(IAccountService accountService)
+    public AccountViewModel(IAccountService accountService, INavigationService navigationService)
     {
         _accountService = accountService;
         SaveCommand = new AsyncRelayCommand(Save);
+        ChangePasswordCommand = new AsyncRelayCommand(navigationService.NavigateToChangePasswordPageAsync);
     }
 
     public async Task LoadProfileAsync()

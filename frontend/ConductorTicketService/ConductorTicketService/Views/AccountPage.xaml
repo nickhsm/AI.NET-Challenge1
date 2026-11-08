@@ -37,6 +37,11 @@
 
             <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
 
+            <!-- Separate page: changing the password needs the current one, saving the profile doesn't. -->
+            <Button Text="Wachtwoord wijzigen"
+                    Command="{Binding ChangePasswordCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="{StaticResource Primary}" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

@@ -50,4 +50,16 @@ public class NavigationService : INavigationService
     {
         await _navigation.PushAsync(_serviceProvider.GetRequiredService<RegisterPage>());
     }
+
+    // Pushed on top of the scan page, so the back button returns there.
+    public async Task NavigateToAccountPageAsync()
+    {
+        await _navigation.PushAsync(_serviceProvider.GetRequiredService<AccountPage>());
+    }
+
+    // Pushed on top of the account page, so the back button returns there.
+    public async Task NavigateToChangePasswordPageAsync()
+    {
+        await _navigation.PushAsync(_serviceProvider.GetRequiredService<ChangePasswordPage>());
+    }
 }
