@@ -20,7 +20,7 @@ public class AccountService : IAccountService
 
         var response = await _httpClient.GetAsync(requestUrl);
 
-        if (response.StatusCode != HttpStatusCode.OK)
+        if (!response.IsSuccessStatusCode)
         {
             string message = await response.Content.ReadAsStringAsync();
             throw new ApiException(message);
