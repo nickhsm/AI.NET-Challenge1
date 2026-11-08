@@ -69,15 +69,15 @@
 
                         <BoxView Color="#2B2B2B" HeightRequest="1" Margin="15,0" />
 
-                        <!-- Item 2: Gezichtsherkenning toevoegen -->
+                        <!-- Item 2: Gezichtsherkenning toevoegen of verwijderen -->
                         <Grid ColumnDefinitions="Auto, *, Auto" Padding="15,20">
                             <Grid.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding AddFaceIdCommand}" />
+                                <TapGestureRecognizer Command="{Binding ToggleFaceCommand}" />
                             </Grid.GestureRecognizers>
                             <Path Grid.Column="0" 
                                   Data="M12,17A2,2 0 0,0 14,15C14,13.89 13.1,13 12,13A2,2 0 0,0 10,15A2,2 0 0,0 12,17M18,8A2,2 0 0,1 20,10V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V10C4,8.89 4.9,8 6,8H7V6A5,5 0 0,1 12,1A5,5 0 0,1 17,6V8H18M12,3A3,3 0 0,0 9,6V8H15V6A3,3 0 0,0 12,3Z"
                                   Fill="White" Aspect="Uniform" WidthRequest="20" HeightRequest="20" VerticalOptions="Center" Margin="0,0,15,0"/>
-                            <Label Grid.Column="1" Text="Gezichtsherkenning toevoegen" TextColor="White" FontSize="16" VerticalOptions="Center" />
+                            <Label Grid.Column="1" Text="{Binding FaceActionText}" TextColor="White" FontSize="16" VerticalOptions="Center" />
                             <Label Grid.Column="2" Text="›" TextColor="#A0A0A0" FontSize="24" VerticalOptions="Center" />
                         </Grid>
 
