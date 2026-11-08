@@ -259,7 +259,26 @@ namespace PassengerTicketService.ViewModels
 
         private async Task GoToYourTravelPage()
         {
+            // 1. Controleer of beide stations zijn geselecteerd
             if (SelectedStartStation == null || SelectedEndStation == null)
+            {
+                await Application.Current.MainPage.DisplayAlert(
+                    "Fout", "Selecteer a.u.b. geldige stations uit de lijst.", "OK");
+                return;
+            }
+
+            // 2. Controleer of het om verschillende stations gaat (vergelijk op Id)
+            if (SelectedStartStation.Id == SelectedEndStation.Id)
+            {
+                await Application.Current.MainPage.DisplayAlert(
+                    "Fout", "Vertrek- en aankomststation mogen niet hetzelfde zijn.", "OK");
+                return;
+            }
+
+            // 3. Controleer of de getypte tekst overeenkomt met de geselecteerde stations
+            //    (voorkomt dat de gebruiker een station typt zonder het te selecteren)
+            if (!string.Equals(StartStationText?.Trim(), SelectedStartStation.Name, StringComparison.OrdinalIgnoreCase) ||
+                !string.Equals(EndStationText?.Trim(), SelectedEndStation.Name, StringComparison.OrdinalIgnoreCase))
             {
                 await Application.Current.MainPage.DisplayAlert(
                     "Fout", "Selecteer a.u.b. geldige stations uit de lijst.", "OK");

@@ -14,11 +14,6 @@ namespace PassengerTicketService.ViewModels
         ObservableCollection<StationDto> StartSuggestions { get; }
         ObservableCollection<StationDto> EndSuggestions { get; }
 
-        // Verwijderd: IsStartSuggestionsVisible
-        // Verwijderd: IsEndSuggestionsVisible
-        // Verwijderd: SelectStartStationCommand
-        // Verwijderd: SelectEndStationCommand
-
         // Voor de datum
         DateTime SelectedDate { get; set; }
         DateTime MinimumDate { get; }
