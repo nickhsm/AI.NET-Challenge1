@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TicketService.API.MappingProfiles;
 using TicketService.Contracts.Models;
+using TicketService.Domain;
 using TicketService.Infrastructure.Exceptions;
 using TicketService.Infrastructure.Repositories;
 using TicketService.Shared;
@@ -100,20 +101,11 @@ public class TicketController : ControllerBase
     [HttpPost("calculate-price")]
     public ActionResult<PriceCalculationResponseDto> CalculatePrice([FromBody] PriceCalculationRequestDto request)
     {
-        // BUSINESS LOGIC
-        // Basisprijs voor een enkele reis per persoon
-        decimal basePrice = 2.85m; 
-        
-        decimal totalPrice = basePrice * request.PassengerCount;
+        decimal outboundPrice = TicketPricing.CalculateOutboundPrice(request.PassengerCount);
+        decimal totalPrice = TicketPricing.CalculateTotalPrice(request.PassengerCount, request.IsRoundTrip);
 
-        // Als het een retour is, verdubbelt de prijs
-        if (request.IsRoundTrip)
-        {
-            totalPrice *= 2;
-        }
+        var response = new PriceCalculationResponseDto(outboundPrice, totalPrice);
 
-        var response = new PriceCalculationResponseDto(totalPrice);
-        
         return Ok(response);
     }
 }
