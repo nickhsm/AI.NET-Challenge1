@@ -172,7 +172,7 @@ public class FaceViewModel : ObservableObject, IFaceViewModel
         {
             await _ticketService.ConsumeTicketAsync(ticket.Id);
 
-            // Alles is succesvol afgerond, de conducteur kan naar de volgende passagier.
+            // Everything succeeded, the conductor can move on to the next passenger.
             PhotoPreview = null;
             RequestResult = null;
             TicketListItemResult = [];
