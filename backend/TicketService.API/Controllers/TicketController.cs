@@ -5,6 +5,7 @@ using TicketService.Contracts.Models;
 using TicketService.Infrastructure.Exceptions;
 using TicketService.Infrastructure.Repositories;
 using TicketService.Shared;
+using System.Security.Claims;  
 
 namespace TicketService.API.Controllers;
 
@@ -20,6 +21,11 @@ public class TicketController : ControllerBase
     {
         _ticketRepository = ticketRepository;
         _passengerRepository = passengerRepository;
+    }
+    
+    private int GetPassengerId()
+    {
+        return int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
     }
 
     [HttpGet("passenger/{FacePersonId:guid}")]
@@ -75,22 +81,19 @@ public class TicketController : ControllerBase
         return Ok(TicketMapper.ToTicketQrCodeDto(result));
     }
     
-    // Voeg deze toe aan je bestaande TicketController
-    [HttpGet("passenger/{passengerId}/all")]
-    public async Task<ActionResult<IEnumerable<TicketListDto>>> GetTicketsByPassengerId(int passengerId)
+    [Authorize(Roles = Roles.Passenger)]
+    [HttpGet("passenger/me/all")]
+    public async Task<ActionResult<IEnumerable<TicketListDto>>> GetMyTickets()
+
     {
-        // 1. Check of de passagier bestaat
-        var passengerExists = await _passengerRepository.PassengerExistsAsync(passengerId);
-        if (!passengerExists)
-        {
-            return NotFound("Passenger does not exist.");
-        }
+        // 1. Haal het ID veilig uit het token
+        int passengerId = GetPassengerId();
 
         // 2. Haal ALLE tickets op (actief + archief)
         var tickets = await _ticketRepository.GetTicketsByPassengerIdAsync(passengerId);
 
         // 3. Map naar DTO
-        var mapped = TicketMapper.ToTicketListDto(tickets);
+        var mapped = TicketMapper.ToPassengerTicketDtos(tickets);
 
         return Ok(mapped);
     }
