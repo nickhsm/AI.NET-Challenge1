@@ -100,12 +100,6 @@ public class TicketController : ControllerBase
     [HttpPost("calculate-price")]
     public ActionResult<PriceCalculationResponseDto> CalculatePrice([FromBody] PriceCalculationRequestDto request)
     {
-        // Validatie: je kunt geen ticket voor 0 of -1 personen kopen
-        if (request.PassengerCount <= 0)
-        {
-            return BadRequest("Het aantal passagiers moet minimaal 1 zijn.");
-        }
-
         // BUSINESS LOGIC
         // Basisprijs voor een enkele reis per persoon
         decimal basePrice = 2.85m; 
