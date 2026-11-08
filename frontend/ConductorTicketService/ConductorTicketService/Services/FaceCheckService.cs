@@ -19,11 +19,11 @@ public class FaceCheckService : IFaceCheckService
     {
         string endpointString = "/api/passenger/check-face";
 
-        // Van Stream naar StreamContent
+        // From Stream to StreamContent
         using var photoContent = new StreamContent(photo);
         photoContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
 
-        // StreamContent naar een multipart form data
+        // StreamContent into multipart form data
         using var form = new MultipartFormDataContent();
         form.Add(photoContent, "photo", "photo.jpg");
 

@@ -164,7 +164,7 @@ public class QrCodeViewModel : ObservableObject, IQrCodeViewModel
         {
             await _ticketService.ConsumeTicketAsync(RequestResult.Id);
 
-            // Alles is succesvol afgerond, de conducteur kan naar de volgende passagier.
+            // Everything succeeded, the conductor can move on to the next passenger.
             ScanAgain();
             StatusMessage = "Ticket gebruikt. U kan de volgende passagier scannen.";
         }
