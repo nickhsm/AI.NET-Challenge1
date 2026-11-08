@@ -46,6 +46,6 @@ public class FaceCheckService : IFaceCheckService
             throw new ApiException(message);
         }
 
-        return await response.Content.ReadFromJsonAsync<CheckFaceResult>();
+        return await response.Content.ReadApiResultAsync<CheckFaceResult>();
     }
 }
