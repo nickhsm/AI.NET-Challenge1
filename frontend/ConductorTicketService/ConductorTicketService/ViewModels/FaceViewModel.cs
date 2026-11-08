@@ -131,9 +131,11 @@ public class FaceViewModel : ObservableObject, IFaceViewModel
             await using var fileStream = await fileResult.OpenReadAsync();
             var result = await _faceCheckService.CheckFaceAsync(fileStream);
 
+            // The face is not recognised: almost always a passenger who never registered their face.
             if (result is null)
             {
-                StatusMessage = "Passagier niet herkend.";
+                StatusMessage =
+                    "Passagier niet gevonden. Waarschijnlijk is het gezicht van deze passagier niet geregistreerd. Scan de QR-code van het ticket.";
                 return;
             }
 
@@ -164,8 +166,7 @@ public class FaceViewModel : ObservableObject, IFaceViewModel
         }
         catch (PassengerNotFoundException)
         {
-            StatusMessage =
-                "Passagier niet gevonden. Waarschijnlijk is het gezicht van deze passagier niet geregistreerd. Scan de QR-code van het ticket.";
+            StatusMessage = "Passagier niet herkend.";
         }
         finally
         {
