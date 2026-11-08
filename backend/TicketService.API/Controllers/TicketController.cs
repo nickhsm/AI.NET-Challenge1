@@ -133,6 +133,10 @@ public class TicketController : ControllerBase
         if (startStation == null || endStation == null)
             return BadRequest("Ongeldige stations opgegeven.");
 
+        // Een ontbrekende retourdatum wordt 0001-01-01 en valt dus ook onder deze check.
+        if (request.IsRoundTrip && request.ReturnExpirationDate < request.ExpirationDate)
+            return BadRequest("De retourdatum mag niet voor de heenreisdatum liggen.");
+
         // 3. Prijsberekening
         decimal basePrice = 2.85m;
 
