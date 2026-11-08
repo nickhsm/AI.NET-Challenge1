@@ -85,9 +85,9 @@ public class FaceViewModel : ObservableObject, IFaceViewModel
 
     public FaceViewModel(IFaceCheckService faceCheckService, ITicketService ticketService)
     {
-        BindCommands();
         _faceCheckService = faceCheckService;
         _ticketService = ticketService;
+        BindCommands();
     }
 
     public ICommand TakePhotoCommand { get; set; }

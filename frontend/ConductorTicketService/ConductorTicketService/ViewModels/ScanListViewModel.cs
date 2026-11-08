@@ -12,9 +12,9 @@ public class ScanListViewModel : ObservableObject, IScanListViewModel
 
     public ScanListViewModel(INavigationService navigationService, IAuthService authService)
     {
-        BindCommands();
         _navigationService = navigationService;
         _authService = authService;
+        BindCommands();
     }
 
     public ICommand ScanQrCodeCommand { get; set; }
