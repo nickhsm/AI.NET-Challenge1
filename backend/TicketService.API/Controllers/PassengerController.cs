@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TicketService.API.MappingProfiles;
 using TicketService.Contracts.Models;
 using TicketService.Infrastructure.Exceptions;
@@ -103,7 +104,17 @@ public class PassengerController : ControllerBase
             return StatusCode(StatusCodes.Status502BadGateway, exception.Message);
         }
 
-        _passengerRepository.RegisterFace(id, personId);
+        try
+        {
+            _passengerRepository.RegisterFace(id, personId);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            // The account was deleted while the face was being enrolled.
+            // Remove the new Azure person so no orphan stays behind.
+            await _faceRecognitionService.DeleteAsync(personId);
+            return NotFound("Passenger does not exist.");
+        }
 
         PassengerFaceDto mappedResult = PassengerMapper.ToPassengerFaceDto(personId.ToString());
 
@@ -233,6 +244,12 @@ public class PassengerController : ControllerBase
             // Als Azure in de fout gaat, sturen we een 502 Bad Gateway terug.
             // Het account is in dit geval NIET verwijderd.
             return StatusCode(StatusCodes.Status502BadGateway, ex.Message);
+        }
+        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
+        {
+            // Azure was niet bereikbaar of antwoordde niet op tijd: dat zijn geen AzureServiceExceptions.
+            // Ook hier is het account NIET verwijderd, dus de gebruiker kan het opnieuw proberen.
+            return StatusCode(StatusCodes.Status502BadGateway, "The face service could not be reached. Please try again.");
         }
     }
 }
