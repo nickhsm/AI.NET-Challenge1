@@ -5,19 +5,19 @@ namespace ConductorTicketService.ViewModels;
 
 public interface IFaceViewModel
 {
-    public bool HasStatusMessage { get; }
-    public string? StatusMessage { get; }
-    public ImageSource? PhotoPreview { get; set; }
+    bool HasStatusMessage { get; }
+    string? StatusMessage { get; }
+    ImageSource? PhotoPreview { get; set; }
 
     // True while waiting for the API: shows the loading spinner.
-    public bool IsBusy { get; }
-    public bool IsNotBusy { get; }
+    bool IsBusy { get; }
+    bool IsNotBusy { get; }
 
-    public bool HasRequestResult { get;  }
-    public CheckFaceResult? RequestResult { get; set; }
+    bool HasRequestResult { get;  }
+    CheckFaceResult? RequestResult { get; set; }
 
-    public bool HasTicketsResult { get; }
-    public IEnumerable<TicketListItemResult> TicketListItemResult { get; set; }
+    bool HasTicketsResult { get; }
+    IEnumerable<TicketListItemResult> TicketListItemResult { get; set; }
 
     ICommand TakePhotoCommand { get; set; }
     ICommand ConsumeTicketCommand { get; set; }
