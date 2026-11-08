@@ -133,6 +133,10 @@ public class TicketController : ControllerBase
         if (startStation == null || endStation == null)
             return BadRequest("Ongeldige stations opgegeven.");
 
+        // Een ontbrekende datum wordt 0001-01-01 en valt dus ook onder deze check.
+        if (request.ExpirationDate < DateOnly.FromDateTime(DateTime.Now))
+            return BadRequest("De reisdatum mag niet in het verleden liggen.");
+
         // Een ontbrekende retourdatum wordt 0001-01-01 en valt dus ook onder deze check.
         if (request.IsRoundTrip && request.ReturnExpirationDate < request.ExpirationDate)
             return BadRequest("De retourdatum mag niet voor de heenreisdatum liggen.");
