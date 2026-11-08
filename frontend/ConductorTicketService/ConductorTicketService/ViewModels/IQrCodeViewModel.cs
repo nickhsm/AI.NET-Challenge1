@@ -18,7 +18,6 @@ public interface IQrCodeViewModel
     public bool HasRequestResult { get; }
     public TicketQrCodeResult? RequestResult { get; set; }
 
-    ICommand ReturnCommand { get; set; }
     ICommand QrCodeScannedCommand { get; set; }
     ICommand ScanAgainCommand { get; set; }
     ICommand ConsumeTicketCommand { get; set; }

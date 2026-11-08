@@ -10,7 +10,6 @@ namespace ConductorTicketService.ViewModels;
 
 public class QrCodeViewModel : ObservableObject, IQrCodeViewModel
 {
-    private readonly INavigationService _navigationService;
     private readonly ITicketService _ticketService;
 
     public bool HasStatusMessage => !string.IsNullOrEmpty(StatusMessage);
@@ -68,29 +67,21 @@ public class QrCodeViewModel : ObservableObject, IQrCodeViewModel
         }
     }
 
-    public QrCodeViewModel(INavigationService navigationService, ITicketService ticketService)
+    public QrCodeViewModel(ITicketService ticketService)
     {
         BindCommands();
-        _navigationService = navigationService;
         _ticketService = ticketService;
     }
 
-    public ICommand ReturnCommand { get; set; }
     public ICommand QrCodeScannedCommand { get; set; }
     public ICommand ScanAgainCommand { get; set; }
     public ICommand ConsumeTicketCommand { get; set; }
 
     private void BindCommands()
     {
-        ReturnCommand = new AsyncRelayCommand(GoBack);
         QrCodeScannedCommand = new AsyncRelayCommand<string>(QrCodeScannedAsync);
         ScanAgainCommand = new RelayCommand(ScanAgain);
         ConsumeTicketCommand = new AsyncRelayCommand(ConsumeTicketAsync);
-    }
-
-    private async Task GoBack()
-    {
-        await _navigationService.NavigateBackAsync();
     }
 
     public async Task CheckCameraPermissionAsync()

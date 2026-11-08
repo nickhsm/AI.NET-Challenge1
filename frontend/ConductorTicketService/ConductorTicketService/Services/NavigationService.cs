@@ -23,18 +23,6 @@ public class NavigationService : INavigationService
         await _navigation.PushAsync(_serviceProvider.GetRequiredService<FacePage>());
     }
 
-    public async Task NavigateBackAsync()
-    {
-        if (_navigation.NavigationStack.Count > 1)
-        {
-            await _navigation.PopAsync();
-        }
-        else
-        {
-            throw new InvalidOperationException("There are no pages left to navigate back to.");
-        }
-    }
-
     public async Task NavigateToMainPageAsync()
     {
         await Shell.Current.GoToAsync("//MainPage");

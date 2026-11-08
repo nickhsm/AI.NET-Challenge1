@@ -19,7 +19,6 @@ public interface IFaceViewModel
     public bool HasTicketsResult { get; }
     public IEnumerable<TicketListItemResult> TicketListItemResult { get; set; }
 
-    ICommand ReturnCommand { get; set; }
     ICommand TakePhotoCommand { get; set; }
     ICommand ConsumeTicketCommand { get; set; }
 }

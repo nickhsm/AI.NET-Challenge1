@@ -10,7 +10,6 @@ namespace ConductorTicketService.ViewModels;
 
 public class FaceViewModel : ObservableObject, IFaceViewModel
 {
-    private readonly INavigationService _navigationService;
     private readonly IFaceCheckService _faceCheckService;
     private readonly ITicketService _ticketService;
 
@@ -84,29 +83,20 @@ public class FaceViewModel : ObservableObject, IFaceViewModel
         }
     }
 
-    public FaceViewModel(INavigationService navigationService, IFaceCheckService faceCheckService,
-        ITicketService ticketService)
+    public FaceViewModel(IFaceCheckService faceCheckService, ITicketService ticketService)
     {
         BindCommands();
-        _navigationService = navigationService;
         _faceCheckService = faceCheckService;
         _ticketService = ticketService;
     }
 
-    public ICommand ReturnCommand { get; set; }
     public ICommand TakePhotoCommand { get; set; }
     public ICommand ConsumeTicketCommand { get; set; }
 
     private void BindCommands()
     {
-        ReturnCommand = new AsyncRelayCommand(GoBack);
         TakePhotoCommand = new AsyncRelayCommand(TakePhotoAsync);
         ConsumeTicketCommand = new AsyncRelayCommand<TicketListItemResult>(ConsumeTicketAsync);
-    }
-
-    private async Task GoBack()
-    {
-        await _navigationService.NavigateBackAsync();
     }
 
     private async Task TakePhotoAsync()
@@ -144,7 +134,6 @@ public class FaceViewModel : ObservableObject, IFaceViewModel
             RequestResult = result;
             TicketListItemResult = resultTickets;
 
-            Debug.WriteLine($"{result?.FirstName} - {result?.HasTickets}");
         }
         catch (InvalidPhotoException)
         {
