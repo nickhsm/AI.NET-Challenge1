@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
       <UserSecretsId>19a8cd5f-5781-4d96-a3f1-06014ec5c53a</UserSecretsId>
+        <NoWarn>$(NoWarn);CS0200</NoWarn>
   </PropertyGroup>
 
     <ItemGroup>
@@ -14,6 +15,7 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="Microsoft.OpenApi" Version="2.12.2" />
         <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="10.3.1" />
         <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="10.3.1" />
         <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.3.1" />
