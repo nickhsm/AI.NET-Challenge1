@@ -254,7 +254,7 @@ public class PassengerController : ControllerBase
     }
     
     // --- NIEUWE ENDPOINT ---
-    [Authorize]
+    [Authorize (Roles=Roles.Passenger)]
     [HttpPut("me")]
     public async Task<ActionResult> UpdateMyProfile([FromBody] UpdateProfileRequestDto request)
     {
@@ -269,25 +269,25 @@ public class PassengerController : ControllerBase
         }
 
         // 3. Controleer of het nieuwe e-mailadres al door iemand anders wordt gebruikt
-        if (passenger.Email.ToLower() != request.Email.ToLower())
+        var cleanedEmail = request.Email.Trim().ToLower();
+        if (passenger.Email.ToLower() != cleanedEmail)
         {
-            var emailTaken = await _passengerRepository.EmailExistsAsync(request.Email);
+            var emailTaken = await _passengerRepository.EmailExistsAsync(cleanedEmail);
             if (emailTaken)
             {
                 return Conflict("Dit e-mailadres is al in gebruik door een ander account.");
             }
         }
 
-        // 4. Werk de gegevens bij
-        passenger.FirstName = request.FirstName;
-        passenger.Surname = request.Surname;
-        passenger.Email = request.Email;
-        passenger.DateOfBirth = request.DateOfBirth;
+        await _passengerRepository.UpdateProfileAsync(
+            passengerId, 
+            request.FirstName, 
+            request.Surname, 
+            request.Email, 
+            request.DateOfBirth
+        );
 
-        // 5. Sla de wijzigingen op
-        await _passengerRepository.UpdatePassengerAsync(passenger);
-
-        // 6. Geef een 204 No Content terug (geslaagd, geen data om terug te sturen)
+        // 4. Geef een 204 No Content terug (geslaagd, geen data om terug te sturen)
         // Je zou er ook voor kunnen kiezen om de geüpdatete PassengerProfileDto terug te sturen.
         return NoContent();
     }

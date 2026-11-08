@@ -17,5 +17,5 @@ public class UpdateProfileRequestDto
     public string Email { get; set; }
 
     [Required]
-    public DateOnly DateOfBirth { get; set; }
+    public DateOnly? DateOfBirth { get; set; }
 }
