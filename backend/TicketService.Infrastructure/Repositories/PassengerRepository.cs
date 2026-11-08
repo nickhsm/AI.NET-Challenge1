@@ -117,9 +117,23 @@ public class PassengerRepository : IPassengerRepository
         return true;
     }
     
-    public async Task UpdatePassengerAsync(Passenger passenger)
+    public async Task UpdateProfileAsync(int passengerId, string firstName, string surname, string email, DateOnly? dateOfBirth)
     {
-        _context.Passengers.Update(passenger);
+        // 1. Haal de data op uit de databank (zoals RegisterFace doet)
+        var passenger = await _context.Passengers.FindAsync(passengerId);
+
+        if (passenger == null)
+        {
+            throw new InvalidOperationException($"Passenger with id {passengerId} not found.");
+        }
+
+        // 2. Pas de gegevens aan
+        passenger.FirstName = firstName;
+        passenger.Surname = surname;
+        passenger.Email = email.Trim().ToLower();
+        passenger.DateOfBirth = dateOfBirth;
+
+        // 3. Sla de wijzigingen op
         await _context.SaveChangesAsync();
     }
     
