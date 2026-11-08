@@ -9,7 +9,7 @@
              BackgroundColor="#101010"
              Shell.NavBarIsVisible="False">
 
-    <Grid RowDefinitions="Auto, *, Auto">
+    <Grid RowDefinitions="Auto, Auto, *, Auto">
 
         <!-- 1. HEADER -->
         <Label Grid.Row="0" 
@@ -20,7 +20,12 @@
                VerticalOptions="Center" />
 
         <!-- 2. SCROLLBARE INHOUD (CollectionView) -->
-        <CollectionView Grid.Row="1" ItemsSource="{Binding DisplayedTickets}" Margin="20,0,20,20">
+        <VerticalStackLayout Grid.Row="1" Margin="20,0,20,10" Spacing="5">
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" Color="#E86A22" />
+            <Label Text="{Binding ErrorMessage}" IsVisible="{Binding HasErrorMessage}" TextColor="#FF6B6B" FontSize="14" />
+        </VerticalStackLayout>
+
+        <CollectionView Grid.Row="2" ItemsSource="{Binding DisplayedTickets}" Margin="20,0,20,20">
             <CollectionView.Header>
                 <VerticalStackLayout Spacing="20" Padding="0,0,0,10">
 
@@ -57,29 +62,19 @@
                 </VerticalStackLayout>
             </CollectionView.Header>
 
-            <CollectionView.EmptyView>
-                <Label Text="Geen tickets gevonden." TextColor="#A0A0A0" HorizontalOptions="Center" VerticalOptions="Center" Margin="0,40,0,0"/>
-            </CollectionView.EmptyView>
-
-            <!-- KAART TEMPLATE -->
+            <!-- KAART TEMPLATE: one card per ticket -->
             <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="models:PurchaseDisplayModel">
+                <DataTemplate x:DataType="models:PassengerTicketResult">
                     <Border Stroke="#444444" StrokeThickness="1" BackgroundColor="#1E1E1E" Padding="15" Margin="0,0,0,20">
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="12" />
                         </Border.StrokeShape>
 
                         <VerticalStackLayout Spacing="12">
-                            <!-- Titel -->
-                            <Label Text="{Binding Title}" TextColor="White" FontSize="18" FontAttributes="Bold" />
+                            <Label Text="{Binding Date, StringFormat='Geldig op {0:dd/MM/yyyy}'}" TextColor="White" FontSize="18" FontAttributes="Bold" />
                             <BoxView Color="#444444" HeightRequest="1" HorizontalOptions="Fill" />
 
-                            <!-- Details -->
-                            <VerticalStackLayout Spacing="4">
-                                <Label Text="{Binding ExpirationDate, StringFormat='Geldig op {0:dd/MM/yyyy}'}" TextColor="#A0A0A0" FontSize="14" />
-                            </VerticalStackLayout>
-
-                            <!-- Route (Gebruikt de eerste ticket voor de stations) -->
+                            <!-- Route -->
                             <Grid ColumnDefinitions="Auto, *" ColumnSpacing="10" Margin="0,5,0,5">
                                 <VerticalStackLayout Grid.Column="0" HorizontalOptions="Center" Spacing="0">
                                     <Ellipse Fill="#A0A0A0" WidthRequest="14" HeightRequest="14" HorizontalOptions="Center" />
@@ -87,48 +82,44 @@
                                     <Ellipse Fill="Transparent" Stroke="#A0A0A0" StrokeThickness="2" WidthRequest="14" HeightRequest="14" HorizontalOptions="Center" />
                                 </VerticalStackLayout>
                                 <VerticalStackLayout Grid.Column="1" Spacing="13">
-                                    <Label Text="{Binding Tickets[0].StationFrom}" TextColor="White" FontSize="15" FontAttributes="Bold" VerticalOptions="Center" />
-                                    <Label Text="{Binding Tickets[0].StationTo}" TextColor="White" FontSize="15" FontAttributes="Bold" VerticalOptions="Center" />
+                                    <Label Text="{Binding StartingStation}" TextColor="White" FontSize="15" FontAttributes="Bold" VerticalOptions="Center" />
+                                    <Label Text="{Binding DestinationStation}" TextColor="White" FontSize="15" FontAttributes="Bold" VerticalOptions="Center" />
                                 </VerticalStackLayout>
                             </Grid>
 
                             <BoxView Color="#444444" HeightRequest="1" HorizontalOptions="Fill" />
 
-                            <!-- Lijst van tickets binnen deze aankoop (Heen / Terug) -->
-                            <VerticalStackLayout BindableLayout.ItemsSource="{Binding Tickets}">
-                                <BindableLayout.ItemTemplate>
-                                    <DataTemplate x:DataType="models:TicketDisplayModel">
-                                        <Grid ColumnDefinitions="*, Auto" Margin="0,5,0,5">
-                                            <VerticalStackLayout Grid.Column="0" Spacing="2" VerticalOptions="Center">
-                                                <Label Text="{Binding JourneyType}" TextColor="#5AA2F0" FontSize="16" FontAttributes="Bold" />
-                                                <Label Text="{Binding TravelDate, StringFormat='Reis op: {0:dd/MM/yyyy}'}" TextColor="#A0A0A0" FontSize="14" />
-                                            </VerticalStackLayout>
+                            <Grid ColumnDefinitions="*, Auto" Margin="0,5,0,5">
+                                <Label Grid.Column="0" Text="{Binding Price, StringFormat='&#8364; {0:F2}'}" TextColor="#5AA2F0" FontSize="16" FontAttributes="Bold" VerticalOptions="Center" />
 
-                                            <!-- QR Code Placeholder -->
-                                            <Border Grid.Column="1" BackgroundColor="Black" Padding="5" WidthRequest="80" HeightRequest="80">
-                                                <Border.StrokeShape>
-                                                    <RoundRectangle CornerRadius="4" />
-                                                </Border.StrokeShape>
-                                                <Grid RowDefinitions="*,*,*,*" ColumnDefinitions="*,*,*,*" RowSpacing="2" ColumnSpacing="2">
-                                                    <BoxView Grid.Row="0" Grid.Column="0" Color="White" />
-                                                    <BoxView Grid.Row="0" Grid.Column="3" Color="White" />
-                                                    <BoxView Grid.Row="3" Grid.Column="0" Color="White" />
-                                                    <BoxView Grid.Row="1" Grid.Column="1" Color="White" />
-                                                    <BoxView Grid.Row="2" Grid.Column="2" Color="White" />
-                                                </Grid>
-                                            </Border>
-                                        </Grid>
-                                    </DataTemplate>
-                                </BindableLayout.ItemTemplate>
-                            </VerticalStackLayout>
+                                <!-- QR Code Placeholder -->
+                                <Border Grid.Column="1" BackgroundColor="Black" Padding="5" WidthRequest="80" HeightRequest="80">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="4" />
+                                    </Border.StrokeShape>
+                                    <Grid RowDefinitions="*,*,*,*" ColumnDefinitions="*,*,*,*" RowSpacing="2" ColumnSpacing="2">
+                                        <BoxView Grid.Row="0" Grid.Column="0" Color="White" />
+                                        <BoxView Grid.Row="0" Grid.Column="3" Color="White" />
+                                        <BoxView Grid.Row="3" Grid.Column="0" Color="White" />
+                                        <BoxView Grid.Row="1" Grid.Column="1" Color="White" />
+                                        <BoxView Grid.Row="2" Grid.Column="2" Color="White" />
+                                    </Grid>
+                                </Border>
+                            </Grid>
                         </VerticalStackLayout>
                     </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
 
+        <!-- Outside the CollectionView, so it can be hidden while loading or after an error.
+             InputTransparent: taps must still reach the tabs and the list underneath. -->
+        <Label Grid.Row="2" Text="Geen tickets gevonden." IsVisible="{Binding ShowEmptyMessage}" InputTransparent="True"
+               TextColor="#A0A0A0" HorizontalOptions="Center" VerticalOptions="Start" Margin="20,110,20,0" />
+
         <!-- 3. BOTTOM NAVIGATIE BALK (Ongewijzigd gelaten) -->
-        <components:BottomNavBar Grid.Row="2" SelectedTab="Tickets" />
+        <components:BottomNavBar Grid.Row="3" SelectedTab="Tickets" />
+
 
     </Grid>
 </ContentPage>

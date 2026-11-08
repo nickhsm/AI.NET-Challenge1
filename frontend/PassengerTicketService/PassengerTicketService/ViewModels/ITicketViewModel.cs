@@ -6,7 +6,16 @@ namespace PassengerTicketService.ViewModels
 {
     public interface ITicketViewModel
     {
-        ObservableCollection<PurchaseDisplayModel> DisplayedTickets { get; }
+        ObservableCollection<PassengerTicketResult> DisplayedTickets { get; }
+
+        // True while waiting on the backend (spinner)
+        bool IsBusy { get; set; }
+
+        string? ErrorMessage { get; set; }
+        bool HasErrorMessage { get; }
+        bool ShowEmptyMessage { get; }
+
+        Task LoadTicketsAsync();
 
         bool IsActiveTabSelected { get; set; }
         ICommand ShowActiveCommand { get; }

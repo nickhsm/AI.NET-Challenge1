@@ -1,8 +1,10 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PassengerTicketService.Exceptions;
 using PassengerTicketService.Models;
 using PassengerTicketService.Services;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Windows.Input;
 
 namespace PassengerTicketService.ViewModels
@@ -11,12 +13,29 @@ namespace PassengerTicketService.ViewModels
     {
         // Singleton van DI gebrunchnuukd voor de navbar te to the Home-page
         private readonly INavigationService _navigationService;
+        private readonly ITicketService _ticketService;
 
-        // Simulatie van alle opgehaalde tickets uit de API
-        private List<PurchaseDisplayModel> _allPurchases = new();
+        // All tickets from the backend. The tabs show a filtered part of this list.
+        private List<PassengerTicketResult> _allTickets = new();
 
         [ObservableProperty]
-        private ObservableCollection<PurchaseDisplayModel> displayedTickets = new();
+        [NotifyPropertyChangedFor(nameof(ShowEmptyMessage))]
+        private ObservableCollection<PassengerTicketResult> displayedTickets = new();
+
+        // True while waiting on the backend, shows the spinner.
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(ShowEmptyMessage))]
+        private bool isBusy = false;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasErrorMessage))]
+        [NotifyPropertyChangedFor(nameof(ShowEmptyMessage))]
+        private string? errorMessage;
+
+        public bool HasErrorMessage => !string.IsNullOrEmpty(ErrorMessage);
+
+        // Only say there are no tickets when we actually know that.
+        public bool ShowEmptyMessage => !IsBusy && !HasErrorMessage && DisplayedTickets.Count == 0;
 
         [ObservableProperty]
         private bool isActiveTabSelected = true;
@@ -42,12 +61,40 @@ namespace PassengerTicketService.ViewModels
         public ICommand NavigateTicketsCommand { get; private set; } = null!;
         public ICommand NavigateProfileCommand { get; private set; } = null!;
 
-        public TicketViewModel(INavigationService navigationService)
+        public TicketViewModel(INavigationService navigationService, ITicketService ticketService)
         {
             _navigationService = navigationService;
+            _ticketService = ticketService;
             BindCommands();
-            LoadMockData();
             SwitchTab(true); // Start op 'Actief'
+        }
+
+        // Called on every OnAppearing, so a new purchase shows up when coming back to this page.
+        public async Task LoadTicketsAsync()
+        {
+            ErrorMessage = null;
+            IsBusy = true;
+            try
+            {
+                _allTickets = await _ticketService.GetMyTicketsAsync();
+
+                // Stay on the tab the passenger had open.
+                SwitchTab(IsActiveTabSelected);
+            }
+            catch (ApiException ex)
+            {
+                ErrorMessage = "Er is iets foutgelopen. Probeer het later opnieuw.";
+                Debug.WriteLine(ex);
+            }
+            catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
+            {
+                ErrorMessage = "We kunnen de server niet bereiken. Heeft u verbinding met het internet?";
+                Debug.WriteLine(ex);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
         }
 
         private void BindCommands()
@@ -75,51 +122,13 @@ namespace PassengerTicketService.ViewModels
             // Filter de tickets op basis van de API data
             var today = DateOnly.FromDateTime(DateTime.Today);
 
-            var filtered = _allPurchases.Where(p =>
+            var filtered = _allTickets.Where(t =>
                 showActive
-                ? p.Tickets.All(t => !IsTicketUsed(t) && p.ExpirationDate >= today) // Actief
-                : p.Tickets.Any(t => IsTicketUsed(t) || p.ExpirationDate < today)    // Archief
-            ).OrderByDescending(p => p.PurchaseDate).ToList();
+                ? !t.Used && t.Date >= today // Actief
+                : t.Used || t.Date < today   // Archief
+            ).OrderByDescending(t => t.Date).ToList();
 
-            DisplayedTickets = new ObservableCollection<PurchaseDisplayModel>(filtered);
-        }
-
-        // Helper om te checken of een ticket in de groep 'Used' is.
-        // In je backend heb je 'Used'. Omdat de DTO dit mist, simuleren we het hier.
-        private bool IsTicketUsed(TicketDisplayModel ticket)
-        {
-            // Simulatie: een ticket is 'gebruwd' when its travel date already passed.
-            // De hash van het Guid is not deterministic per run: .NET randomiseiert per proces,
-            // wat maakt de Actief-list empty in ~75% van de runs.
-            // In de real app: take ticket.Used from de backend Ticket entity.
-            var today = DateOnly.FromDateTime(DateTime.Today);
-            return ticket.TravelDate < today;
-        }
-
-        // Tijdelijke data om de UI te testen
-        private void LoadMockData()
-        {
-            var today = DateOnly.FromDateTime(DateTime.Today);
-
-            _allPurchases.Add(new PurchaseDisplayModel
-            {
-                ExpirationDate = today.AddDays(1),
-                Tickets = new List<TicketDisplayModel>
-                {
-                    new() { JourneyType = "Heenreis", StationFrom = "MOL", StationTo = "GEEL", TravelDate = today, GuidQrCode = Guid.NewGuid() },
-                    new() { JourneyType = "Terugreis", StationFrom = "GEEL", StationTo = "MOL", TravelDate = today, GuidQrCode = Guid.NewGuid() }
-                }
-            });
-
-            _allPurchases.Add(new PurchaseDisplayModel
-            {
-                ExpirationDate = today.AddDays(-1), // Verlopen -> Archief
-                PurchaseDate = DateTime.Now.AddDays(-2),
-                Tickets = new List<TicketDisplayModel>
-                {
-                    new() { JourneyType = "Enkele reis", StationFrom = "MOL", StationTo = "GEEL", TravelDate = today.AddDays(-1), GuidQrCode = Guid.NewGuid() }
-                }
-            });
+            DisplayedTickets = new ObservableCollection<PassengerTicketResult>(filtered);
         }
     }
 }
