@@ -9,9 +9,9 @@ public partial class QrCodePage : ContentPage
 
     public QrCodePage(IQrCodeViewModel viewModel)
     {
+        InitializeComponent();
         _viewModel = viewModel;
         BindingContext = viewModel;
-        InitializeComponent();
 
         BarcodeReader.Options = new BarcodeReaderOptions
         {

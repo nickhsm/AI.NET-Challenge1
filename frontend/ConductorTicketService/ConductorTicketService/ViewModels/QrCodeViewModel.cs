@@ -69,8 +69,8 @@ public class QrCodeViewModel : ObservableObject, IQrCodeViewModel
 
     public QrCodeViewModel(ITicketService ticketService)
     {
-        BindCommands();
         _ticketService = ticketService;
+        BindCommands();
     }
 
     public ICommand QrCodeScannedCommand { get; set; }
