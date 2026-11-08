@@ -7,8 +7,8 @@ namespace ConductorTicketService.Services;
 // and adds the token as "Authorization: Bearer <token>".
 public class AuthHeaderHandler : DelegatingHandler
 {
-    private IAuthService _authService;
-    private INavigationService _navigationService;
+    private readonly IAuthService _authService;
+    private readonly INavigationService _navigationService;
 
     public AuthHeaderHandler(IAuthService authService, INavigationService navigationService)
     {

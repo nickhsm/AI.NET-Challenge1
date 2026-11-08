@@ -7,8 +7,8 @@ namespace ConductorTicketService.ViewModels;
 
 public class ScanListViewModel : ObservableObject, IScanListViewModel
 {
-    private INavigationService _navigationService;
-    private IAuthService _authService;
+    private readonly INavigationService _navigationService;
+    private readonly IAuthService _authService;
 
     public ScanListViewModel(INavigationService navigationService, IAuthService authService)
     {

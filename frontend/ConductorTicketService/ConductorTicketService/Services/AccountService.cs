@@ -7,7 +7,7 @@ namespace ConductorTicketService.Services;
 
 public class AccountService : IAccountService
 {
-    private HttpClient _httpClient;
+    private readonly HttpClient _httpClient;
 
     public AccountService(HttpClient httpClient)
     {

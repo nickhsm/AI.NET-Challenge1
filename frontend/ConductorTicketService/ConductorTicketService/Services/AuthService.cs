@@ -11,7 +11,7 @@ public class AuthService : IAuthService
     private const string TokenKey = "auth_token";
     private const string ExpiresAtKey = "auth_expires_at";
 
-    private HttpClient _httpClient;
+    private readonly HttpClient _httpClient;
 
     public AuthService(HttpClient httpClient)
     {
