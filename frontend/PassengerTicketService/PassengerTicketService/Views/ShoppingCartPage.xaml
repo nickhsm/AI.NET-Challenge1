@@ -84,8 +84,12 @@
         <!-- 3. BOTTOM ACTION AREA (Zonder comfort en voorwaarden) -->
         <VerticalStackLayout Grid.Row="2" BackgroundColor="#0F0F0F" Padding="20,20,20,30" Spacing="15">
 
+            <!-- Spinner while waiting on the backend -->
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" Color="#E86A22" />
+
             <Button Text="Betalen" 
                     Command="{Binding PayCommand}"
+                    IsEnabled="{Binding HasPrice}"
                     BackgroundColor="#E86A22" 
                     TextColor="White" 
                     FontAttributes="Bold" 

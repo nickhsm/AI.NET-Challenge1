@@ -7,6 +7,9 @@ namespace PassengerTicketService.ViewModels
     {
         TravelRequest CurrentRequest { get; }
 
+        bool IsBusy { get; }
+        bool HasPrice { get; }
+
         string ExpirationDateDisplay { get; }
         string ReturnExpirationDateDisplay { get; }
         string PassengerCountDisplay { get; }
