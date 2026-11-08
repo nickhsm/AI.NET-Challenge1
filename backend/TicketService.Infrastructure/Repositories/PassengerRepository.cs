@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using TicketService.Domain.Entities;
 using TicketService.Infrastructure.DbContexts;
 using TicketService.Infrastructure.Exceptions; 
@@ -117,24 +118,41 @@ public class PassengerRepository : IPassengerRepository
         return true;
     }
     
-    public async Task UpdateProfileAsync(int passengerId, string firstName, string surname, string email, DateOnly? dateOfBirth)
+    public async Task<UpdateProfileResult> UpdateProfileAsync(int passengerId, string? firstName, string? surname,
+        string email, DateOnly? dateOfBirth)
     {
         // 1. Haal de data op uit de databank (zoals RegisterFace doet)
         var passenger = await _context.Passengers.FindAsync(passengerId);
 
         if (passenger == null)
         {
-            throw new InvalidOperationException($"Passenger with id {passengerId} not found.");
+            return UpdateProfileResult.PassengerNotFound;
         }
 
         // 2. Pas de gegevens aan
-        passenger.FirstName = firstName;
-        passenger.Surname = surname;
+        passenger.FirstName = firstName?.Trim();
+        passenger.Surname = surname?.Trim();
         passenger.Email = email.Trim().ToLower();
         passenger.DateOfBirth = dateOfBirth;
 
         // 3. Sla de wijzigingen op
-        await _context.SaveChangesAsync();
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            // Het account werd verwijderd nadat we het hierboven ophaalden.
+            return UpdateProfileResult.PassengerNotFound;
+        }
+        catch (DbUpdateException exception)
+            when (exception.InnerException is PostgresException { SqlState: PostgresErrorCodes.UniqueViolation })
+        {
+            // Iemand anders nam dit e-mailadres in tussen de check in de controller en het opslaan.
+            return UpdateProfileResult.EmailTaken;
+        }
+
+        return UpdateProfileResult.Updated;
     }
     
     public async Task<bool> EmailExistsAsync(string email)

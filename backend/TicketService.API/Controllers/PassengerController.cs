@@ -279,16 +279,21 @@ public class PassengerController : ControllerBase
             }
         }
 
-        await _passengerRepository.UpdateProfileAsync(
-            passengerId, 
-            request.FirstName, 
-            request.Surname, 
-            request.Email, 
+        var result = await _passengerRepository.UpdateProfileAsync(
+            passengerId,
+            request.FirstName,
+            request.Surname,
+            request.Email,
             request.DateOfBirth
         );
 
         // 4. Geef een 204 No Content terug (geslaagd, geen data om terug te sturen)
         // Je zou er ook voor kunnen kiezen om de geüpdatete PassengerProfileDto terug te sturen.
-        return NoContent();
+        return result switch
+        {
+            UpdateProfileResult.PassengerNotFound => NotFound("Passenger does not exist."),
+            UpdateProfileResult.EmailTaken => Conflict("Dit e-mailadres is al in gebruik door een ander account."),
+            _ => NoContent()
+        };
     }
 }
