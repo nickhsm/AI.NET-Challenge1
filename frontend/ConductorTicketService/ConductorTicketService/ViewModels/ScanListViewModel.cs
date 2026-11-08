@@ -20,12 +20,19 @@ public class ScanListViewModel : ObservableObject, IScanListViewModel
     public ICommand ScanQrCodeCommand { get; set; }
     public ICommand ScanFaceCommand { get; set; }
     public ICommand LogoutCommand { get; set; }
+    public ICommand AccountCommand { get; set; }
 
     private void BindCommands()
     {
         ScanQrCodeCommand = new AsyncRelayCommand(GoToScanQrCode);
         ScanFaceCommand = new AsyncRelayCommand(GoToScanFace);
         LogoutCommand = new AsyncRelayCommand(Logout);
+        AccountCommand = new AsyncRelayCommand(GoToAccount);
+    }
+
+    private async Task GoToAccount()
+    {
+        await _navigationService.NavigateToAccountPageAsync();
     }
 
     private async Task GoToScanQrCode()

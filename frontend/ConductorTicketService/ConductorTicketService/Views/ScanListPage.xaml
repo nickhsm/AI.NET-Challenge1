@@ -6,6 +6,7 @@
              x:DataType="viewModels:IScanListViewModel"
              x:Class="ConductorTicketService.Views.ScanListPage">
     <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Account" Command="{Binding AccountCommand}" />
         <ToolbarItem Text="Uitloggen" Command="{Binding LogoutCommand}" />
     </ContentPage.ToolbarItems>
 

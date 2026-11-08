@@ -65,6 +65,12 @@ public static class MauiProgram
         builder.Services.AddTransient<FacePage>();
         builder.Services.AddTransient<IFaceViewModel, FaceViewModel>();
 
+        builder.Services.AddTransient<AccountPage>();
+        builder.Services.AddTransient<IAccountViewModel, AccountViewModel>();
+
+        builder.Services.AddTransient<ChangePasswordPage>();
+        builder.Services.AddTransient<IChangePasswordViewModel, ChangePasswordViewModel>();
+
         return builder.Build();
     }
 

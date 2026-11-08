@@ -13,6 +13,7 @@ public interface IAccountViewModel
     bool HasSuccessMessage { get; }
     bool IsBusy { get; set; }
     ICommand SaveCommand { get; set; }
+    ICommand ChangePasswordCommand { get; set; }
 
     Task LoadProfileAsync();
 }

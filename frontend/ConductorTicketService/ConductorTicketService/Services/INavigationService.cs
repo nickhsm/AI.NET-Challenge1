@@ -8,4 +8,6 @@ public interface INavigationService
     Task NavigateToMainPageAsync();
     Task NavigateToLoginPageAsync();
     Task NavigateToRegisterPageAsync();
+    Task NavigateToAccountPageAsync();
+    Task NavigateToChangePasswordPageAsync();
 }
