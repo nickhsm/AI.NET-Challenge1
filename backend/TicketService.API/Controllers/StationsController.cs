@@ -1,11 +1,14 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TicketService.API.MappingProfiles; // <-- Vergeet deze using niet!
 using TicketService.Contracts.Models;
 using TicketService.Infrastructure.Repositories;
+using TicketService.Shared;
 
 namespace TicketService.API.Controllers;
 
-[Route("api/[controller]")]
+
+[Route("api/stations")]
 [ApiController]
 public class StationsController : ControllerBase
 {
@@ -15,7 +18,8 @@ public class StationsController : ControllerBase
     {
         _stationRepository = stationRepository;
     }
-
+    
+    [Authorize(Roles = Roles.Passenger)]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<StationDto>>> GetStations([FromQuery] string? searchQuery)
     {
