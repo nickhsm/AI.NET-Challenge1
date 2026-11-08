@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -128,17 +129,18 @@ public class RegisterViewModel : ObservableObject, IRegisterViewModel
             ConfirmPassword = string.Empty;
             await _navigationService.NavigateToMainPageAsync();
         }
-        catch (InvalidRegistrationCodeException ex)
+        catch (InvalidRegistrationCodeException)
         {
-            ErrorMessage = ex.Message;
+            ErrorMessage = "De registratiecode is onjuist.";
         }
-        catch (EmailAlreadyInUseException ex)
+        catch (EmailAlreadyInUseException)
         {
-            ErrorMessage = ex.Message;
+            ErrorMessage = "Er bestaat al een account met dit e-mailadres.";
         }
         catch (ApiException ex)
         {
-            ErrorMessage = ex.Message;
+            ErrorMessage = "Er is iets foutgelopen. Probeer het later opnieuw.";
+            Debug.WriteLine(ex);
         }
         catch (HttpRequestException)
         {

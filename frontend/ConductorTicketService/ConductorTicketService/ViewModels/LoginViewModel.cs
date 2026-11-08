@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -89,13 +90,14 @@ public class LoginViewModel : ObservableObject, ILoginViewModel
             Password = string.Empty;
             await _navigationService.NavigateToMainPageAsync();
         }
-        catch (InvalidLoginException ex)
+        catch (InvalidLoginException)
         {
-            ErrorMessage = ex.Message;
+            ErrorMessage = "Uw e-mailadres of wachtwoord is onjuist.";
         }
         catch (ApiException ex)
         {
-            ErrorMessage = ex.Message;
+            ErrorMessage = "Er is iets foutgelopen. Probeer het later opnieuw.";
+            Debug.WriteLine(ex);
         }
         catch (HttpRequestException)
         {

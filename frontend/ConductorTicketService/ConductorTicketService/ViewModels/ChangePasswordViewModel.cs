@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -111,13 +112,14 @@ public class ChangePasswordViewModel : ObservableObject, IChangePasswordViewMode
             ConfirmNewPassword = string.Empty;
             SuccessMessage = "Uw wachtwoord is gewijzigd.";
         }
-        catch (WrongPasswordException ex)
+        catch (WrongPasswordException)
         {
-            ErrorMessage = ex.Message;
+            ErrorMessage = "Uw huidige wachtwoord is onjuist.";
         }
         catch (ApiException ex)
         {
-            ErrorMessage = ex.Message;
+            ErrorMessage = "Er is iets foutgelopen. Probeer het later opnieuw.";
+            Debug.WriteLine(ex);
         }
         catch (HttpRequestException)
         {

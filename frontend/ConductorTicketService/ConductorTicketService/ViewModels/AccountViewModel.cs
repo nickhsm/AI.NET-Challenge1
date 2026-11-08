@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -109,7 +110,8 @@ public class AccountViewModel : ObservableObject, IAccountViewModel
         }
         catch (ApiException ex)
         {
-            ErrorMessage = ex.Message;
+            ErrorMessage = "Er is iets foutgelopen. Probeer het later opnieuw.";
+            Debug.WriteLine(ex);
         }
         catch (HttpRequestException)
         {
@@ -150,13 +152,14 @@ public class AccountViewModel : ObservableObject, IAccountViewModel
 
             SuccessMessage = "Uw gegevens zijn opgeslagen.";
         }
-        catch (EmailAlreadyInUseException ex)
+        catch (EmailAlreadyInUseException)
         {
-            ErrorMessage = ex.Message;
+            ErrorMessage = "Er bestaat al een account met dit e-mailadres.";
         }
         catch (ApiException ex)
         {
-            ErrorMessage = ex.Message;
+            ErrorMessage = "Er is iets foutgelopen. Probeer het later opnieuw.";
+            Debug.WriteLine(ex);
         }
         catch (HttpRequestException)
         {
