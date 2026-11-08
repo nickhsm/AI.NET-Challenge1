@@ -2,6 +2,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PassengerTicketService.Models;
 using PassengerTicketService.Services;
+using System.Collections.ObjectModel;
+using System.Net;
 using System.Windows.Input;
 
 namespace PassengerTicketService.ViewModels
@@ -9,18 +11,49 @@ namespace PassengerTicketService.ViewModels
     public partial class HomeViewModel : ObservableObject, IHomeViewModel
     {
         private readonly INavigationService _navigationService;
+        private readonly IApiService _apiService;
+
+        private CancellationTokenSource? _startSearchCts;
+        private CancellationTokenSource? _endSearchCts;
+
+        // Generatie-tellers: verhogen bij elke nieuwe zoekopdracht én bij elke selectie.
+        // Een zoekopdracht mag alleen state updaten als zijn generatie nog actueel is.
+        private int _startSearchGeneration;
+        private int _endSearchGeneration;
 
         [ObservableProperty]
-        private string startStation;
+        private string startStationText = string.Empty;
 
         [ObservableProperty]
-        private string endStation;
+        private string endStationText = string.Empty;
+
+        // De AutoCompleteEntry op Android (single select) volgt Add/Clear niet:
+        // hij ziet nieuwe suggesties alleen als ItemsSource een nieuwe collectie krijgt.
+        [ObservableProperty]
+        private ObservableCollection<StationDto> startSuggestions = new();
+
+        [ObservableProperty]
+        private ObservableCollection<StationDto> endSuggestions = new();
+
+        [ObservableProperty]
+        private StationDto? selectedStartStation;
+
+        [ObservableProperty]
+        private StationDto? selectedEndStation;
+
+        [ObservableProperty]
+        private bool isStartSuggestionsVisible;
+
+        [ObservableProperty]
+        private bool isEndSuggestionsVisible;
+
+        [ObservableProperty]
+        private string searchErrorMessage = string.Empty;
 
         [ObservableProperty]
         private DateTime selectedDate = DateTime.Today;
         public DateTime MinimumDate => DateTime.Today;
 
-        // Deze property berekent automatisch de tekst voor de UI
         public string DateDisplayText
         {
             get
@@ -37,61 +70,263 @@ namespace PassengerTicketService.ViewModels
         public ICommand NavigateProfileCommand { get; private set; } = null!;
         public ICommand SwapStationsCommand { get; private set; } = null!;
 
-        public HomeViewModel(INavigationService navigationService)
+        public HomeViewModel(INavigationService navigationService, IApiService apiService)
         {
             _navigationService = navigationService;
+            _apiService = apiService;
             BindCommands();
         }
 
         private void BindCommands()
         {
             BuyTicketCommand = new AsyncRelayCommand(GoToYourTravelPage);
-
-            // Navbar: FAB (train) to de ticketpagina
             NavigateTicketsCommand = new AsyncRelayCommand(_navigationService.NavigateToTicketsPageAsync);
-
             NavigateHomeCommand = new RelayCommand(() => { });
-
             NavigateProfileCommand = new AsyncRelayCommand(_navigationService.NavigateToProfilePageAsync);
-
             SwapStationsCommand = new RelayCommand(SwapStations);
         }
 
-        // Deze methode wordt AUTOMATISCH aangeroepen door de Toolkit als SelectedDate verandert
         partial void OnSelectedDateChanged(DateTime value)
         {
-            // Vertel de UI dat DateDisplayText opnieuw berekend moet worden
             OnPropertyChanged(nameof(DateDisplayText));
         }
 
-        // De logica voor het wisselen
+        // ---------- TEXT CHANGED (gebruiker typt of control synct tekst) ----------
+
+        partial void OnStartStationTextChanged(string value)
+        {
+            // Als de nieuwe tekst exact overeenkomt met het reeds geselecteerde station,
+            // is dit een programmatische sync na selectie -> niets doen.
+            if (SelectedStartStation != null && SelectedStartStation.Name == value)
+                return;
+
+            // Gebruiker wijzigt de tekst -> selectie vervalt.
+            SelectedStartStation = null;
+
+            var generation = ++_startSearchGeneration;
+            _ = PerformStartSearchAsync(value, generation);
+        }
+
+        partial void OnEndStationTextChanged(string value)
+        {
+            if (SelectedEndStation != null && SelectedEndStation.Name == value)
+                return;
+
+            SelectedEndStation = null;
+
+            var generation = ++_endSearchGeneration;
+            _ = PerformEndSearchAsync(value, generation);
+        }
+
+        // ---------- SELECTIE GEWIJZIGD ----------
+
+        partial void OnSelectedStartStationChanged(StationDto? value)
+        {
+            if (value == null) return;
+
+            // Invalideer ALLE lopende zoekopdrachten (ook die van het eindstation),
+            // zodat geen enkele stale search nog de dropdowns kan openen.
+            _startSearchGeneration++;
+            _endSearchGeneration++;
+            _startSearchCts?.Cancel();
+            _endSearchCts?.Cancel();
+
+            // Sluit én leeg de lijsten: control kan niet heropenen met oude items.
+            IsStartSuggestionsVisible = false;
+            IsEndSuggestionsVisible = false;
+            StartSuggestions = new();
+            EndSuggestions = new();
+        }
+
+        partial void OnSelectedEndStationChanged(StationDto? value)
+        {
+            if (value == null) return;
+
+            _endSearchGeneration++;
+            _startSearchGeneration++;
+            _endSearchCts?.Cancel();
+            _startSearchCts?.Cancel();
+
+            IsEndSuggestionsVisible = false;
+            IsStartSuggestionsVisible = false;
+            EndSuggestions = new();
+            StartSuggestions = new();
+        }
+
+        // ---------- ZOEKOPDRACHTEN ----------
+
+        private async Task PerformStartSearchAsync(string query, int generation)
+        {
+            _startSearchCts?.Cancel();
+            var cts = new CancellationTokenSource();
+            _startSearchCts = cts;
+            var token = cts.Token;
+
+            if (string.IsNullOrWhiteSpace(query) || query.Length < 2)
+            {
+                if (generation == _startSearchGeneration)
+                {
+                    StartSuggestions = new();
+                    IsStartSuggestionsVisible = false;
+                }
+                return;
+            }
+
+            try
+            {
+                await Task.Delay(300, token);
+                var results = await _apiService.SearchStationsAsync(query);
+
+                // Generatie-check: is deze zoekopdracht nog relevant?
+                if (generation != _startSearchGeneration) return;
+                token.ThrowIfCancellationRequested();
+
+                SearchErrorMessage = string.Empty;
+
+                // Niet heropenen als de zoekopdracht overeenkomt met de selectie.
+                if (SelectedStartStation != null && SelectedStartStation.Name == query)
+                {
+                    IsStartSuggestionsVisible = false;
+                    return;
+                }
+
+                // Forceer false -> true: de control opent bij focus al een lege popup (hoogte 0)
+                // en meet die alleen opnieuw als de lijst echt opnieuw geopend wordt.
+                IsStartSuggestionsVisible = false;
+                StartSuggestions = new ObservableCollection<StationDto>(results);
+                IsStartSuggestionsVisible = StartSuggestions.Any();
+            }
+            catch (OperationCanceledException) when (token.IsCancellationRequested) { /* verwacht */ }
+            catch (Exception ex)
+            {
+                if (generation != _startSearchGeneration) return;
+                IsStartSuggestionsVisible = false;
+
+                // Bij 401 stuurt AuthHeaderHandler de gebruiker al naar het startscherm.
+                if (ex is HttpRequestException { StatusCode: HttpStatusCode.Unauthorized }) return;
+
+                SearchErrorMessage = "We kunnen de server niet bereiken. Heeft u verbinding met het internet?";
+            }
+        }
+
+        private async Task PerformEndSearchAsync(string query, int generation)
+        {
+            _endSearchCts?.Cancel();
+            var cts = new CancellationTokenSource();
+            _endSearchCts = cts;
+            var token = cts.Token;
+
+            if (string.IsNullOrWhiteSpace(query) || query.Length < 2)
+            {
+                if (generation == _endSearchGeneration)
+                {
+                    EndSuggestions = new();
+                    IsEndSuggestionsVisible = false;
+                }
+                return;
+            }
+
+            try
+            {
+                await Task.Delay(300, token);
+                var results = await _apiService.SearchStationsAsync(query);
+
+                if (generation != _endSearchGeneration) return;
+                token.ThrowIfCancellationRequested();
+
+                SearchErrorMessage = string.Empty;
+
+                if (SelectedEndStation != null && SelectedEndStation.Name == query)
+                {
+                    IsEndSuggestionsVisible = false;
+                    return;
+                }
+
+                // Zelfde reden als bij het startstation: forceer false -> true.
+                IsEndSuggestionsVisible = false;
+                EndSuggestions = new ObservableCollection<StationDto>(results);
+                IsEndSuggestionsVisible = EndSuggestions.Any();
+            }
+            catch (OperationCanceledException) when (token.IsCancellationRequested) { }
+            catch (Exception ex)
+            {
+                if (generation != _endSearchGeneration) return;
+                IsEndSuggestionsVisible = false;
+
+                // Bij 401 stuurt AuthHeaderHandler de gebruiker al naar het startscherm.
+                if (ex is HttpRequestException { StatusCode: HttpStatusCode.Unauthorized }) return;
+
+                SearchErrorMessage = "We kunnen de server niet bereiken. Heeft u verbinding met het internet?";
+            }
+        }
+
+        // ---------- SWAP ----------
+
         private void SwapStations()
         {
-            // Wissel de waarden om via een tijdelijke variabele
-            var temp = StartStation;
-            StartStation = EndStation;
-            EndStation = temp;
+            // Invalideer lopende searches
+            _startSearchGeneration++;
+            _endSearchGeneration++;
+            _startSearchCts?.Cancel();
+            _endSearchCts?.Cancel();
+
+            // Bewaar eerst beide teksten: de control past de tekst zelf aan als de selectie wijzigt.
+            var oldStartText = StartStationText;
+            var oldEndText = EndStationText;
+
+            // Eerst de selecties: anders wist de tekstwijziging ze voordat ze gewisseld zijn.
+            var oldStartStation = SelectedStartStation;
+            SelectedStartStation = SelectedEndStation;
+            SelectedEndStation = oldStartStation;
+
+            StartStationText = oldEndText;
+            EndStationText = oldStartText;
         }
+
+        // ---------- NAVIGATIE ----------
 
         private async Task GoToYourTravelPage()
         {
-            if (string.IsNullOrWhiteSpace(StartStation) || string.IsNullOrWhiteSpace(EndStation))
+            // 1. Controleer of beide stations zijn geselecteerd
+            if (SelectedStartStation == null || SelectedEndStation == null)
+            {
+                await Application.Current.MainPage.DisplayAlert(
+                    "Fout", "Selecteer a.u.b. geldige stations uit de lijst.", "OK");
                 return;
+            }
 
-            // Maak het DTO aan met de standaard waarden
+            // 2. Controleer of het om verschillende stations gaat (vergelijk op Id)
+            if (SelectedStartStation.Id == SelectedEndStation.Id)
+            {
+                await Application.Current.MainPage.DisplayAlert(
+                    "Fout", "Vertrek- en aankomststation mogen niet hetzelfde zijn.", "OK");
+                return;
+            }
+
+            // 3. Controleer of de getypte tekst overeenkomt met de geselecteerde stations
+            //    (voorkomt dat de gebruiker een station typt zonder het te selecteren)
+            if (!string.Equals(StartStationText?.Trim(), SelectedStartStation.Name, StringComparison.OrdinalIgnoreCase) ||
+                !string.Equals(EndStationText?.Trim(), SelectedEndStation.Name, StringComparison.OrdinalIgnoreCase))
+            {
+                await Application.Current.MainPage.DisplayAlert(
+                    "Fout", "Selecteer a.u.b. geldige stations uit de lijst.", "OK");
+                return;
+            }
+
             var request = new TravelRequest
             {
-                StartStation = StartStation.ToUpper(),
-                EndStation = EndStation.ToUpper(),
-                PassengerCount = 1,     // Standaard 1 passagier
-                IsRoundTrip = false,    // Standaard enkele reis
+                StartStationId = SelectedStartStation.Id,
+                StartStation = SelectedStartStation.Name,
+                EndStationId = SelectedEndStation.Id,
+                EndStation = SelectedEndStation.Name,
+                PassengerCount = 1,
+                IsRoundTrip = false,
                 ExpirationDate = SelectedDate,
             };
 
             if (request.ExpirationDate < DateTime.Today)
                 request.ExpirationDate = DateTime.Today;
 
-            // Navigeer en geef de request mee via de NavigationService
             await _navigationService.NavigateToYourTravelPageAsync(request);
         }
     }

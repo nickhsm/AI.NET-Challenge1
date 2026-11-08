@@ -3,6 +3,7 @@ using PassengerTicketService.Services;
 using PassengerTicketService.ViewModels;
 using PassengerTicketService.Views;
 using System.Reflection;
+using zoft.MauiExtensions.Controls;
 using ZXing.Net.Maui.Controls;
 
 namespace PassengerTicketService;
@@ -14,6 +15,7 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
+            .UseZoftAutoCompleteEntry()
             .UseBarcodeReader() // ZXing setup, same call as the conductor app.
             .ConfigureFonts(fonts =>
             {
@@ -47,6 +49,13 @@ public static class MauiProgram
         builder.Services.AddTransient<AuthHeaderHandler>();
 
         builder.Services.AddHttpClient<ITicketService, TicketService>(client =>
+        {
+            client.BaseAddress = baseAddress;
+            client.Timeout = timeout;
+        }).AddHttpMessageHandler<AuthHeaderHandler>();
+
+        // Registreer de ApiService met de AuthHeaderHandler
+        builder.Services.AddHttpClient<IApiService, ApiService>(client =>
         {
             client.BaseAddress = baseAddress;
             client.Timeout = timeout;

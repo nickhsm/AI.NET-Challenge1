@@ -11,7 +11,13 @@ namespace PassengerTicketService.Models
         private string startStation;
 
         [ObservableProperty]
+        private int startStationId;
+
+        [ObservableProperty]
         private string endStation;
+
+        [ObservableProperty]
+        private int endStationId;
 
         [ObservableProperty]
         private int passengerCount;
