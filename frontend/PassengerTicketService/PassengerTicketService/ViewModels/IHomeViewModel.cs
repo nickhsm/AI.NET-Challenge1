@@ -13,6 +13,8 @@ namespace PassengerTicketService.ViewModels
         StationDto? SelectedEndStation { get; set; }
         ObservableCollection<StationDto> StartSuggestions { get; }
         ObservableCollection<StationDto> EndSuggestions { get; }
+        bool IsStartSuggestionsVisible { get; set; }
+        bool IsEndSuggestionsVisible { get; set; }
 
         // Voor de datum
         DateTime SelectedDate { get; set; }
