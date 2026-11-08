@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:ConductorTicketService.ViewModels"
+             x:DataType="viewModels:IAccountViewModel"
+             x:Class="ConductorTicketService.Views.AccountPage"
+             Title="Mijn account">
+    <!-- ScrollView: with the keyboard open, this form can be taller than the screen. -->
+    <ScrollView>
+        <VerticalStackLayout Spacing="10" Padding="20">
+            <Label Text="Voornaam" />
+            <Entry Placeholder="Voornaam"
+                   Text="{Binding FirstName}" />
+
+            <Label Text="Familienaam" />
+            <Entry Placeholder="Familienaam"
+                   Text="{Binding Surname}" />
+
+            <!-- Same settings as on the login page, so the keyboard doesn't "correct" the address. -->
+            <Label Text="E-mail" />
+            <Entry Placeholder="E-mail"
+                   Text="{Binding Email}"
+                   Keyboard="Email"
+                   IsSpellCheckEnabled="False"
+                   IsTextPredictionEnabled="False" />
+
+            <Label Text="{Binding ErrorMessage}"
+                   IsVisible="{Binding HasErrorMessage}"
+                   TextColor="Red" />
+
+            <Label Text="{Binding SuccessMessage}"
+                   IsVisible="{Binding HasSuccessMessage}"
+                   TextColor="Green" />
+
+            <Button Text="Opslaan" Command="{Binding SaveCommand}" />
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
