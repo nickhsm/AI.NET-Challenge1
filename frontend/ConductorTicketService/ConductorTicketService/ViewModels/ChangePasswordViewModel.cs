@@ -80,10 +80,10 @@ public class ChangePasswordViewModel : ObservableObject, IChangePasswordViewMode
     public ChangePasswordViewModel(IAccountService accountService)
     {
         _accountService = accountService;
-        ChangePasswordCommand = new AsyncRelayCommand(ChangePassword);
+        ChangePasswordCommand = new AsyncRelayCommand(ChangePasswordAsync);
     }
 
-    private async Task ChangePassword()
+    private async Task ChangePasswordAsync()
     {
         ErrorMessage = null;
         SuccessMessage = null;

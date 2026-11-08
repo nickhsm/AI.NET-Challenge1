@@ -139,7 +139,7 @@ public class FaceViewModel : ObservableObject, IFaceViewModel
                 return;
             }
 
-            var resultTickets = await _ticketService.GetTicketsByFacePersonId(result.FacePersonId);
+            var resultTickets = await _ticketService.GetTicketsByFacePersonIdAsync(result.FacePersonId);
 
             RequestResult = result;
             TicketListItemResult = resultTickets;
@@ -181,7 +181,7 @@ public class FaceViewModel : ObservableObject, IFaceViewModel
         IsBusy = true;
         try
         {
-            await _ticketService.ConsumeTicket(ticket.Id);
+            await _ticketService.ConsumeTicketAsync(ticket.Id);
 
             // Alles is succesvol afgerond, de conducteur kan naar de volgende passagier.
             PhotoPreview = null;

@@ -126,7 +126,7 @@ public class QrCodeViewModel : ObservableObject, IQrCodeViewModel
         IsBusy = true;
         try
         {
-            RequestResult = await _ticketService.GetTicketByQrCode(qrCode);
+            RequestResult = await _ticketService.GetTicketByQrCodeAsync(qrCode);
 
             if (RequestResult.Used)
             {
@@ -171,7 +171,7 @@ public class QrCodeViewModel : ObservableObject, IQrCodeViewModel
         IsBusy = true;
         try
         {
-            await _ticketService.ConsumeTicket(RequestResult.Id);
+            await _ticketService.ConsumeTicketAsync(RequestResult.Id);
 
             // Alles is succesvol afgerond, de conducteur kan naar de volgende passagier.
             ScanAgain();

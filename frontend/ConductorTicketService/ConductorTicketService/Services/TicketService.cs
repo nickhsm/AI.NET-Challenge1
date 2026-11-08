@@ -14,7 +14,7 @@ public class TicketService : ITicketService
         _httpClient = httpClient;
     }
 
-    public async Task<IEnumerable<TicketListItemResult>> GetTicketsByFacePersonId(string facePersonId)
+    public async Task<IEnumerable<TicketListItemResult>> GetTicketsByFacePersonIdAsync(string facePersonId)
     {
         string requestUrl = $"/api/ticket/passenger/{facePersonId}";
 
@@ -35,7 +35,7 @@ public class TicketService : ITicketService
         return await response.Content.ReadApiResultAsync<List<TicketListItemResult>>();
     }
 
-    public async Task ConsumeTicket(int ticketId)
+    public async Task ConsumeTicketAsync(int ticketId)
     {
         string requestUrl = $"/api/ticket/consume/{ticketId}";
 
@@ -61,7 +61,7 @@ public class TicketService : ITicketService
 
     }
 
-    public async Task<TicketQrCodeResult> GetTicketByQrCode(Guid qrCode)
+    public async Task<TicketQrCodeResult> GetTicketByQrCodeAsync(Guid qrCode)
     {
         string requestUrl = $"/api/ticket/qr/{qrCode}";
 

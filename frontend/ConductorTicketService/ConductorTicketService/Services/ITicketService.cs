@@ -4,7 +4,7 @@ namespace ConductorTicketService.Services;
 
 public interface ITicketService
 {
-    public Task<IEnumerable<TicketListItemResult>> GetTicketsByFacePersonId(string facePersonId);
-    public Task ConsumeTicket(int ticketId);
-    public Task<TicketQrCodeResult> GetTicketByQrCode(Guid qrCode);
+    public Task<IEnumerable<TicketListItemResult>> GetTicketsByFacePersonIdAsync(string facePersonId);
+    public Task ConsumeTicketAsync(int ticketId);
+    public Task<TicketQrCodeResult> GetTicketByQrCodeAsync(Guid qrCode);
 }

@@ -92,11 +92,11 @@ public class RegisterViewModel : ObservableObject, IRegisterViewModel
     {
         _authService = authService;
         _navigationService = navigationService;
-        RegisterCommand = new AsyncRelayCommand(Register);
+        RegisterCommand = new AsyncRelayCommand(RegisterAsync);
         NavigateToLoginCommand = new AsyncRelayCommand(_navigationService.NavigateToLoginPageAsync);
     }
 
-    private async Task Register()
+    private async Task RegisterAsync()
     {
         ErrorMessage = null;
 
