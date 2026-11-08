@@ -40,7 +40,7 @@ public class FaceCheckService : IFaceCheckService
             return null;
         }
 
-        if (response.StatusCode != HttpStatusCode.OK)
+        if (!response.IsSuccessStatusCode)
         {
             string message = await response.Content.ReadAsStringAsync();
             throw new ApiException(message);
