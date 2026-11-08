@@ -59,7 +59,7 @@ public class LoginViewModel : ObservableObject, ILoginViewModel
     {
         _authService = authService;
         _navigationService = navigationService;
-        LoginCommand = new AsyncRelayCommand(Login);
+        LoginCommand = new AsyncRelayCommand(LoginAsync);
         NavigateToRegisterCommand = new AsyncRelayCommand(_navigationService.NavigateToRegisterPageAsync);
     }
 
@@ -71,7 +71,7 @@ public class LoginViewModel : ObservableObject, ILoginViewModel
         }
     }
 
-    private async Task Login()
+    private async Task LoginAsync()
     {
         ErrorMessage = null;
 

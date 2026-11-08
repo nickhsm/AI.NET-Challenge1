@@ -85,7 +85,7 @@ public class AccountViewModel : ObservableObject, IAccountViewModel
     public AccountViewModel(IAccountService accountService, INavigationService navigationService)
     {
         _accountService = accountService;
-        SaveCommand = new AsyncRelayCommand(Save);
+        SaveCommand = new AsyncRelayCommand(SaveAsync);
         ChangePasswordCommand = new AsyncRelayCommand(navigationService.NavigateToChangePasswordPageAsync);
     }
 
@@ -124,7 +124,7 @@ public class AccountViewModel : ObservableObject, IAccountViewModel
         }
     }
 
-    private async Task Save()
+    private async Task SaveAsync()
     {
         ErrorMessage = null;
         SuccessMessage = null;

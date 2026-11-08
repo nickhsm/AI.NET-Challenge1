@@ -24,28 +24,28 @@ public class ScanListViewModel : ObservableObject, IScanListViewModel
 
     private void BindCommands()
     {
-        ScanQrCodeCommand = new AsyncRelayCommand(GoToScanQrCode);
-        ScanFaceCommand = new AsyncRelayCommand(GoToScanFace);
-        LogoutCommand = new AsyncRelayCommand(Logout);
-        AccountCommand = new AsyncRelayCommand(GoToAccount);
+        ScanQrCodeCommand = new AsyncRelayCommand(GoToScanQrCodeAsync);
+        ScanFaceCommand = new AsyncRelayCommand(GoToScanFaceAsync);
+        LogoutCommand = new AsyncRelayCommand(LogoutAsync);
+        AccountCommand = new AsyncRelayCommand(GoToAccountAsync);
     }
 
-    private async Task GoToAccount()
+    private async Task GoToAccountAsync()
     {
         await _navigationService.NavigateToAccountPageAsync();
     }
 
-    private async Task GoToScanQrCode()
+    private async Task GoToScanQrCodeAsync()
     {
         await _navigationService.NavigateToScanQrCodePageAsync();
     }
 
-    private async Task GoToScanFace()
+    private async Task GoToScanFaceAsync()
     {
         await _navigationService.NavigateToScanFacePageAsync();
     }
 
-    private async Task Logout()
+    private async Task LogoutAsync()
     {
         // Remove the token, then go to the login page with an absolute route,
         // so "back" can't return to the scan page.
