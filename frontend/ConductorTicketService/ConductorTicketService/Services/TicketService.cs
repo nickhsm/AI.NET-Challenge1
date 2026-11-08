@@ -32,8 +32,7 @@ public class TicketService : ITicketService
             throw new ApiException(message);
         }
 
-        // If list is empty return empty list.
-        return await response.Content.ReadFromJsonAsync<List<TicketListItemResult>>() ?? [];
+        return await response.Content.ReadApiResultAsync<List<TicketListItemResult>>();
     }
 
     public async Task ConsumeTicket(int ticketId)
@@ -80,7 +79,6 @@ public class TicketService : ITicketService
             throw new ApiException(message);
         }
 
-        return await response.Content.ReadFromJsonAsync<TicketQrCodeResult>()
-               ?? throw new ApiException("Empty response body.");
+        return await response.Content.ReadApiResultAsync<TicketQrCodeResult>();
     }
 }

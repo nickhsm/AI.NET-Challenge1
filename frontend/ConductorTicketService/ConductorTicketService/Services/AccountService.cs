@@ -26,8 +26,7 @@ public class AccountService : IAccountService
             throw new ApiException(message);
         }
 
-        return await response.Content.ReadFromJsonAsync<ConductorProfileResult>()
-               ?? throw new ApiException("Empty response body.");
+        return await response.Content.ReadApiResultAsync<ConductorProfileResult>();
     }
 
     public async Task UpdateProfileAsync(string email, string? firstName, string? surname)

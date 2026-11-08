@@ -64,8 +64,7 @@ public class AuthService : IAuthService
             throw new ApiException(message);
         }
 
-        var result = await response.Content.ReadFromJsonAsync<LoginResult>() ??
-                     throw new ApiException("Empty response body.");
+        var result = await response.Content.ReadApiResultAsync<LoginResult>();
 
         await SecureStorage.Default.SetAsync(TokenKey, result.Token);
         // "o" saves the date in a fixed format (ISO 8601) that can be read back exactly.
