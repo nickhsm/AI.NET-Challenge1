@@ -26,9 +26,17 @@ namespace PassengerTicketService.ViewModels
 
         public bool HasErrorMessage => !string.IsNullOrEmpty(ErrorMessage);
 
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(FaceActionText))]
+        private bool hasFaceRegistered;
+
+        public string FaceActionText => HasFaceRegistered
+            ? "Gezichtsherkenning verwijderen"
+            : "Gezichtsherkenning toevoegen";
+
         public ICommand LogoutCommand { get; private set; } = null!;
         public ICommand EditAccountCommand { get; private set; } = null!;
-        public ICommand AddFaceIdCommand { get; private set; } = null!;
+        public ICommand ToggleFaceCommand { get; private set; } = null!;
 
         public ICommand NavigateHomeCommand { get; private set; } = null!;
         public ICommand NavigateTicketsCommand { get; private set; } = null!;
@@ -57,6 +65,7 @@ namespace PassengerTicketService.ViewModels
                     new[] { profile.FirstName, profile.Surname }.Where(name => !string.IsNullOrWhiteSpace(name)));
 
                 UserName = fullName.Length > 0 ? fullName : profile.Email;
+                HasFaceRegistered = profile.HasFaceRegistered;
             }
             catch (ApiException ex)
             {
@@ -78,7 +87,7 @@ namespace PassengerTicketService.ViewModels
         {
             // Functionaliteit voor de lijst items
             EditAccountCommand = new AsyncRelayCommand(_navigationService.NavigateToEditProfilePageAsync);
-            AddFaceIdCommand = new AsyncRelayCommand(AddFaceIdAsync);
+            ToggleFaceCommand = new AsyncRelayCommand(ToggleFaceAsync);
 
             // Logout logica
             LogoutCommand = new AsyncRelayCommand(LogoutAsync);
@@ -91,10 +100,73 @@ namespace PassengerTicketService.ViewModels
             NavigateProfileCommand = new RelayCommand(() => { });
         }
 
-        private async Task AddFaceIdAsync()
+        private async Task ToggleFaceAsync()
         {
-            // TODO: Roep later de biometric API aan (bijv. via Plugin.Fingerprint)
-            await Application.Current.MainPage.DisplayAlert("Beveiliging", "Gezichtsherkenning toevoegen...", "OK");
+            ErrorMessage = null;
+            string? error = null;
+
+            try
+            {
+                if (HasFaceRegistered)
+                {
+                    var confirm = await Application.Current.MainPage.DisplayAlert("Gezichtsherkenning",
+                        "Weet je zeker dat je je gezicht wilt verwijderen?", "Ja", "Nee");
+                    if (!confirm)
+                    {
+                        return;
+                    }
+
+                    IsBusy = true;
+                    await _accountService.UnregisterFaceAsync();
+                }
+                else
+                {
+                    FileResult? photo = await MediaPicker.Default.CapturePhotoAsync();
+
+                    // The passenger closed the camera without taking a photo.
+                    if (photo is null)
+                    {
+                        return;
+                    }
+
+                    // Only now: the camera is closed and we start waiting for the backend.
+                    IsBusy = true;
+
+                    await using var photoStream = await photo.OpenReadAsync();
+                    await _accountService.RegisterFaceAsync(photoStream);
+                }
+            }
+            catch (Exception ex) when (ex is InvalidPhotoException or FaceAlreadyRegisteredException)
+            {
+                error = ex.Message;
+            }
+            catch (PermissionException)
+            {
+                error = "Geef toestemming voor het gebruiken van de camera in de instellingen van uw smartphone.";
+            }
+            catch (FeatureNotSupportedException)
+            {
+                error = "Dit toestel heeft geen camera.";
+            }
+            catch (ApiException ex)
+            {
+                error = "Er is iets foutgelopen. Probeer het later opnieuw.";
+                Debug.WriteLine(ex);
+            }
+            catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
+            {
+                error = "We kunnen de server niet bereiken. Heeft u verbinding met het internet?";
+                Debug.WriteLine(ex);
+            }
+
+            // Also after an error: on a timeout the backend may still have finished.
+            await LoadProfileAsync();
+
+            // LoadProfileAsync clears the message, so the error can only be shown after it.
+            if (error is not null)
+            {
+                ErrorMessage = error;
+            }
         }
 
         private async Task LogoutAsync()

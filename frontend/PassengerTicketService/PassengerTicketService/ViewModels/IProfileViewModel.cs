@@ -12,12 +12,15 @@ namespace PassengerTicketService.ViewModels
         string? ErrorMessage { get; set; }
         bool HasErrorMessage { get; }
 
+        // "toevoegen" or "verwijderen", depending on whether a face is registered.
+        string FaceActionText { get; }
+
         Task LoadProfileAsync();
 
         // Acties
         ICommand LogoutCommand { get; }
         ICommand EditAccountCommand { get; }
-        ICommand AddFaceIdCommand { get; }
+        ICommand ToggleFaceCommand { get; }
 
         // Navigatiebalk (vanuit jouw aangeleverde code)
         ICommand NavigateHomeCommand { get; }
