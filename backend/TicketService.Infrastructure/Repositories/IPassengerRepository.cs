@@ -13,6 +13,6 @@ public interface IPassengerRepository
     public Task UnregisterAllFacesAsync();
     public Task<Passenger?> GetPassengerByEmailAsync(string email);
     public Task AddPassengerAsync(Passenger passenger);
-    Task<bool> DeletePassengerAsync(int passengerId);
+    public Task<bool> DeletePassengerAsync(int passengerId);
 
 }
