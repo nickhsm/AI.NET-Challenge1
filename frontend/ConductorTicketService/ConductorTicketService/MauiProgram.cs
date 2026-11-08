@@ -43,6 +43,10 @@ public static class MauiProgram
         {
             client.BaseAddress = baseAddress;
         }).AddHttpMessageHandler<AuthHeaderHandler>();
+        builder.Services.AddHttpClient<IAccountService, AccountService>(client =>
+        {
+            client.BaseAddress = baseAddress;
+        }).AddHttpMessageHandler<AuthHeaderHandler>();
 
         builder.Services.AddSingleton<INavigationService, NavigationService>();
 
