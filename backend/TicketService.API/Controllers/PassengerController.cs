@@ -1,9 +1,11 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TicketService.API.MappingProfiles;
 using TicketService.Contracts.Models;
+using TicketService.Domain.Entities;
 using TicketService.Infrastructure.Exceptions;
 using TicketService.Infrastructure.Repositories;
 using TicketService.Infrastructure.Services;
@@ -18,13 +20,15 @@ public class PassengerController : ControllerBase
     private IFaceRecognitionService _faceRecognitionService;
     private IPassengerRepository _passengerRepository;
     private ITicketRepository _ticketRepository;
+    private readonly IPasswordHasher<IUser> _passwordHasher;
 
     public PassengerController(IFaceRecognitionService faceRecognitionService, IPassengerRepository passengerRepository,
-        ITicketRepository ticketRepository)
+        ITicketRepository ticketRepository, IPasswordHasher<IUser> passwordHasher)
     {
         _faceRecognitionService = faceRecognitionService;
         _passengerRepository = passengerRepository;
         _ticketRepository = ticketRepository;
+        _passwordHasher = passwordHasher;
     }
 
     private ActionResult? ValidatePhoto(IFormFile photo)
@@ -333,6 +337,45 @@ public class PassengerController : ControllerBase
 
         // 6. Geef een 204 No Content terug (geslaagd, geen data om terug te sturen)
         // Je zou er ook voor kunnen kiezen om de geüpdatete PassengerProfileDto terug te sturen.
+        return NoContent();
+    }
+    
+    // --- NIEUWE ENDPOINT ---
+    [Authorize]
+    [HttpPatch("me/password")]
+    public async Task<ActionResult> ChangeMyPassword([FromBody] ChangePasswordRequestDto request)
+    {
+        // 1. Haal het ID veilig uit het token
+        int passengerId = GetPassengerId();
+
+        // 2. Zoek de passagier
+        var passenger = await _passengerRepository.GetPassengerByIdAsync(passengerId);
+        if (passenger is null)
+        {
+            return NotFound("Passenger does not exist.");
+        }
+
+        // 3. Controleer of het HUIDIGE wachtwoord klopt met de Identity Hasher
+        var verificationResult = _passwordHasher.VerifyHashedPassword(passenger, passenger.Password, request.CurrentPassword);
+        
+        if (verificationResult == PasswordVerificationResult.Failed)
+        {
+            return BadRequest("Het huidige wachtwoord is onjuist.");
+        }
+
+        // 4. Controleer of het nieuwe wachtwoord niet hetzelfde is als het oude
+        if (request.CurrentPassword == request.NewPassword)
+        {
+            return BadRequest("Het nieuwe wachtwoord mag niet hetzelfde zijn als het huidige wachtwoord.");
+        }
+
+        // 5. Hash het NIEUWE wachtwoord met de Identity Hasher
+        passenger.Password = _passwordHasher.HashPassword(passenger, request.NewPassword);
+
+        // 6. Werk de passagier bij
+        await _passengerRepository.UpdatePassengerAsync(passenger);
+
+        // 7. Stuur een 204 No Content
         return NoContent();
     }
 }
