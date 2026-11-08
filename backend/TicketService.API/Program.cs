@@ -38,6 +38,7 @@ builder.Services.AddHttpClient<IFaceRecognitionService, FaceRecognitionService>(
 // Repositories
 builder.Services.AddScoped<IPassengerRepository, PassengerRepository>();
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+builder.Services.AddScoped<IStationRepository, StationRepository>();
 builder.Services.AddScoped<IConductorRepository, ConductorRepository>();
 
 // Seeder
