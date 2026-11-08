@@ -51,4 +51,30 @@ public class TicketService : ITicketService
 
         return await response.Content.ReadApiResultAsync<List<PassengerTicketResult>>();
     }
+
+    public async Task<bool> PurchaseTicketsAsync(TravelRequest request)
+    {
+        // Converteer de DateTime naar DateOnly voor de backend
+        var requestDto = new
+        {
+            StartStationId = request.StartStationId,
+            EndStationId = request.EndStationId,
+            PassengerCount = request.PassengerCount,
+            IsRoundTrip = request.IsRoundTrip,
+            ExpirationDate = DateOnly.FromDateTime(request.ExpirationDate),
+            ReturnExpirationDate = DateOnly.FromDateTime(request.ReturnExpirationDate)
+        };
+
+        // De AuthHeaderHandler voegt automatisch het token toe!
+        var response = await _httpClient.PostAsJsonAsync("api/ticket/purchase", requestDto);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            // Optioneel: lees de foutmelding uit de response (zoals "Station does not exist")
+            var errorContent = await response.Content.ReadAsStringAsync();
+            System.Diagnostics.Debug.WriteLine($"Purchase Error: {errorContent}");
+        }
+
+        return response.IsSuccessStatusCode;
+    }
 }

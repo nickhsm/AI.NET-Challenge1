@@ -109,7 +109,45 @@ namespace PassengerTicketService.ViewModels
 
         private async Task PayAsync()
         {
-            await Application.Current.MainPage.DisplayAlert("Betaling", "Betaling succesvol ontvangen!", "OK");
+            // Zorg dat we alleen betalen als de prijs bekend is
+            if (!HasPrice) return;
+
+            IsBusy = true;
+            try
+            {
+                // 1. Roep de API aan om de tickets te kopen
+                var success = await _ticketService.PurchaseTicketsAsync(CurrentRequest);
+
+                if (success)
+                {
+                    // 2. Succes! Toon een melding
+                    await Application.Current.MainPage.DisplayAlert("Succes", "Betaling geslaagd! Je tickets zijn aangemaakt.", "OK");
+
+                    // 3. Wis de navigatie-stack (Home -> YourTravel -> Cart) en ga naar de Tickets pagina
+                    // Dit voorkomt dat de gebruiker met de 'Terug' knop weer in de winkelwagen belandt.
+                    await _navigationService.NavigateToTicketsPageAsync();
+                }
+                else
+                {
+                    await Application.Current.MainPage.DisplayAlert("Fout", "Er ging iets mis bij het kopen van de tickets. Probeer het later opnieuw.", "OK");
+                }
+            }
+            catch (SessionExpiredException)
+            {
+                // Als het token verlopen is, stuurt de AuthHeaderHandler je al naar de login/startpagina.
+            }
+            catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
+            {
+                await Application.Current.MainPage.DisplayAlert("Fout", "We kunnen de server niet bereiken. Controleer je internetverbinding.", "OK");
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Fout", "Er is een onverwachte fout opgetreden.", "OK");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
         }
     }
 }

@@ -6,4 +6,6 @@ public interface ITicketService
 {
     Task<PriceResult> CalculatePriceAsync(int passengerCount, bool isRoundTrip);
     Task<List<PassengerTicketResult>> GetMyTicketsAsync();
+    Task<bool> PurchaseTicketsAsync(TravelRequest request);
+
 }
