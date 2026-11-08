@@ -14,7 +14,7 @@ public interface IPassengerRepository
     public Task<Passenger?> GetPassengerByEmailAsync(string email);
     public Task AddPassengerAsync(Passenger passenger);
     public Task<bool> DeletePassengerAsync(int passengerId);
-    public Task UpdateProfileAsync(int passengerId, string firstName, string surname, string email,
-        DateOnly? dateOfBirth);
+    public Task<UpdateProfileResult> UpdateProfileAsync(int passengerId, string? firstName, string? surname,
+        string email, DateOnly? dateOfBirth);
     public Task<bool> EmailExistsAsync(string email);
 }
