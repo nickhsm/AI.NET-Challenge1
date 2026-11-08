@@ -79,4 +79,19 @@ public class PassengerRepository : IPassengerRepository
         _context.Passengers.Add(passenger);
         await _context.SaveChangesAsync();
     }
+    
+    public async Task<bool> DeletePassengerAsync(int passengerId)
+    {
+        var passenger = await _context.Passengers.FindAsync(passengerId);
+    
+        if (passenger == null)
+        {
+            return false;
+        }
+
+        _context.Passengers.Remove(passenger);
+        await _context.SaveChangesAsync();
+    
+        return true;
+    }
 }

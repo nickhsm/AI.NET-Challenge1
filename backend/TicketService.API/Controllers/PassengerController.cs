@@ -209,4 +209,23 @@ public class PassengerController : ControllerBase
 
         return Ok(mappedProfile);
     }
+    
+    [Authorize] // Heb nog geen rol restrictie gezet. Weet niet dat het ook gebruikt zal voor conducteur.
+    [HttpDelete("me")]
+    public async Task<ActionResult> DeleteMyAccount()
+    {
+        // 1. Haal het ID veilig uit het token
+        int passengerId = GetPassengerId();
+
+        // 2. Probeer de passagier te verwijderen
+        bool isDeleted = await _passengerRepository.DeletePassengerAsync(passengerId);
+
+        if (!isDeleted)
+        {
+            return NotFound("Passenger does not exist.");
+        }
+
+        // 3. Geef een 204 No Content terug (standaard voor een succesvolle DELETE)
+        return NoContent();
+    }
 }
