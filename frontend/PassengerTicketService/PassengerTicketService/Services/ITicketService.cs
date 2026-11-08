@@ -1,0 +1,8 @@
+using PassengerTicketService.Models;
+
+namespace PassengerTicketService.Services;
+
+public interface ITicketService
+{
+    Task<PriceResult> CalculatePriceAsync(int passengerCount, bool isRoundTrip);
+}

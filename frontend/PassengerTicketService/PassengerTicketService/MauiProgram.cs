@@ -40,6 +40,11 @@ public static class MauiProgram
         // with .AddHttpMessageHandler<AuthHeaderHandler>().
         builder.Services.AddTransient<AuthHeaderHandler>();
 
+        builder.Services.AddHttpClient<ITicketService, TicketService>(client =>
+        {
+            client.BaseAddress = baseAddress;
+        }).AddHttpMessageHandler<AuthHeaderHandler>();
+
         // --- REGISTREER VIEWMODELS ---
         // Koppel de Interface aan de class
         builder.Services.AddTransient<IHomeViewModel, HomeViewModel>();
