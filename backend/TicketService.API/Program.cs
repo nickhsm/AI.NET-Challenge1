@@ -11,15 +11,35 @@ using TicketService.Infrastructure.DbContexts;
 using TicketService.Infrastructure.Repositories;
 using TicketService.Infrastructure.Seeders;
 using TicketService.Infrastructure.Services;
+using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-// Swagger
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    // Voeg de Bearer token definitie toe
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Plak hier je token."
+    });
+
+    // Zorg dat Swagger weet dat het token nodig is
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecuritySchemeReference("Bearer", document),
+            new List<string>()
+        }
+    });
+});
 
 // Database
 builder.Services.AddDbContext<TicketServiceDbContext>(dbContectOption =>
