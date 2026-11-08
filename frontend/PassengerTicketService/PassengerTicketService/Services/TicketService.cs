@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http.Json;
 using PassengerTicketService.Exceptions;
 using PassengerTicketService.Models;
@@ -20,6 +21,11 @@ public class TicketService : ITicketService
         // The property names match PriceCalculationRequestDto in the backend.
         var body = new { passengerCount, isRoundTrip };
         var response = await _httpClient.PostAsJsonAsync(requestUrl, body);
+
+        if (response.StatusCode == HttpStatusCode.Unauthorized)
+        {
+            throw new SessionExpiredException();
+        }
 
         if (!response.IsSuccessStatusCode)
         {

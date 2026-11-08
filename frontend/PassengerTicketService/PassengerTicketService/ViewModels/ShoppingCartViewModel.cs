@@ -87,13 +87,17 @@ namespace PassengerTicketService.ViewModels
             {
                 Price = await _ticketService.CalculatePriceAsync(CurrentRequest.PassengerCount, CurrentRequest.IsRoundTrip);
             }
+            catch (SessionExpiredException)
+            {
+                // The user is already on the start page, so an alert is not needed.
+            }
             catch (ApiException ex)
             {
                 await Application.Current.MainPage.DisplayAlert("Fout", ex.Message, "OK");
             }
-            catch (HttpRequestException)
+            catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
             {
-                // The phone can't reach the backend (no wifi, wrong network, API not running).
+                // The phone can't reach the backend (no wifi, wrong network, API not running) or it timed out.
                 await Application.Current.MainPage.DisplayAlert("Fout",
                     "We kunnen de server niet bereiken. Heeft u verbinding met het internet?", "OK");
             }
