@@ -115,11 +115,14 @@ public class TicketController : ControllerBase
         return Ok(response);
     }
     
+    [Authorize(Roles = Roles.Passenger)]
     [HttpPost("purchase")]
     public async Task<ActionResult<IEnumerable<TicketListDto>>> PurchaseTickets([FromBody] PurchaseTicketRequestDto request)
     {
+        int passengerId = GetPassengerId();
+
         // 1. Controleer of de passagier bestaat
-        var passengerExists = await _passengerRepository.PassengerExistsAsync(request.PassengerId);
+        var passengerExists = await _passengerRepository.PassengerExistsAsync(passengerId);
         if (!passengerExists)
             return NotFound("Passenger does not exist.");
 
@@ -141,8 +144,8 @@ public class TicketController : ControllerBase
             // Heenreis Ticket (Altijd de basisprijs)
             var outboundTicket = new Ticket(
                 request.ExpirationDate,
-                request.PassengerId,
-                request.StartStationId, 
+                passengerId,
+                request.StartStationId,
                 request.EndStationId,
                 basePrice // <-- AANGEPAST naar basePrice
             );
@@ -153,8 +156,8 @@ public class TicketController : ControllerBase
             {
                 var returnTicket = new Ticket(
                     request.ReturnExpirationDate,
-                    request.PassengerId,
-                    request.EndStationId, 
+                    passengerId,
+                    request.EndStationId,
                     request.StartStationId,
                     basePrice // <-- Dit is al goed
                 );
